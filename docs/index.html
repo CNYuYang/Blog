@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>阳哥在奔跑</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <link rel="icon" href="/img/logo.png" type="image/x-icon" />
+  <meta name="description" content="Description">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" href="/css/vue.css">
+</head>
+<body>
+	<nav>
+    <a href="#/">主页</a>
+    <a href="#/notes">笔记</a>
+  </nav>
+  <div id="app"></div>
+  <script>
+    window.$docsify = {
+      name: '',
+      repo: '',
+      coverpage: true,
+      markdown: {
+       renderer: {
+         code: function(code, lang) {
+           if (lang === "tex") {
+             return (
+              '<span style="text-align: center;display:block;" class="tex">'+ katex.renderToString(code, {
+                throwOnError: false
+              })+'</span>'
+              );
+           }
+           return this.origin.code.apply(this, arguments);
+         }
+       }
+     },
+     plugins: [
+     function (hook, vm) {
+      hook.beforeEach(function (html) {
+       if (/githubusercontent\.com/.test(vm.route.file)) {
+        url = vm.route.file
+        .replace('raw.githubusercontent.com', 'github.com')
+        .replace(/\/master/, '/blob/master')
+      } else {
+        url = 'https://github.com/CNYuYang/Blog/tree/master/docs/' + vm.route.file
+      }
+      var editHtml = '[:memo: Edit Document](' + url + ')\n'
+      return editHtml
+      + html
+      + '\n\n----\n\n'
+      + 'Copyright © 2020 阳哥在奔跑   <a href="http://www.beian.miit.gov.cn/" target="_blank">赣ICP备20005284号-1</a>'
+    })
+    }
+    ]
+  }
+</script>
+<script src="/js/docsify.min.js"></script>
+<script src="/js/prism-java.min.js"></script>
+<script src="/js/prism-bash.min.js"></script>
+<script src="/js/prism-go.min.js"></script>
+<script src="/js/prism-sql.min.js"></script>
+<script src="/js/prism-c.min.js"></script>
+<link href="/css/katex.min.css" rel="stylesheet">
+<script src="/js/katex.min.js"></script>
+</body>
+
+</html>
