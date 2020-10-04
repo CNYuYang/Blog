@@ -52,7 +52,7 @@
 
 │ │
 
-│ └─ [Spring Framework](/notes/spring/Framework)
+│ └─ [Spring Framework](/notes/Spring/Framework.md)
 
 │
 
@@ -60,7 +60,7 @@
 
 │ │
 
-│ └─ [Jenkins](/notes/工具/jenkins/jenkins)
+│ └─ [Jenkins](/notes/工具/jenkins/Jenkins)
 
 │
 

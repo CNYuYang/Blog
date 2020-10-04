@@ -21,4 +21,4 @@ git commit -m "[update] update blog"
 
 # git push
 
-git push -f
+git push 
