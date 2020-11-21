@@ -52,8 +52,15 @@
 
 🏗项目地址：[BusTub](https://github.com/CNYuYang/Bustub)
 
-## MapReduce
+### MapReduce
 
 使用 Java 编写的一个分布式计算框架，本项目为 MapReduce 的最简实现，未引入任何第三方库， Master 能保证线程安全的向 Worker 分配 Map、 Reduce 任务，通过 Socket 完成 Rpc 通信
 
 🏗项目地址：[MapReduce](https://github.com/CNYuYang/MapReduce)
+
+### Trotsky
+
+利用graalvm、quarkus、vert.x实现的一个云原生写作平台。通过graalvm将程序编译成可执行的二进制文件，使得程序在不需要jdk的apline上就可以运行。因为不需要jvm的支持，启动速度达毫秒级。
+
+🏗项目地址：[Trotsky](https://github.com/CNYuYang/Trotsky)
+
