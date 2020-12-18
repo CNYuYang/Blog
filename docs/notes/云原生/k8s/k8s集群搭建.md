@@ -163,7 +163,17 @@ kubectl get nodes
 #接着把提示如下的语句复制到node节点运行
 kubeadm join 192.168.1.200:6443 --token ...
 ```
-#### 部署CNI网络插件
+### 遇到的问题
+
+**Kubeadm init过程中报错**：`***\*[ERROR FileContent--proc-sys-net-bridge-bridge-nf-call-iptables]: /proc/sys/net/bridge/bridge-nf-call-iptables contents are not set to 1\****`
+
+**解决方法**：
+
+```shell
+echo "1" >/proc/sys/net/bridge/bridge-nf-call-iptables
+```
+
+## 部署CNI网络插件
 
 `kube-flannel.yml`文件：[kube-flannel.yml](/notes/云原生/k8s/files/kube-flannel.yml ':ignore')
 
