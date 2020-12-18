@@ -40,7 +40,7 @@
 
 │ │ │
 
-│ │ │─ [Zookeeper](/notes/分布式/SpringCloud/zookeeper.md)
+│ │ ├─ [Zookeeper](/notes/分布式/SpringCloud/zookeeper.md)
 
 │ │ │
 
@@ -48,7 +48,7 @@
 
 │ │
 
-│ └─[MIT6.824 分布式系统](/notes/分布式/6.824.md)
+│ └─ [MIT6.824 分布式系统](/notes/分布式/6.824.md)
 
 │
 
