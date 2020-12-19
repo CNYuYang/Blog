@@ -656,3 +656,42 @@ tasks:
 这些变量在 tempates 中也是可用的,稍后会讲到.
 
 在一个基础的 playbook 中,所有的 task 都是在一个 play 中列出,稍后将介绍一种更合理的安排 task 的方式:使用 ‘include:’ 指令.
+
+# Harbor搭建
+
+```yaml
+---
+- hosts: harbor
+  gather_facts: no
+  vars:
+    - compose_url: ./docker-compose 
+    - harbor_name: harbor-offline-installer-v2.1.2.tgz
+    - harbor_url: ./harbor-offline-installer-v2.1.2.tgz
+    - harbor_yaml: ./harbor.yml
+  tasks:
+    - name: copy docker-compose
+      copy: 
+        src: "{{ compose_url }}"
+        dest: /usr/local/bin/docker-compose
+    - name: add exection
+      shell: chmod +x /usr/local/bin/docker-compose
+    - name: copy harbor
+      copy:
+        src: "{{ harbor_url }}"
+        dest: /opt
+    - name: unzip harbor
+      shell: "tar -xvf /opt/{{ harbor_name }} -C /opt" 
+    - name: rm harbor
+      shell: "rm -rf /opt/{{ harbor_name }}"
+    - name: copy yaml
+      copy:
+        src: "{{ harbor_yaml }}"
+        dest: "/opt/harbor"
+    - name: make data dir
+      shell: "mkdir /data/harbor"
+    - name: auth
+      shell: "chmod 777 /data/harbor"
+    - name: run harbor
+      shell: "bash /opt/harbor/install.sh"
+```
+
