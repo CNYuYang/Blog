@@ -8,3 +8,5 @@
 
 [云原生基石：初识 Kubernetes](/notes/云原生/k8s/云原生基石：初识Kubernetes)
 
+[Kubernetes 进阶：部署高可用的业务](/notes/云原生/k8s/Kubernetes进阶：部署高可用的业务)
+

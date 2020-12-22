@@ -18,9 +18,9 @@
 
 负责 BMS 硬件入网，对 mtk 固件进行二次开发，实现将 BMS 的信息通过 mqtt 通信发送至云端，同时实现数据的下行对设备的控制。  
 
-**2020.7-至今 武汉青藤云安全-Java实习生**
+**2020.7.1-2020.12.11 武汉青藤云安全-Java实习生**
 
-蜂巢容器安全开发小组，负责产品Jenkins插件开发，以及规则平台新功能的开发。
+蜂巢容器安全开发小组。负责 Jenkins 插件集成，在CI 流程中对构建镜像镜像进行风险分析，对风险镜像进行阻断。负责 Harbor 镜像仓库风险扫描集成。以及PHP规则平台维护。
 
 ## 获奖经历
 
@@ -60,7 +60,7 @@
 
 ### Trotsky
 
-利用graalvm、quarkus、vert.x实现的一个云原生写作平台。通过graalvm将程序编译成可执行的二进制文件，使得程序在不需要jdk的apline上就可以运行。因为不需要jvm的支持，启动速度达毫秒级。
+使用 Quarkus+Graalvm+Vert.x+RESTEasy 编写的一个云原生写作平台。借助 Quarkus+Graalvm 可以将 Java程序编译成可执行的二进制文件。使基础镜像不依赖 JDK，大大减小了镜像的体积，大大缩短了启动速度。
 
 🏗项目地址：[Trotsky](https://github.com/CNYuYang/Trotsky)
 
