@@ -1292,3 +1292,624 @@ PWD=/
 
 我们可以在日志中看到命令`env`的输出，看到环境变量`username`和`password`已经正确注入。类似地，我们也可以将 Secret 作为 Volume 挂载到 Pod 内，你~~大家~~可以课后实践一下。
 
+## 存储类型：如何挑选合适的存储插件？
+
+在以前玩虚拟机的时代，大家比较少考虑存储的问题，因为在通过底层 IaaS 平台申请虚拟机的时候，大多数情况下，我们都会事先预估好需要的容量，方便虚拟机起来后可以稳定的使用这些存储资源。
+
+但是容器与生俱来就是按照可以“运行在任何地方”（run anywhere）这一想法来设计的，对外部存储有着天然的诉求和依赖，并且由于容器本身的生命周期很短暂，在容器内保存数据是件很危险的事情，所以 Docker 通过挂载 Volume 来解决这一问题，如下图所示。
+
+![](./images/02-03.png)
+
+一般来说，这些 Volume 都是和容器的生命周期进行绑定的。当然也可以单独创建，然后按需挂载到容器中。大家有兴趣可以查看目前 Docker 都适配了哪些 volume plugins（卷插件）。
+
+现在，我们先来看看 Kubernetes 中的 Volume 跟 Docker 中的设计有什么不同。
+
+### Kubernetes 中的 Volume 是如何设计的？
+
+Kubernetes 中的 Volume 在设计上，跟 Docker 略有不同。
+
+我们都知道在Kubernetes 中，Pod 里包含了一组容器，这些容器是可以共享存储的，如下图所示。同时 Pod 内的容器又受制于各自的重启策略（你可以回到 05 节课，回顾一下重启策略），我们需要保证容器重启不会对这些存储产生影响。因此 Kubernetes 中 Volume 的生命周期是直接和 Pod 挂钩的，而不是 Pod 内的某个容器，即 Pod 在 Volume 在。在 Pod 被删除时，才会对 Volume 进行解绑（unmount）、删除等操作。至于 Volume 中的数据是否会被删除，取决于Volume 的具体类型。
+
+![](./images/02-04.png)
+
+为了丰富可以对接的存储后端，Kubernetes 中提供了很多volume plugin可供使用。我将目前的一些 plugins 做了如下的分类，方便你进行初步的了解和比较。
+
+![](./images/02-05.png)
+
+如下图所示，Kubelet 内部调用相应的 plugin 实现，将外部的存储挂载到 Pod 内。类似于CephFS、NFS以及 awsEBS 这一类插件，是需要管理员提前在对应的存储系统中申请好的，Kubernetes 本身其实并不负责这些Volume 的申请。
+
+
+![](./images/02-06.png)
+
+### 常见的几种内置 Volume 插件
+
+我们在前文的表格中列举了很多插件，我们在此不一一讲述其具体用法，大家有兴趣，可以到官方文档中进行进一步学习。
+
+这里我介绍几个日常工作和生产环境中经常使用到的几个插件。
+
+#### ConfigMap 和 Secret
+
+首先来看 ConfigMap 和 Secret，这两类对象都可以通过 Volume 形式挂载到 Pod 内，我们在上一节课中其实已经有过例子来讲述其作用和用法，在此不再赘述。
+
+#### Downward API
+
+再来看看DownwardAPI，这是个非常有用的插件，可以帮助你获取 Pod 对象中定义的字段，比如 Pod 的标签（Labels）、Pod 的 IP 地址及 Pod 所在的命名空间（namespace）等。Downward API 有两种使用方法，既支持环境变量注入，也支持通过 Volume 挂载。
+
+我们来看个 Volume 挂载的例子，如下是一个 Pod 的 yaml 文件：
+
+```yaml
+$ cat downwardapi-volume-demo.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: downwardapi-volume-demo
+  namespace: demo
+  labels:
+    zone: us-east-coast
+    cluster: downward-api-test-cluster1
+    rack: rack-123
+  annotations:
+    annotation1: "345"
+    annotation2: "456"
+spec:
+  containers:
+
+   - name: volume-test-container
+     image: busybox:1.28
+     command: ["sh", "-c"]
+     args:
+     - while true; do
+       if [[ -e /etc/podinfo/labels ]]; then
+         echo -en '\n\n'; cat /etc/podinfo/labels; fi;
+       if [[ -e /etc/podinfo/annotations ]]; then
+         echo -en '\n\n'; cat /etc/podinfo/annotations; fi;
+       sleep 5;
+       done;
+       volumeMounts:
+       - name: podinfo
+         mountPath: /etc/podinfo
+         volumes:
+         - name: podinfo
+           downwardAPI:
+           items:
+         - path: "labels"
+           fieldRef:
+             fieldPath: metadata.labels
+         - path: "annotations"
+           fieldRef:
+             fieldPath: metadata.annotations
+```
+
+
+我们先创建这个 Pod，并通过`kubectl logs`来查看它的输出日志：
+
+```shell
+$ kubectl create -f downwardapi-volume-demo.yaml
+pod/downwardapi-volume-demo created
+$ kubectl get pod -n demo
+NAME                      READY   STATUS    RESTARTS   AGE
+downwardapi-volume-demo   1/1     Running   0          5s
+$ kubectl logs -n demo -f downwardapi-volume-demo
+cluster="downward-api-test-cluster1"
+rack="rack-123"
+zone="us-east-coast"
+annotation1="345"
+annotation2="456"
+kubernetes.io/config.seen="2020-09-03T12:01:58.1728583Z"
+kubernetes.io/config.source="api"
+cluster="downward-api-test-cluster1"
+rack="rack-123"
+zone="us-east-coast"
+annotation1="345"
+annotation2="456"
+kubernetes.io/config.seen="2020-09-03T12:01:58.1728583Z"
+kubernetes.io/config.source="api"
+```
+
+
+从上面的日志输出，我们可以看到 Downward API 可以通过 Volume 挂载到 Pod 里面，并被容器获取。
+
+#### EmptyDir
+
+在 Kubernetes 中，我们也可以使用临时存储，类似于创建一个 temp dir。我们将这种类型的插件叫作 EmptyDir，从名字就可以知道，在刚开始创建的时候，就是空的临时文件夹。在 Pod 被删除后，也一同被删除，所以并不适合保存关键数据。
+
+在使用的时候，可以参照如下的方式使用 EmptyDir：
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: empty-dir-vol-demo
+  namespace: demo
+spec:
+  containers:
+
+  - image: busybox:1.28
+    name: volume-test-container
+    volumeMounts:
+    - mountPath: /cache
+      name: cache-volume
+      volumes:
+  - name: cache-volume
+    emptyDir: {}
+```
+
+
+一般来说，EmptyDir 可以用来做一些临时存储，比如为耗时较长的计算任务存储中间结果或者作为共享卷为同一个 Pod 内的容器提供数据等等。
+
+除此之外，我们也可以将emptyDir.medium字段设置为“Memory”，来挂载 tmpfs （一种基于内存的文件系统）类型的 EmptyDir。比如下面这个例子:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: empty-dir-vol-memory-demo
+  namespace: demo
+spec:
+  containers:
+
+  - image: busybox:1.28
+    imagePullPolicy: IfNotPresent
+    name: myvolumes-container
+    command: ['sh', '-c', 'echo container is Running ; df -h ; sleep 3600']
+    volumeMounts:
+    - mountPath: /demo
+      name: demo-volume
+      volumes:
+  - name: demo-volume
+    emptyDir:
+      medium: Memory   
+```
+
+####  HostPath
+
+我们再来看 HostPath，它和 EmptyDir 一样，都是利用宿主机的存储为容器分配资源。但是两者有个很大的区别，就是 HostPath 中的数据并不会随着 Pod 被删除而删除，而是会持久地存放在该节点上。
+
+使用 HostPath 非常方便，既不需要依赖外部的存储系统，也不需要复杂的配置，还能持续存储数据。但是这里我要提醒你避免滥用：
+
+避免通过容器恶意修改宿主机上的文件内容；
+
+避免容器恶意占用宿主机上的存储资源而打爆宿主机；
+
+要考虑到 Pod 自身的声明周期，而且 Pod 是会“漂移”重新“长”到别的节点上的，所以要避免过度依赖本地的存储。
+
+同时使用的时候也需要额外注意，因为 Hostpath 中定义的路径是宿主机上真实的绝对路径，那么就会存在同一节点上的多个 Pod 共用一个 Hostpath 的情形，比如同一工作负载的不同实例调度到同一节点上，这会造成数据混乱，读写异常。这个时候我们就需要额外设置一些调度策略，避免这种情况发生。我们会在后面的课程中，来介绍相关的调度策略。
+
+下面是一个使用 HostPath 的例子：
+
+```yaml
+apiVersion: v1
+
+kind: Pod
+
+metadata:
+
+  name: hostpath-demo
+
+  namespace: demo
+
+spec:
+
+  containers:
+
+  - image: nginx:1.19.2
+
+    name: container-demo
+
+    volumeMounts:
+
+      - mountPath: /test-pd
+
+        name: hostpath-volume
+
+  volumes:
+
+  - name: hostpath-volume 
+
+    hostPath:
+
+      path: /data  # 对应宿主机上的绝对路径
+
+      type: Directory # 可选字段，默认是 Directory
+
+```
+
+在上面的例子中，我们要注意hostpath.type这个可以缺省的字段。为了保证后向兼容性，默认值是 Directory。目前这个字段还支持 DirectoryOrCreate、FileOrCreate 、File 、Socket 、CharDevice 和 BlockDevice，你可以到官方文档中去了解这几个类型的具体含义。
+
+这个 type 可以帮助你做一些预检查，比如你期望挂载的是单个文件，如果检测到挂载路径是个目录，这个时候就会报异常，这样可以有效地避免一些误配置。
+
+上述介绍的这几款插件，目前依然能够照常使用，也是社区自身稳定支持的插件。但是对于一些云厂商和第三方的插件，社区已经不推荐继续使用内置的方式了，而是推荐你通过 CSI（Container Storage Interface，容器存储接口）来使用这些插件。
+
+### 为什么社区要采用 CSI
+
+一开始，上述这些云厂商以及第三方的卷插件（volume plugin），都是直接内置在 Kubernetes 代码库中进行开发的，目前代码库中包含 20 多个插件。但这种方式带来了很多问题。
+
+- 这些插件对 Kubernetes 代码本身的稳定性以及安全性引入了很多未知的风险，一个很小的 Bug 都有可能导致集群受到攻击或者无法工作。
+
+- 这些插件的维护和 Kubernetes 的正常迭代紧密耦合在一起，一起打包和编译。即便是某个单一插件出现了 Bug，都需要通过升级 Kubernetes 的版本来修复。
+
+- 社区需要维护所有的 volume plugin，并且要经过完整的测试验证流程，来保证可用性，这给社区的正常迭代平添了很多麻烦。
+
+- 各个卷插件依赖的包也都要算作 Kubernetes 项目的一部分，这会让 Kubernetes 的依赖变得臃肿。
+
+- 开发者被迫要将这些插件代码进行开源。
+
+为此，社区早在 v1.2 版本就开始尝试用 FlexVolume 插件来解决，在 v1.8 版本 GA，并停止接收任何新增的内置 volume plugin 了。用户需要遵循 FlexVolume 约定的接口规范，自己开发可执行的程序，比如二进制程序、Shell脚本等，以命令行参数作为输入，并返回 JSON 格式的结果，这样 Kubelet 就可以通过 exec 的方式调用用户的插件程序了，如下图所示。这种方式方便了各个插件的开发、更新、维护和升级，同时也和 Kubernetes 进行了解耦。在使用的时候，需要用户提前将这些二进制的文件放到各个节点上指定的目录里面（默认是`/usr/libexec/kubernetes/kubelet-plugins/volume/exec/`），方便 Kubelet 可以动态发现和调用。
+
+
+![](./images/02-07.png)
+
+但是在实际使用中，FlexVolume 还是有很多局限性的。比如:
+
+- 需要一些前置依赖包，像 ceph 就需要安装`ceph-common`等依赖包;
+
+- 部署很麻烦，而且往往需要很高的执行权限，要可以访问宿主机上的根文件系统。
+
+为了彻底解决FlexVolume 开发过程中遇到的问题，CSI采用了容器化的方式进行部署，并基于 Kubernetes 的语义使用各种已定义的对象，比如下节课我们要讲的 PV、PVC、StorageClass，等等。各家厂商只需要按照 CSI 的规范实现各自的接口即可。大家可以通过[这份官方的清单列表](https://kubernetes-csi.github.io/docs/drivers.html)，来查看可以用于生产环境的 CSI Driver。
+
+社区也希望用户可以尽快体会到 CSI 带来的好处，但是并不会强迫用户立马迁移并使用新的 CSI，所以社区也着手开发了`CSIMIgration`功能，来帮助用户进行“无感”迁移。目前`CSIMigration`在 v1.17 时已经变为了 Beta 版本。你可以根据自己使用的volume plugin 选择开启对应的功能。
+
+CSI 为了能更通用，在设计的时候，也变得相对复杂了一些。幸好这些开发工作都由各个厂商进行开发了，我们只需要按照各家的要求进行部署即可。由于篇幅所限，我们在此不详细解释 CSI 的工作流程了。如果你想进一步了解如何开发一个 CSI driver，可以参考[这份官方开发文档](https://kubernetes-csi.github.io/docs/introduction.html)。
+
+## 存储管理：怎样对业务数据进行持久化存储？
+
+通过上一节课的学习，我们知道了如何在 Pod 中使用 Volume 来保存数据。Volume 跟 Pod 的生命周期是绑定的，当 Pod被删除后，Volume 中的数据有可能会一同被删除，具体需要看对应的 volume plugin 的使用要求，你可以看上节课的对比表格。
+
+而这里我们还需要考虑如下几个问题。
+
+1. **共享 Volume**。目前 Pod 内的 Volume 其实跟 Pod 是存在静态的一一绑定关系，即生命周期绑定。这导致不同 Pod 之间无法共享 Volume。
+2. **复用 Volume 中的数据**。当 Pod 由于某种原因失败，被工作负载控制器删除重新创建后，我们需要能够复用 Volume 中的旧数据。
+3. **Volume 自身的一些强关联诉求**。对于有状态工作负载 StatefulSet 来说，当其管理的 Pod 由于所在的宿主机出现一些硬件或软件问题，比如磁盘损坏、kernel 异常等，Pod 重新“长”到别的节点上，这时该如何保证 Volume 和 Pod 之间强关联的关系？
+4. **Volume 功能及语义扩展**，比如容量大小、标签信息、扩缩容等。
+
+为此我们在 Kubernetes 中引入了一个专门的对象 Persistent Volume（简称 PV），将计算和存储进行分离，可以使用不同的控制器来分别管理。
+
+同时通过 PV，我们也可以和 Pod 自身的生命周期进行解耦。一个 PV 可以被几个 Pod 同时使用，即使 Pod 被删除后，PV 这个对象依然存在，其他新的 Pod 依然可以复用。为了更好地描述这种关联绑定关系，易于使用，并且屏蔽更多用户并不关心的细节参数（比如 PV 由谁提供、创建在哪个 zone/region、怎么去访问到，等等），我们通过一个抽象对象 Persistent Volume Claim（PVC）来使用 PV。
+
+我们可以把 PV 理解成是对实际的物理存储资源描述，PVC 是便于使用的抽象 API。在 Kubernetes 中，我们都是在 Pod 中通过PVC 的方式来使用 PV 的，见下图。
+
+![image.png](./images/02-08.png)
+
+在 Kubernetes 中，创建 PV（PV Provision） 有两种方式，即静态和动态，如下图所示。
+
+![](./images/02-09.jpg)
+
+### 静态 PV
+
+![](./images/02-10.png)
+
+我们先来看静态 PV（Static PV），管理员通过手动的方式在后端存储平台上创建好对应的 Volume，然后通过 PV 定义到 Kubernetes 中去。开发者通过 PVC 来使用。我们来看个 HostPath 类型的 PV 例子：
+
+```yaml
+apiVersion: v1
+
+kind: PersistentVolume
+
+metadata:
+
+  name: task-pv-volume # pv 的名字
+
+  labels: # pv 的一些label
+
+    type: local
+
+spec:
+
+  storageClassName: manual
+
+  capacity: # 该 pv 的容量
+
+    storage: 10Gi
+
+  accessModes: # 该 pv 的接入模式
+
+    - ReadWriteOnce
+
+  hostPath: # 该 pv 使用的 hostpath 类型，还支持通过 CSI 接入其他 plugin
+
+    path: "/mnt/data"
+```
+
+这里，我们定义了一个名为task-pv-volume的 PV，PV 是集群的资源，并不属于某个 namespace。其中storageClassName这个字段是某个StorageClass对象的名字。我们会在下一段动态 PV 中讲解StorageClass的作用。
+
+对于每一个 PV，我们都要为其设置存储能力，目前只支持对存储空间的设置，比如我们这里设置了 10G 的空间大小。未来社区还会加入其他的配置，诸如 IOPS（Input/Output Operations Per Second，每秒输入输出次数）、吞吐量等。
+
+这里头accessMode可以指定该 PV 的几种访问挂载方式：
+
+- ReadWriteOnce（RWO）表示该卷只可以以读写方式挂载到一个 Pod 内；
+- ReadOnlyMany（ ROX）表示该卷可以挂载到多个节点上，并被多个 Pod 以只读方式挂载；
+- ReadWriteMany（RWX）表示卷可以被多个节点以读写方式挂载供多个 Pod 同时使用。
+
+注意一个 PV 只能有一种访问挂载模式。不同的 volume plugin 支持的 accessMode 并不相同，在使用的时候，你可以参照官方的[这个表格](https://kubernetes.io/zh/docs/concepts/storage/persistent-volumes/#access-modes)进行选择。
+
+我们创建好后查看这个 PV：
+
+复制代码
+
+```
+$ kubectl get pv task-pv-volume
+
+NAME             CAPACITY   ACCESSMODES   RECLAIMPOLICY   STATUS      CLAIM     STORAGECLASS   REASON    AGE
+
+task-pv-volume   10Gi       RWO           Retain          Available             manual                   4s
+```
+
+可以看到，这个 PV 的状态为Available（可用）。
+这里我们还看到上面`kubectl get`的输出里面有个 ReclaimPolicy 字段，该字段表明对 PV 的回收策略，默认是 Retain，即 PV 使用完后数据保留，需要由管理员手动清理数据。除了 Retain 外，还支持如下策略：
+
+- Recycle，即回收，这个时候会清除 PV 中的数据；
+- Delete，即删除，这个策略常在云服务商的存储服务中使用到，比如 AWS EBS。
+
+下面我们再创建一个 PVC：
+
+```yaml
+apiVersion: v1
+
+kind: PersistentVolumeClaim
+
+metadata:
+
+  name: task-pv-claim
+
+  namespace: dmeo
+
+spec:
+
+  storageClassName: manual
+
+  accessModes:
+
+    - ReadWriteOnce
+
+  resources:
+
+    requests:
+
+      storage: 3Gi
+```
+
+创建好了以后，Kubernetes 会为 PVC 匹配满足条件的 PV。我们在 PVC 里面指定storageClassName为 manua，这个时候就只会去匹配storageClassName同样为 manual 的 PV。一旦发现合适的 PV 后，就可以绑定到该 PV 上。
+
+PVC 是 namespace 级别的资源，我们来创建看看:
+
+```
+$ kubectl get pvc -n demo
+
+NAME            STATUS   VOLUME           CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+
+task-pv-claim   Bound    task-pv-volume   10Gi       RWO            manual         9s
+```
+
+我们可以看到 这个 PVC 已经和我们上面的 PV 绑定起来了。我们再来查看下task-pv-volume这个 PV 对象，可以看到它的状态也从Available变成了 Bound。
+
+```
+$ kubectl get pv task-pv-volume
+
+NAME             CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS   REASON   AGE
+
+task-pv-volume   10Gi       RWO            Retain           Bound    default/task-pv-claim   manual                  2m12s
+```
+
+PV 一般会有如下五种状态：
+
+1. Pending 表示目前该 PV 在后端存储系统中还没创建完成；
+2. Available 即闲置可用状态，这个时候还没有被绑定到任何 PVC 上；
+3. Bound 就像上面例子里似的，这个时候已经绑定到某个 PVC 上了；
+4. Released 表示已经绑定的 PVC 已经被删掉了，但资源还未被回收掉；
+5. Failed 表示回收失败。
+
+同样，对于 PVC 来说，也有如下三种状态：
+
+1. Pending 表示还未绑定任何 PV；
+2. Bound 表示已经和某个 PV 进行了绑定；
+3. Lost 表示关联的 PV 失联。
+
+下面我们来看看，如何在 Pod 中使用静态的 PV。看如下的例子：
+
+```yaml
+apiVersion: v1
+
+kind: Pod
+
+metadata:
+
+  name: task-pv-pod
+
+  namespace: demo
+
+spec:
+
+  volumes:
+
+    - name: task-pv-storage
+
+      persistentVolumeClaim:
+
+        claimName: task-pv-claim
+
+  containers:
+
+    - name: task-pv-container
+
+      image: nginx:1.14.2
+
+      ports:
+
+        - containerPort: 80
+
+          name: "http-server"
+
+      volumeMounts:
+
+        - mountPath: "/usr/share/nginx/html"
+
+          name: task-pv-storage
+```
+
+创建完成以后：
+
+```
+$ kubectl get pod task-pv-pod -n demo
+
+NAME          READY   STATUS    RESTARTS   AGE
+
+task-pv-pod   1/1     Running   1          82s
+
+$ kubectl exec -it task-pv-pod -n demo -- /bin/bash
+
+root@task-pv-pod:/# df -h
+
+Filesystem      Size  Used Avail Use% Mounted on
+
+overlay          40G  5.0G   33G  14% /
+
+tmpfs            64M     0   64M   0% /dev
+
+tmpfs           996M     0  996M   0% /sys/fs/cgroup
+
+/dev/vda1        40G  5.0G   33G  14% /etc/hosts
+
+shm              64M     0   64M   0% /dev/shm
+
+overlay         996M  4.0M  992M   1% /usr/share/nginx/html
+
+tmpfs           996M   12K  996M   1% /run/secrets/kubernetes.io/serviceaccount
+
+tmpfs           996M     0  996M   0% /proc/acpi
+
+tmpfs           996M     0  996M   0% /sys/firmware
+```
+
+可以看到，PV 已经正确挂载到 Pod 内。
+静态 PV 最大的问题就是使用起来不够方便，都是管理员提前创建好一批指定规格的 PV，无法做到按需创建。使用过程中，经常会遇到由于资源大小不匹配，规格不对等，造成 PVC 无法绑定 PV 的情况。同时还会造成资源浪费，比如一个只需要 1G 空间的 Pod，绑定了 10G 的 PV。
+
+这些问题，都可以通过动态 PV 来解决。
+
+### 动态 PV
+
+要想动态创建 PV，我们需要一些参数来帮助我们创建 PV。这里我们用StorageClass这个对象来描述，你可以在 Kubernetes 中定义很多的 StorageClass，如下就是一个 Storage 的定义例子：
+
+```yaml
+apiVersion: storage.k8s.io/v1
+
+kind: StorageClass
+
+metadata:
+
+  name: fast-rbd-sc
+
+  annotation:
+
+    storageclass.kubernetes.io/is-default-class: "true"
+
+provisioner: kubernetes.io/rbd # 必填项，用来指定volume plugin来创建PV的物理资源
+
+parameters: # 一些参数
+
+  monitors: 10.16.153.105:6789
+
+  adminId: kube
+
+  adminSecretName: ceph-secret
+
+  adminSecretNamespace: kube-system
+
+  pool: kube
+
+  userId: kube
+
+  userSecretName: ceph-secret-user
+
+  userSecretNamespace: default
+
+  fsType: ext4
+
+  imageFormat: "2"
+
+  imageFeatures: "layering"
+```
+
+你可以通过注释`storageclass.kubernetes.io/is-default-class`来指定默认的 StorageClass。这样新创建出来的 PVC 中的 storageClassName 字段就会自动使用默认的 StorageClass。
+
+这里有个 provisioner 字段是必填项，主要用于指定使用那个 volume plugin 来创建 PV。没错，这里正是对应我们上节课讲过的 CSI driver 的名字。
+
+现在我们来讲一下动态 PV 工作的过程:
+
+![](./images/02-11.png)
+
+首先我们定义了一个 StorageClass。当用户创建好 Pod 以后，指定了 PVC，这个时候 Kubernetes 就会根据 StorageClass 中定义的 Provisioner 来调用对应的 plugin 来创建 PV。PV 创建成功后，跟 PVC 进行绑定，挂载到 Pod 中使用。
+
+### StatefulSet 中怎么使用 PV 和 PVC？
+
+还记得我们之前讲 StatefulSet 中遗留的问题吗？对于 StatefulSet 管理的 Pod，每个 Pod 使用的 Volume 中的数据都不一样，而且相互之间关系是需要强绑定的。这个时候就不能在 StatefulSet 的`spec.template`去直接指向 PV 和 PVC了。于是我们在 StatefulSet 中使用了volumeClaimTemplate，有了这个 template 我们就可以为每一个 Pod 生成一个单独的 PVC，并且绑定 PV 了，从而实现有状态服务各个 Pod 都有自己专属的存储。这里生成的 PVC 名字跟 StatefulSet 的 Pod 名字一样，都是带有特定的序列号的。
+
+你可以看看这里 StatefulSet 的例子:
+
+复制代码
+
+```yaml
+apiVersion: apps/v1
+
+kind: StatefulSet
+
+metadata:
+
+  name: web
+
+spec:
+
+  serviceName: "nginx"
+
+  replicas: 2
+
+  selector:
+
+    matchLabels:
+
+      app: nginx
+
+  template:
+
+    metadata:
+
+      labels:
+
+        app: nginx
+
+    spec:
+
+      containers:
+
+      - name: nginx
+
+        image: k8s.gcr.io/nginx-slim:0.8
+
+        ports:
+
+        - containerPort: 80
+
+          name: web
+
+        volumeMounts:
+
+        - name: www
+
+          mountPath: /usr/share/nginx/html
+
+  volumeClaimTemplates:
+
+  - metadata:
+
+      name: www
+
+    spec:
+
+      accessModes: [ "ReadWriteOnce" ]
+
+      resources:
+
+        requests:
+
+          storage: 1Gi
+```
+
