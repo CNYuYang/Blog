@@ -14,11 +14,7 @@
 
 ## 实习经历
 
-**2019.5-2019.8 武汉彦阳物联科技-嵌入式实习生**
-
-负责 BMS 硬件入网，对 mtk 固件进行二次开发，实现将 BMS 的信息通过 mqtt 通信发送至云端，同时实现数据的下行对设备的控制。  
-
-**2020.7.1-2020.12.11 武汉青藤云安全-Java实习生**
+**2020.7.1-2020.12.11 武汉青藤云安全 - Java实习生**
 
 蜂巢容器安全开发小组。负责 Jenkins 插件集成，在CI 流程中对构建镜像镜像进行风险分析，对风险镜像进行阻断。负责 Harbor 镜像仓库风险扫描集成。以及PHP规则平台维护。
 
@@ -52,11 +48,11 @@
 
 🏗项目地址：[BusTub](https://github.com/CNYuYang/Bustub)
 
-### MapReduce
+### Distributed-Word-Count
 
-使用 Java 编写的一个分布式计算框架，本项目为 MapReduce 的最简实现，未引入任何第三方库， Master 能保证线程安全的向 Worker 分配 Map、 Reduce 任务，通过 Socket 完成 Rpc 通信
+本科毕业设计，使用 Java 编写的一个分布式词频统计，将Java程序打包为Docker镜像，借助K8S实现编排。
 
-🏗项目地址：[MapReduce](https://github.com/CNYuYang/MapReduce)
+🏗项目地址：[distributed-word-count](https://github.com/CNYuYang/distributed-word-count)
 
 ### Trotsky
 

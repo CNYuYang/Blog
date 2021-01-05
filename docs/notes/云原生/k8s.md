@@ -20,3 +20,5 @@
 
 [容器编排与作业管理-深入理解StatefulSet](/notes/云原生/k8s/深入理解StatefulSet)
 
+[容器编排与作业管理-容器化守护DaemonSet](/notes/云原生/k8s/容器化守护DaemonSet)
+
