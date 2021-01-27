@@ -1,6 +1,6 @@
 ![Logo.png](img/logo.png)
 
-**Marxist & Coder**
+**Maoist & Coder**
 
 [GitHub](https://github.com/CNYuYang/)  [About Me](#about-me) [Notes](notes.md)
 
