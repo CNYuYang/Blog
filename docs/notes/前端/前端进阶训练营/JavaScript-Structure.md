@@ -224,3 +224,9 @@ $outer.addEventListener('click', handler)
 在执行完同步代码与微任务以后，这时继续向后查找有木有宏任务。
 
 需要注意的一点是，因为我们触发了`setAttribute`，实际上修改了`DOM`的属性，这会导致页面的重绘，而这个`set`的操作是同步执行的，也就是说`requestAnimationFrame`的回调会早于`setTimeout`所执行。
+
+## 参考阅读
+
+[详解Event Loop运行机制](https://limeii.github.io/2019/05/js-eventloop/)
+
+[深入理解JavaScript-词法环境](https://limeii.github.io/2019/05/js-lexical-environment/)
