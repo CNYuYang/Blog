@@ -32,7 +32,7 @@
 
 应用类加载器的父类加载器则是扩展类加载器。它负责加载应用程序路径下的类。（这里的应用程序路径，便是指虚拟机参数 -cp/-classpath、系统变量 java.class.path 或环境变量 CLASSPATH 所指定的路径。）默认情况下，应用程序中包含的类便是由应用类加载器加载的。
 
-Java 9 引入了模块系统，并且略微更改了上述的类加载器<a href="https://docs.oracle.com/javase/9/migrate/toc.htm#JSMIG-GUID-A868D0B9-026F-4D46-B979-901834343F9E">1</a>。扩展类加载器被改名为平台类加载器（platform class loader）。Java SE 中除了少数几个关键模块，比如说 java.base 是由启动类加载器加载之外，其他的模块均由平台类加载器所加载。
+Java 9 引入了模块系统，并且略微更改了上述的类加载器。扩展类加载器被改名为平台类加载器（platform class loader）。Java SE 中除了少数几个关键模块，比如说 java.base 是由启动类加载器加载之外，其他的模块均由平台类加载器所加载。
 
 除了由 Java 核心类库提供的类加载器外，我们还可以加入自定义的类加载器，来实现特殊的加载方式。举例来说，我们可以对 class 文件进行加密，加载时再利用自定义的类加载器对其解密。
 
@@ -74,7 +74,16 @@ Java 虚拟机规范并没有要求在链接过程中完成解析。它仅规定
 
 那么，类的初始化何时会被触发呢？JVM 规范枚举了下述多种触发情况：
 
-```
+1. 当虚拟机启动时，初始化用户指定的主类；
+2. 当遇到用以新建目标类实例的 new 指令时，初始化 new 指令的目标类；
+3. 当遇到调用静态方法的指令时，初始化该静态方法所在的类；
+4. 当遇到访问静态字段的指令时，初始化该静态字段所在的类；
+5. 子类的初始化会触发父类的初始化；
+6. 如果一个接口定义了 default 方法，那么直接实现或者间接实现该接口的类的初始化，会触发该接口的初始化；
+7. 使用反射 API 对某个类进行反射调用时，初始化这个类；
+8. 当初次调用 MethodHandle 实例时，初始化该 MethodHandle 指向的方法所在的类。
+
+```java
 public class Singleton {
   private Singleton() {}
   private static class LazyHolder {
@@ -87,7 +96,7 @@ public class Singleton {
 
 ```
 
-我在文章中贴了一段代码，这段代码是在著名的单例延迟初始化例子中<a href="https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom">2</a>，只有当调用 Singleton.getInstance 时，程序才会访问 LazyHolder.INSTANCE，才会触发对 LazyHolder 的初始化（对应第 4 种情况），继而新建一个 Singleton 的实例。
+我在文章中贴了一段代码，这段代码是在著名的单例延迟初始化例子中，只有当调用 Singleton.getInstance 时，程序才会访问 LazyHolder.INSTANCE，才会触发对 LazyHolder 的初始化（对应第 4 种情况），继而新建一个 Singleton 的实例。
 
 由于类初始化是线程安全的，并且仅被执行一次，因此程序可以确保多线程环境下有且仅有一个 Singleton 实例。
 
@@ -100,50 +109,3 @@ public class Singleton {
 链接，是指将创建成的类合并至 Java 虚拟机中，使之能够执行的过程。链接还分验证、准备和解析三个阶段。其中，解析阶段为非必须的。
 
 初始化，则是为标记为常量值的字段赋值，以及执行 &lt; clinit &gt; 方法的过程。类的初始化仅会被执行一次，这个特性被用来实现单例的延迟初始化。
-
-今天的实践环节，你可以来验证一下本篇中的理论知识。
-
-通过 JVM 参数 -verbose:class 来打印类加载的先后顺序，并且在 LazyHolder 的初始化方法中打印特定字样。在命令行中运行下述指令（不包含提示符 $）：
-
-```
- 
-$ echo '
-public class Singleton {
-  private Singleton() {}
-  private static class LazyHolder {
-    static final Singleton INSTANCE = new Singleton();
-    static {
-      System.out.println("LazyHolder.&lt;clinit&gt;");
-    }
-  }
-  public static Object getInstance(boolean flag) {
-    if (flag) return new LazyHolder[2];
-    return LazyHolder.INSTANCE;
-  }
-  public static void main(String[] args) {
-    getInstance(true);
-    System.out.println("----");
-    getInstance(false);
-  }
-}' &gt; Singleton.java
-$ javac Singleton.java
-$ java -verbose:class Singleton
-
-```
-
-问题 1：新建数组（第 11 行）会导致 LazyHolder 的加载吗？会导致它的初始化吗？
-
-在命令行中运行下述指令（不包含提示符 $）：
-
-```
-$ java -cp /path/to/asmtools.jar org.openjdk.asmtools.jdis.Main Singleton\$LazyHolder.class &gt; Singleton\$LazyHolder.jasm.1
-$ awk 'NR==1,/stack 1/{sub(/stack 1/, "stack 0")} 1' Singleton\$LazyHolder.jasm.1 &gt; Singleton\$LazyHolder.jasm
-$ java -cp /path/to/asmtools.jar org.openjdk.asmtools.jasm.Main Singleton\$LazyHolder.jasm
-$ java -verbose:class Singleton
-
-```
-
-问题 2：新建数组会导致 LazyHolder 的链接吗？
-
-![](https://static001.geekbang.org/resource/image/2a/d5/2a62e58cbdf56a5dc40748567d346fd5.jpg)
-
