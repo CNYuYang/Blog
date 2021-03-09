@@ -17,3 +17,5 @@ Java虚拟机基本原理
 [Java虚拟机是如何加载Java类的?](/notes/Java/JVM/深入拆解Java虚拟机/Java虚拟机是如何加载Java类的)
 
 [JVM是如何执行方法调用的？（上）](/notes/Java/JVM/深入拆解Java虚拟机/JVM是如何执行方法调用的？（上）)
+
+[JVM是如何执行方法调用的？（下）](/notes/Java/JVM/深入拆解Java虚拟机/JVM是如何执行方法调用的？（下）)
