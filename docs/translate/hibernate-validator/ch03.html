@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.12">
+<title>Declaring and validating method constraints</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="chapter-method-constraints">Declaring and validating method constraints</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As of Bean Validation 1.1, constraints can not only be applied to JavaBeans and their properties,
+but also to the parameters and return values of the methods and constructors of any Java type. That
+way Jakarta Bean Validation constraints can be used to specify</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the preconditions that must be satisfied by the caller before a method or constructor may be
+invoked (by applying constraints to the parameters of an executable)</p>
+</li>
+<li>
+<p>the postconditions that are guaranteed to the caller after a method or constructor invocation
+returns (by applying constraints to the return value of an executable)</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>For the purpose of this reference guide, the term <em>method constraint</em> refers to both, method and
+constructor constraints, if not stated otherwise. Occasionally, the term <em>executable</em> is used when
+referring to methods and constructors.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This approach has several advantages over traditional ways of checking the correctness of parameters
+and return values:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the checks don&#8217;t have to be performed manually (e.g. by throwing <code>IllegalArgumentException</code> or
+similar), resulting in less code to write and maintain</p>
+</li>
+<li>
+<p>an executable&#8217;s pre- and postconditions don&#8217;t have to be expressed again in its documentation,
+since the constraint annotations will automatically be included in the generated JavaDoc. This
+avoids redundancies and reduces the chance of inconsistencies between implementation and
+documentation</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>In order to make annotations show up in the JavaDoc of annotated elements, the annotation types
+themselves must be annotated with the meta annotation @Documented. This is the case for all built-in
+constraints and is considered a best practice for any custom constraints.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In the remainder of this chapter you will learn how to declare parameter and return value
+constraints and how to validate them using the <code>ExecutableValidator</code> API.</p>
+</div>
+<div class="sect2">
+<h3 id="section-declaring-method-constraints">Declaring method constraints</h3>
+<div class="sect3">
+<h4 id="_parameter_constraints">Parameter constraints</h4>
+<div class="paragraph">
+<p>You specify the preconditions of a method or constructor by adding constraint annotations to its
+parameters as demonstrated in <a href="#example-declaring-parameter-constraints">Declaring method and constructor parameter constraints</a>.</p>
+</div>
+<div id="example-declaring-parameter-constraints" class="exampleblock">
+<div class="title">Example 1. Declaring method and constructor parameter constraints</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/parameter/RentalStation.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The following preconditions are declared here:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>name</code> passed to the <code>RentalCar</code> constructor must not be <code>null</code></p>
+</li>
+<li>
+<p>When invoking the <code>rentCar()</code> method, the given <code>customer</code> must not be <code>null</code>, the rental&#8217;s start
+date must not be <code>null</code> as well as be in the future and finally the rental duration must be at least
+one day</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Note that declaring method or constructor constraints itself does not automatically cause their
+validation upon invocation of the executable. Instead, the <code>ExecutableValidator</code> API (see
+<a href="#section-validating-executable-constraints">Validating method constraints</a>) must be used to perform the validation, which is
+often done using a method interception facility such as AOP, proxy objects etc.</p>
+</div>
+<div class="paragraph">
+<p>Constraints may only be applied to instance methods, i.e. declaring constraints on static methods is
+not supported. Depending on the interception facility you use for triggering method validation,
+additional restrictions may apply, e.g. with respect to the visibility of methods supported as
+target of interception. Refer to the documentation of the interception technology to find out
+whether any such limitations exist.</p>
+</div>
+<div class="sect4">
+<h5 id="_cross_parameter_constraints">Cross-parameter constraints</h5>
+<div class="paragraph">
+<p>Sometimes validation does not only depend on a single parameter but on several or even all
+parameters of a method or constructor. This kind of requirement can be fulfilled with help of a
+cross-parameter constraint.</p>
+</div>
+<div class="paragraph">
+<p>Cross-parameter constraints can be considered as the method validation equivalent to class-level
+constraints. Both can be used to implement validation requirements which are based on several
+elements. While class-level constraints apply to several properties of a bean, cross-parameter
+constraints apply to several parameters of an executable.</p>
+</div>
+<div class="paragraph">
+<p>In contrast to single-parameter constraints, cross-parameter constraints are declared on the method
+or constructor as you can see in <a href="#example-using-cross-parameter-constraint">Declaring a cross-parameter constraint</a>. Here the cross-
+parameter constraint <code>@LuggageCountMatchesPassengerCount</code> declared on the <code>load()</code> method is used to
+ensure that no passenger has more than two pieces of luggage.</p>
+</div>
+<div id="example-using-cross-parameter-constraint" class="exampleblock">
+<div class="title">Example 2. Declaring a cross-parameter constraint</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/crossparameter/Car.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>As you will learn in the next section, return value constraints are also declared on the method
+level. In order to distinguish cross-parameter constraints from return value constraints, the
+constraint target is configured in the <code>ConstraintValidator</code> implementation using the
+<code>@SupportedValidationTarget</code> annotation. You can find out about the details in
+<a href="#section-cross-parameter-constraints">[section-cross-parameter-constraints]</a> which shows how to implement your own cross-parameter constraint.</p>
+</div>
+<div class="paragraph">
+<p>In some cases a constraint can be applied to an executable&#8217;s parameters (i.e. it is a cross-
+parameter constraint), but also to the return value. One example for this are custom constraints
+which allow to specify validation rules using expression or script languages.</p>
+</div>
+<div class="paragraph">
+<p>Such constraints must define a member <code>validationAppliesTo()</code> which can be used at declaration time to
+specify the constraint target. As shown in <a href="#example-specifying-constraint-target">Specifying a constraint&#8217;s target</a> you apply the
+constraint to an executable&#8217;s parameters by specifying
+<code>validationAppliesTo = ConstraintTarget.PARAMETERS</code>, while <code>ConstraintTarget.RETURN_VALUE</code> is used
+to apply the constraint to the executable return value.</p>
+</div>
+<div id="example-specifying-constraint-target" class="exampleblock">
+<div class="title">Example 3. Specifying a constraint&#8217;s target</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/crossparameter/constrainttarget/Garage.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Although such a constraint is applicable to the parameters and return value of an executable, the
+target can often be inferred automatically. This is the case, if the constraint is declared on</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a void method with parameters (the constraint applies to the parameters)</p>
+</li>
+<li>
+<p>an executable with return value but no parameters (the constraint applies to the return value)</p>
+</li>
+<li>
+<p>neither a method nor a constructor, but a field, parameter etc. (the constraint applies to the
+annotated element)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In these situations you don&#8217;t have to specify the constraint target. It is still recommended to do
+so if it increases readability of the source code. If the constraint target is not specified in
+situations where it can&#8217;t be determined automatically, a <code>ConstraintDeclarationException</code> is raised.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_return_value_constraints">Return value constraints</h4>
+<div class="paragraph">
+<p>The postconditions of a method or constructor are declared by adding constraint annotations to the
+executable as shown in <a href="#example-declaring-return-value-constraints">Declaring method and constructor return value constraints</a>.</p>
+</div>
+<div id="example-declaring-return-value-constraints" class="exampleblock">
+<div class="title">Example 4. Declaring method and constructor return value constraints</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/returnvalue/RentalStation.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The following constraints apply to the executables of <code>RentalStation</code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Any newly created <code>RentalStation</code> object must satisfy the <code>@ValidRentalStation</code> constraint</p>
+</li>
+<li>
+<p>The customer list returned by <code>getCustomers()</code> must not be <code>null</code> and must contain at least on element</p>
+</li>
+<li>
+<p>The customer list returned by <code>getCustomers()</code> must no contain <code>null</code> objects</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>As you can see in the above example, container element constraints are supported on method return value.
+They are also supported on method parameters.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_cascaded_validation">Cascaded validation</h4>
+<div class="paragraph">
+<p>Similar to the cascaded validation of JavaBeans properties (see
+<a href="#section-object-graph-validation">[section-object-graph-validation]</a>), the <code>@Valid</code> annotation can be used to mark executable
+parameters and return values for cascaded validation. When validating a parameter or return value
+annotated with <code>@Valid</code>, the constraints declared on the parameter or return value object are
+validated as well.</p>
+</div>
+<div class="paragraph">
+<p>In <a href="#example-cascaded-executable-validation">Marking executable parameters and return values for cascaded validation</a>, the <code>car</code> parameter of the method <code>Garage#checkCar()</code> as
+well as the return value of the <code>Garage</code> constructor are marked for cascaded validation.</p>
+</div>
+<div id="example-cascaded-executable-validation" class="exampleblock">
+<div class="title">Example 5. Marking executable parameters and return values for cascaded validation</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/cascaded/Garage.java[]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/cascaded/Car.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>When validating the arguments of the <code>checkCar()</code> method, the constraints on the properties of the
+passed <code>Car</code> object are evaluated as well. Similarly, the <code>@NotNull</code> constraint on the name field of
+<code>Garage</code> is checked when validating the return value of the <code>Garage</code> constructor.</p>
+</div>
+<div class="paragraph">
+<p>Generally, the cascaded validation works for executables in exactly the same way as it does for
+JavaBeans properties.</p>
+</div>
+<div class="paragraph">
+<p>In particular, <code>null</code> values are ignored during cascaded validation (naturally this can&#8217;t happen
+during constructor return value validation) and cascaded validation is performed recursively, i.e.
+if a parameter or return value object which is marked for cascaded validation itself has properties
+marked with <code>@Valid</code>, the constraints declared on the referenced elements will be validated as well.</p>
+</div>
+<div class="paragraph">
+<p>Same as for fields and properties, cascaded validation can also be declared on container
+elements (e.g. elements of collections, maps or custom containers) of return values and parameters.</p>
+</div>
+<div class="paragraph">
+<p>In this case, each element contained by the container gets validated.
+So when validating the arguments of the <code>checkCars()</code> method in
+<a href="#example-cascaded-executable-validation-container-elements">Container elements of method parameter marked for cascaded validation</a>, each element instance of the passed list
+will be validated and a <code>ConstraintViolation</code> created when any of the contained <code>Car</code> instances is invalid.</p>
+</div>
+<div id="example-cascaded-executable-validation-container-elements" class="exampleblock">
+<div class="title">Example 6. Container elements of method parameter marked for cascaded validation</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/cascaded/containerelement/Garage.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-method-constraints-inheritance-hierarchies">Method constraints in inheritance hierarchies</h4>
+<div class="paragraph">
+<p>When declaring method constraints in inheritance hierarchies, it is important to be aware of the
+following rules:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The preconditions to be satisfied by the caller of a method may not be strengthened in subtypes</p>
+</li>
+<li>
+<p>The postconditions guaranteed to the caller of a method may not be weakened in subtypes</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These rules are motivated by the concept of <em>behavioral subtyping</em> which requires that wherever a
+type <code>T</code> is used, also a subtype <code>S</code> of <code>T</code> may be used without altering the program&#8217;s behavior.</p>
+</div>
+<div class="paragraph">
+<p>As an example, consider a class invoking a method on an object with the static type <code>T</code>. If the
+runtime type of that object was <code>S</code> and <code>S</code> imposed additional preconditions, the client class might
+fail to satisfy these preconditions as is not aware of them. The rules of behavioral subtyping are
+also known as the <a href="http://en.wikipedia.org/wiki/Liskov_substitution_principle">Liskov
+substitution principle</a>.</p>
+</div>
+<div class="paragraph">
+<p>The Jakarta Bean Validation specification implements the first rule by disallowing parameter constraints on
+methods which override or implement a method declared in a supertype (superclass or interface).
+<a href="#example-illegal-parameter-constraints">Illegal method parameter constraint in subtype</a> shows a violation of this rule.</p>
+</div>
+<div id="example-illegal-parameter-constraints" class="exampleblock">
+<div class="title">Example 7. Illegal method parameter constraint in subtype</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/inheritance/parameter/Vehicle.java[]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/inheritance/parameter/Car.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>@Max</code> constraint on <code>Car#drive()</code> is illegal since this method implements the interface method
+<code>Vehicle#drive()</code>. Note that parameter constraints on overriding methods are also disallowed, if the
+supertype method itself doesn&#8217;t declare any parameter constraints.</p>
+</div>
+<div class="paragraph">
+<p>Furthermore, if a method overrides or implements a method declared in several parallel supertypes
+(e.g. two interfaces not extending each other or a class and an interface not implemented by that
+class), no parameter constraints may be specified for the method in any of the involved types. The
+types in <a href="#example-illegal-parameter-constraints-parallel-types">Illegal method parameter constraint in parallel types of a hierarchy</a> demonstrate a violation of that
+rule. The method <code>RacingCar#drive()</code> overrides <code>Vehicle#drive()</code> as well as <code>Car#drive()</code>.
+Therefore the constraint on <code>Vehicle#drive()</code> is illegal.</p>
+</div>
+<div id="example-illegal-parameter-constraints-parallel-types" class="exampleblock">
+<div class="title">Example 8. Illegal method parameter constraint in parallel types of a hierarchy</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/inheritance/parallel/Vehicle.java[]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/inheritance/parallel/Car.java[]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/inheritance/parallel/RacingCar.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The previously described restrictions only apply to parameter constraints. In contrast, return value
+constraints may be added in methods overriding or implementing any supertype methods.</p>
+</div>
+<div class="paragraph">
+<p>In this case, all the method&#8217;s return value constraints apply for the subtype method, i.e. the
+constraints declared on the subtype method itself as well as any return value constraints on
+overridden/implemented supertype methods. This is legal as putting additional return value
+constraints in place may never represent a weakening of the postconditions guaranteed to the caller
+of a method.</p>
+</div>
+<div class="paragraph">
+<p>So when validating the return value of the method <code>Car#getPassengers()</code> shown in
+<a href="#example-return-value-constraints-in-hierarchy">Return value constraints on supertype and subtype method</a>, the <code>@Size</code> constraint on the method itself as well
+as the <code>@NotNull</code> constraint on the implemented interface method <code>Vehicle#getPassengers()</code> apply.</p>
+</div>
+<div id="example-return-value-constraints-in-hierarchy" class="exampleblock">
+<div class="title">Example 9. Return value constraints on supertype and subtype method</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/inheritance/returnvalue/Vehicle.java[]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/inheritance/returnvalue/Car.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>If the validation engine detects a violation of any of the aforementioned rules, a
+<code>ConstraintDeclarationException</code> will be raised.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The rules described in this section only apply to methods but not constructors. By definition,
+constructors never override supertype constructors. Therefore, when validating the parameters or the
+return value of a constructor invocation only the constraints declared on the constructor itself
+apply, but never any constraints declared on supertype constructors.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Enforcement of these rules may be relaxed by setting the configuration parameters contained in
+the <code>MethodValidationConfiguration</code> property of the <code>HibernateValidatorConfiguration</code> before creating
+the <code>Validator</code> instance. See also <a href="#section-method-validation-prerequisite-relaxation">[section-method-validation-prerequisite-relaxation]</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="section-validating-executable-constraints">Validating method constraints</h3>
+<div class="paragraph">
+<p>The validation of method constraints is done using the <code>ExecutableValidator</code> interface.</p>
+</div>
+<div class="paragraph">
+<p>In <a href="#section-obtaining-executable-validator">Obtaining an <code>ExecutableValidator</code> instance</a> you will learn how to obtain an <code>ExecutableValidator</code>
+instance while <a href="#section-executable-validator-methods"><code>ExecutableValidator</code> methods</a> shows how to use the different methods
+offered by this interface.</p>
+</div>
+<div class="paragraph">
+<p>Instead of calling the <code>ExecutableValidator</code> methods directly from within application code, they are
+usually invoked via a method interception technology such as AOP, proxy objects, etc. This causes
+executable constraints to be validated automatically and transparently upon method or constructor
+invocation. Typically a <code>ConstraintViolationException</code> is raised by the integration layer in case any
+of the constraints is violated.</p>
+</div>
+<div class="sect3">
+<h4 id="section-obtaining-executable-validator">Obtaining an <code>ExecutableValidator</code> instance</h4>
+<div class="paragraph">
+<p>You can retrieve an <code>ExecutableValidator</code> instance via <code>Validator#forExecutables()</code> as shown in
+<a href="#example-obtaining-executable-validator">Obtaining an <code>ExecutableValidator</code> instance</a>.</p>
+</div>
+<div id="example-obtaining-executable-validator" class="exampleblock">
+<div class="title">Example 10. Obtaining an <code>ExecutableValidator</code> instance</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/validation/CarTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>In the example the executable validator is retrieved from the default validator factory, but if
+required you could also bootstrap a specifically configured factory as described in
+<a href="#chapter-bootstrapping">[chapter-bootstrapping]</a>, for instance in order to use a specific parameter name provider
+(see <a href="#section-parameter-name-provider">[section-parameter-name-provider]</a>).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-executable-validator-methods"><code>ExecutableValidator</code> methods</h4>
+<div class="paragraph">
+<p>The <code>ExecutableValidator</code> interface offers altogether four methods:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>validateParameters()</code> and <code>validateReturnValue()</code> for method validation</p>
+</li>
+<li>
+<p><code>validateConstructorParameters()</code> and <code>validateConstructorReturnValue()</code> for constructor validation</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Just as the methods on <code>Validator</code>, all these methods return a <code>Set&lt;ConstraintViolation&gt;</code> which contains
+a <code>ConstraintViolation</code> instance for each violated constraint and which is empty if the validation
+succeeds. Also all the methods have a var-args groups parameter by which you can pass the validation
+groups to be considered for validation.</p>
+</div>
+<div class="paragraph">
+<p>The examples in the following sections are based on the methods on constructors of the <code>Car</code> class
+shown in <a href="#example-executable-validator-class-car">Class <code>Car</code> with constrained methods and constructors</a>.</p>
+</div>
+<div id="example-executable-validator-class-car" class="exampleblock">
+<div class="title">Example 11. Class <code>Car</code> with constrained methods and constructors</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/validation/Car.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_executablevalidatorvalidateparameters"><code>ExecutableValidator#validateParameters()</code></h5>
+<div class="paragraph">
+<p>The method <code>validateParameters()</code> is used to validate the arguments of a method invocation.
+<a href="#example-executable-validator-validate-parameters">Using <code>ExecutableValidator#validateParameters()</code></a> shows an example. The validation results in a
+violation of the <code>@Max</code> constraint on the parameter of the <code>drive()</code> method.</p>
+</div>
+<div id="example-executable-validator-validate-parameters" class="exampleblock">
+<div class="title">Example 12. Using <code>ExecutableValidator#validateParameters()</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/validation/CarTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that <code>validateParameters()</code> validates all the parameter constraints of a method, i.e. constraints
+on individual parameters as well as cross-parameter constraints.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_executablevalidatorvalidatereturnvalue"><code>ExecutableValidator#validateReturnValue()</code></h5>
+<div class="paragraph">
+<p>Using <code>validateReturnValue()</code> the return value of a method can be validated. The validation in
+<a href="#example-executable-validator-validate-return-value">Using <code>ExecutableValidator#validateReturnValue()</code></a> yields one constraint violation since the
+<code>getPassengers()</code> method is expected to return at least one <code>Passenger</code> instance.</p>
+</div>
+<div id="example-executable-validator-validate-return-value" class="exampleblock">
+<div class="title">Example 13. Using <code>ExecutableValidator#validateReturnValue()</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/validation/CarTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_executablevalidatorvalidateconstructorparameters"><code>ExecutableValidator#validateConstructorParameters()</code></h5>
+<div class="paragraph">
+<p>The arguments of constructor invocations can be validated with <code>validateConstructorParameters()</code> as
+shown in method <a href="#example-executable-validator-validate-constructor-parameters">Using <code>ExecutableValidator#validateConstructorParameters()</code></a>. Due to the
+<code>@NotNull</code> constraint on the <code>manufacturer</code> parameter, the validation call returns one constraint
+violation.</p>
+</div>
+<div id="example-executable-validator-validate-constructor-parameters" class="exampleblock">
+<div class="title">Example 14. Using <code>ExecutableValidator#validateConstructorParameters()</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/validation/CarTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_executablevalidatorvalidateconstructorreturnvalue"><code>ExecutableValidator#validateConstructorReturnValue()</code></h5>
+<div class="paragraph">
+<p>Finally, by using <code>validateConstructorReturnValue()</code> you can validate a constructor&#8217;s return value. In
+<a href="#example-executable-validator-validate-constructor-return-value">Using <code>ExecutableValidator#validateConstructorReturnValue()</code></a>, <code>validateConstructorReturnValue()</code>
+returns one constraint violation, since the <code>Car</code> instance returned by the constructor doesn&#8217;t satisfy
+the <code>@ValidRacingCar</code> constraint (not shown).</p>
+</div>
+<div id="example-executable-validator-validate-constructor-return-value" class="exampleblock">
+<div class="title">Example 15. Using <code>ExecutableValidator#validateConstructorReturnValue()</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/validation/CarTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_constraintviolation_methods_for_method_validation"><code>ConstraintViolation</code> methods for method validation</h4>
+<div class="paragraph">
+<p>In addition to the methods introduced in <a href="#section-constraint-violation-methods">[section-constraint-violation-methods]</a>,
+<code>ConstraintViolation</code> provides two more methods specific to the validation of executable parameters
+and return values.</p>
+</div>
+<div class="paragraph">
+<p><code>ConstraintViolation#getExecutableParameters()</code> returns the validated parameter array in case of
+method or constructor parameter validation, while <code>ConstraintViolation#getExecutableReturnValue()</code>
+provides access to the validated object in case of return value validation.</p>
+</div>
+<div class="paragraph">
+<p>All the other <code>ConstraintViolation</code> methods generally work for method validation in the same way as
+for validation of beans. Refer to the
+{bvApiDocsUrl}?jakarta/validation/metadata/BeanDescriptor.html[JavaDoc]
+to learn more about the behavior of the individual methods and their return values during bean and
+method validation.</p>
+</div>
+<div class="paragraph">
+<p>Note that <code>getPropertyPath()</code> can be very useful in order to obtain detailed information about the
+validated parameter or return value, e.g. for logging purposes. In particular, you can retrieve name
+and argument types of the concerned method as well as the index of the concerned parameter from the
+path nodes. How this can be done is shown in <a href="#example-executable-validation-property-path">Retrieving method and parameter information</a>.</p>
+</div>
+<div id="example-executable-validation-property-path" class="exampleblock">
+<div class="title">Example 16. Retrieving method and parameter information</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/validation/CarTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The parameter name is determined using the current <code>ParameterNameProvider</code> (see
+<a href="#section-parameter-name-provider">[section-parameter-name-provider]</a>).</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="section-builtin-method-constraints">Built-in method constraints</h3>
+<div class="paragraph">
+<p>In addition to the built-in bean and property-level constraints discussed in
+<a href="#section-builtin-constraints">[section-builtin-constraints]</a>, Hibernate Validator currently provides one method-level constraint,
+<code>@ParameterScriptAssert</code>. This is a generic cross-parameter constraint which allows to implement
+validation routines using any JSR 223 compatible ("Scripting for the Java<sup>TM</sup> Platform") scripting
+language, provided an engine for this language is available on the classpath.</p>
+</div>
+<div class="paragraph">
+<p>To refer to the executable&#8217;s parameters from within the expression, use their name as obtained from
+the active parameter name provider (see <a href="#section-parameter-name-provider">[section-parameter-name-provider]</a>).
+<a href="#example-parameterscriptassert">Using <code>@ParameterScriptAssert</code></a> shows how the validation logic of the <code>@LuggageCountMatchesPassengerCount</code>
+constraint from <a href="#example-using-cross-parameter-constraint">Declaring a cross-parameter constraint</a> could be expressed with the help of
+<code>@ParameterScriptAssert</code>.</p>
+</div>
+<div id="example-parameterscriptassert" class="exampleblock">
+<div class="title">Example 17. Using <code>@ParameterScriptAssert</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter03/parameterscriptassert/Car.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2021-03-19 19:50:05 +0800
+</div>
+</div>
+</body>
+</html>

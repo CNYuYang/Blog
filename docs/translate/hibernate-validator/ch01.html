@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.12">
+<title>Getting started</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="validator-gettingstarted">Getting started</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This chapter will show you how to get started with Hibernate Validator, the reference implementation (RI) of Jakarta Bean Validation. For the following quick-start you need:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A JDK 8</p>
+</li>
+<li>
+<p><a href="http://maven.apache.org/">Apache Maven</a></p>
+</li>
+<li>
+<p>An Internet connection (Maven has to download all required libraries)</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="validator-gettingstarted-createproject">Project set up</h3>
+<div class="paragraph">
+<p>In order to use Hibernate Validator within a Maven project, simply add the following dependency to
+your <em>pom.xml</em>:</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 1. Hibernate Validator Maven dependency</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-XML" data-lang="XML">&lt;dependency&gt;
+    &lt;groupId&gt;org.hibernate.validator&lt;/groupId&gt;
+    &lt;artifactId&gt;hibernate-validator&lt;/artifactId&gt;
+    &lt;version&gt;{hvVersion}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>This transitively pulls in the dependency to the Jakarta Bean Validation API
+(<code>jakarta.validation:jakarta.validation-api:{bvVersion}</code>).</p>
+</div>
+<div class="sect3">
+<h4 id="validator-gettingstarted-uel">Unified EL</h4>
+<div class="paragraph">
+<p>Hibernate Validator requires an implementation of <a href="https://projects.eclipse.org/projects/ee4j.el">Jakarta Expression Language</a>
+for evaluating dynamic expressions in constraint
+violation messages (see <a href="#section-message-interpolation">[section-message-interpolation]</a>). When your application runs in a Java EE
+container such as JBoss AS, an EL implementation is already provided by the container. In a Java SE
+environment, however, you have to add an implementation as dependency to your POM file. For instance
+you can add the following dependency to use the Jakarta EL <a href="https://github.com/eclipse-ee4j/el-ri">reference
+implementation</a>:</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 2. Maven dependencies for Unified EL reference implementation</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-XML" data-lang="XML">&lt;dependency&gt;
+    &lt;groupId&gt;org.glassfish&lt;/groupId&gt;
+    &lt;artifactId&gt;jakarta.el&lt;/artifactId&gt;
+    &lt;version&gt;{jakartaElVersion}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>For environments where one cannot provide a EL implementation Hibernate Validator is offering a
+<a href="#non-el-message-interpolator">[non-el-message-interpolator]</a>. However, the use of this interpolator
+is not Jakarta Bean Validation specification compliant.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-getting-started-cdi">CDI</h4>
+<div class="paragraph">
+<p>Jakarta Bean Validation defines integration points with CDI
+(<a href="https://projects.eclipse.org/projects/ee4j.cdi">Contexts and Dependency Injection for Jakarta EE</a>).
+If your application runs in an
+environment which does not provide this integration out of the box, you may use the Hibernate
+Validator CDI portable extension by adding the following Maven dependency to your POM:</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 3. Hibernate Validator CDI portable extension Maven dependency</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-XML" data-lang="XML">&lt;dependency&gt;
+    &lt;groupId&gt;org.hibernate.validator&lt;/groupId&gt;
+    &lt;artifactId&gt;hibernate-validator-cdi&lt;/artifactId&gt;
+    &lt;version&gt;{hvVersion}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that adding this dependency is usually not required for applications running on a Java EE
+application server. You can learn more about the integration of Jakarta Bean Validation and CDI in
+<a href="#section-integration-with-cdi">[section-integration-with-cdi]</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-getting-started-security-manager">Running with a security manager</h4>
+<div class="paragraph">
+<p>Hibernate Validator supports running with a {javaTechnotesBaseUrl}/guides/security/index.html[security manager] being enabled.
+To do so, you must assign several permissions to the code bases of Hibernate Validator, the Jakarta Bean Validation API, Classmate and JBoss Logging and also to the code base calling Jakarta Bean Validation.
+The following shows how to do this via a {javaTechnotesBaseUrl}/guides/security/PolicyFiles.html[policy file] as processed by the Java default policy implementation:</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 4. Policy file for using Hibernate Validator with a security manager</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-XML" data-lang="XML">grant codeBase "file:path/to/hibernate-validator-{hvVersion}.jar" {
+    permission java.lang.reflect.ReflectPermission "suppressAccessChecks";
+    permission java.lang.RuntimePermission "accessDeclaredMembers";
+    permission java.lang.RuntimePermission "setContextClassLoader";
+
+    permission org.hibernate.validator.HibernateValidatorPermission "accessPrivateMembers";
+
+    // Only needed when working with XML descriptors (validation.xml or XML constraint mappings)
+    permission java.util.PropertyPermission "mapAnyUriToUri", "read";
+};
+
+grant codeBase "file:path/to/jakarta.validation-api-{bvVersion}.jar" {
+    permission java.io.FilePermission "path/to/hibernate-validator-{hvVersion}.jar", "read";
+};
+
+grant codeBase "file:path/to/jboss-logging-{jbossLoggingVersion}.jar" {
+    permission java.util.PropertyPermission "org.jboss.logging.provider", "read";
+    permission java.util.PropertyPermission "org.jboss.logging.locale", "read";
+};
+
+grant codeBase "file:path/to/classmate-{classmateVersion}.jar" {
+    permission java.lang.RuntimePermission "accessDeclaredMembers";
+};
+
+grant codeBase "file:path/to/validation-caller-x.y.z.jar" {
+    permission org.hibernate.validator.HibernateValidatorPermission "accessPrivateMembers";
+};</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_updating_hibernate_validator_in_wildfly">Updating Hibernate Validator in WildFly</h4>
+<div class="paragraph">
+<p>The <a href="http://wildfly.org/">WildFly application server</a> contains Hibernate Validator out of the box.
+In order to update the server modules for Jakarta Bean Validation API and Hibernate Validator to the latest and greatest, the patch mechanism of WildFly can be used.</p>
+</div>
+<div class="paragraph">
+<p>You can download the patch file from <a href="http://sourceforge.net/projects/hibernate/files/hibernate-validator">SourceForge</a> or from Maven Central using the following dependency:</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 5. Maven dependency for WildFly {wildflyVersion} patch file</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-XML" data-lang="XML">&lt;dependency&gt;
+    &lt;groupId&gt;org.hibernate.validator&lt;/groupId&gt;
+    &lt;artifactId&gt;hibernate-validator-modules&lt;/artifactId&gt;
+    &lt;version&gt;{hvVersion}&lt;/version&gt;
+    &lt;classifier&gt;wildfly-{wildflyVersion}-patch&lt;/classifier&gt;
+    &lt;type&gt;zip&lt;/type&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>We also provide a patch for WildFly {wildflySecondaryVersion}:</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 6. Maven dependency for WildFly {wildflySecondaryVersion} patch file</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-XML" data-lang="XML">&lt;dependency&gt;
+    &lt;groupId&gt;org.hibernate.validator&lt;/groupId&gt;
+    &lt;artifactId&gt;hibernate-validator-modules&lt;/artifactId&gt;
+    &lt;version&gt;{hvVersion}&lt;/version&gt;
+    &lt;classifier&gt;wildfly-{wildflySecondaryVersion}-patch&lt;/classifier&gt;
+    &lt;type&gt;zip&lt;/type&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Having downloaded the patch file, you can apply it to WildFly by running this command:</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 7. Applying the WildFly patch</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>$JBOSS_HOME/bin/jboss-cli.sh patch apply hibernate-validator-modules-{hvVersion}-wildfly-{wildflyVersion}-patch.zip</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>In case you want to undo the patch and go back to the version of Hibernate Validator originally coming with the server, run the following command:</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 8. Rolling back the WildFly patch</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>$JBOSS_HOME/bin/jboss-cli.sh patch rollback --reset-configuration=true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>You can learn more about the WildFly patching infrastructure in general <a href="https://developer.jboss.org/wiki/SingleInstallationPatching/">here</a> and <a href="http://www.mastertheboss.com/jboss-server/jboss-configuration/managing-wildfly-and-eap-patches">here</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="validator-gettingstarted-java9">Running on Java 9</h4>
+<div class="paragraph">
+<p>As of Hibernate Validator {hvVersion}, support for Java 9 and the Java Platform Module System (JPMS) is experimental.
+There are no JPMS module descriptors provided yet, but Hibernate Validator is usable as automatic modules.</p>
+</div>
+<div class="paragraph">
+<p>These are the module names as declared using the <code>Automatic-Module-Name</code> header:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Jakarta Bean Validation API: <code>java.validation</code></p>
+</li>
+<li>
+<p>Hibernate Validator core: <code>org.hibernate.validator</code></p>
+</li>
+<li>
+<p>Hibernate Validator CDI extension: <code>org.hibernate.validator.cdi</code></p>
+</li>
+<li>
+<p>Hibernate Validator test utilities: <code>org.hibernate.validator.testutils</code></p>
+</li>
+<li>
+<p>Hibernate Validator annotation processor: <code>org.hibernate.validator.annotationprocessor</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These module names are preliminary and may be changed when providing real module descriptors in a future release.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="validator-gettingstarted-createmodel">Applying constraints</h3>
+<div class="paragraph">
+<p>Let&#8217;s dive directly into an example to see how to apply constraints.</p>
+</div>
+<div id="example-class-car" class="exampleblock">
+<div class="title">Example 9. Class Car annotated with constraints</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter01/Car.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>@NotNull</code>, <code>@Size</code> and <code>@Min</code> annotations are used to declare the constraints which should be applied
+to the fields of a Car instance:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>manufacturer</code> must never be <code>null</code></p>
+</li>
+<li>
+<p><code>licensePlate</code> must never be <code>null</code> and must be between 2 and 14 characters long</p>
+</li>
+<li>
+<p><code>seatCount</code> must be at least 2</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can find the complete source code of all examples used in this reference guide in the Hibernate
+Validator
+<a href="https://github.com/hibernate/hibernate-validator/tree/master/documentation/src/test">source repository</a>
+on GitHub.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_validating_constraints">Validating constraints</h3>
+<div class="paragraph">
+<p>To perform a validation of these constraints, you use a <code>Validator</code> instance. Let&#8217;s have a look at a
+unit test for <code>Car</code>:</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 10. Class CarTest showing validation examples</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter01/CarTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>In the <code>setUp()</code> method a <code>Validator</code> object is retrieved from the <code>ValidatorFactory</code>. A <code>Validator</code>
+instance is thread-safe and may be reused multiple times. It thus can safely be stored in a static
+field and be used in the test methods to validate the different <code>Car</code> instances.</p>
+</div>
+<div class="paragraph">
+<p>The <code>validate()</code> method returns a set of <code>ConstraintViolation</code> instances, which you can iterate over in
+order to see which validation errors occurred. The first three test methods show some expected
+constraint violations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>@NotNull</code> constraint on <code>manufacturer</code> is violated in <code>manufacturerIsNull()</code></p>
+</li>
+<li>
+<p>The <code>@Size</code> constraint on <code>licensePlate</code> is violated in <code>licensePlateTooShort()</code></p>
+</li>
+<li>
+<p>The <code>@Min</code> constraint on <code>seatCount</code> is violated in <code>seatCountTooLow()</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If the object validates successfully, <code>validate()</code> returns an empty set as you can see in <code>carIsValid()</code>.</p>
+</div>
+<div class="paragraph">
+<p>Note that only classes from the package <code>jakarta.validation</code> are used. These are provided from the Bean
+Validation API. No classes from Hibernate Validator are directly referenced, resulting in portable
+code.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="validator-gettingstarted-whatsnext">Where to go next?</h3>
+<div class="paragraph">
+<p>That concludes the 5 minutes tour through the world of Hibernate Validator and Jakarta Bean Validation.
+Continue exploring the code examples or look at further examples referenced in
+<a href="#validator-further-reading">[validator-further-reading]</a>.</p>
+</div>
+<div class="paragraph">
+<p>To learn more about the validation of beans and properties, just continue reading
+<a href="#chapter-bean-constraints">[chapter-bean-constraints]</a>. If you are interested in using Jakarta Bean Validation for the validation of
+method pre- and postcondition refer to <a href="#chapter-method-constraints">[chapter-method-constraints]</a>. In case your application has
+specific validation requirements have a look at <a href="#validator-customconstraints">[validator-customconstraints]</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2021-03-19 19:50:05 +0800
+</div>
+</div>
+</body>
+</html>

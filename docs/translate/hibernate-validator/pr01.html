@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.12">
+<title>前言</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="preface">前言</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Validating data is a common task that occurs throughout all application layers, from the
+presentation to the persistence layer. Often the same validation logic is implemented in each layer
+which is time consuming and error-prone. To avoid duplication of these validations, developers often
+bundle validation logic directly into the domain model, cluttering domain classes with validation
+code which is really metadata about the class itself.</p>
+</div>
+<div class="paragraph">
+<p>验证数据是一项常见任务，遍历从表示层到持久层的所有应用程序层。通常，在每个层中都实现相同的验证逻辑，这既耗时又容易出错。为了避免重复这些验证，开发人员通常将验证逻辑直接捆绑到域模型中，从而使域类与验证代码杂乱无章，而验证代码实际上是有关类本身的元数据。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="application-layers.png" alt="application layers">
+</div>
+</div>
+<div class="paragraph">
+<p>Jakarta Bean Validation 2.0 - defines a metadata model and API for entity and method validation.
+The default metadata source are annotations, with the ability to override and extend the meta-data
+through the use of XML. The API is not tied to a specific application tier nor programming model. It
+is specifically not tied to either web or persistence tier, and is available for both server-side
+application programming, as well as rich client Swing application developers.</p>
+</div>
+<div class="paragraph">
+<p>Jakarta Bean Validation 2.0-定义用于实体和方法验证的元数据模型和API。默认的元数据源是注释，能够通过使用XML覆盖和扩展元数据。该API不受特定应用程序层或编程模型的束缚。它特别不与Web层或持久性层绑定，并且可用于服务器端应用程序编程以及富客户端Swing应用程序开发人员。</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="application-layers2.png" alt="application layers2">
+</div>
+</div>
+<div class="paragraph">
+<p>Hibernate Validator is the reference implementation of Jakarta Bean Validation. The implementation itself as
+well as the Jakarta Bean Validation API and TCK are all provided and distributed under the
+<a href="http://www.apache.org/licenses/LICENSE-2.0">Apache Software License 2.0</a>.</p>
+</div>
+<div class="paragraph">
+<p>Hibernate Validator 6 and Jakarta Bean Validation 2.0 require Java 8 or later.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2021-03-19 20:09:28 +0800
+</div>
+</div>
+</body>
+</html>

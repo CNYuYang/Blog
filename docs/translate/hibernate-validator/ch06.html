@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.12">
+<title>Creating custom constraints</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="validator-customconstraints">Creating custom constraints</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Jakarta Bean Validation API defines a whole set of standard constraint annotations such as <code>@NotNull</code>,
+<code>@Size</code> etc. In cases where these built-in constraints are not sufficient, you can easily create
+custom constraints tailored to your specific validation requirements.</p>
+</div>
+<div class="sect2">
+<h3 id="validator-customconstraints-simple">Creating a simple constraint</h3>
+<div class="paragraph">
+<p>To create a custom constraint, the following three steps are required:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Create a constraint annotation</p>
+</li>
+<li>
+<p>Implement a validator</p>
+</li>
+<li>
+<p>Define a default error message</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="validator-customconstraints-constraintannotation">The constraint annotation</h4>
+<div class="paragraph">
+<p>This section shows how to write a constraint annotation which can be used to ensure that a given
+string is either completely upper case or lower case. Later on, this constraint will be applied to
+the <code>licensePlate</code> field of the <code>Car</code> class from <a href="#validator-gettingstarted">[validator-gettingstarted]</a> to ensure that
+the field is always an upper-case string.</p>
+</div>
+<div class="paragraph">
+<p>The first thing needed is a way to express the two case modes. While you could use <code>String</code> constants,
+a better approach is using an enum for that purpose:</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 1. Enum <code>CaseMode</code> to express upper vs. lower case</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/CaseMode.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The next step is to define the actual constraint annotation. If you&#8217;ve never designed an annotation
+before, this may look a bit scary, but actually it&#8217;s not that hard:</p>
+</div>
+<div id="example-defining-custom-constraint" class="exampleblock">
+<div class="title">Example 2. Defining the <code>@CheckCase</code> constraint annotation</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/CheckCase.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>An annotation type is defined using the <code>@interface</code> keyword. All attributes of an annotation type are
+declared in a method-like manner. The specification of the Jakarta Bean Validation API demands, that any
+constraint annotation defines:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>an attribute <code>message</code> that returns the default key for creating error messages in case the
+constraint is violated</p>
+</li>
+<li>
+<p>an attribute <code>groups</code> that allows the specification of validation groups, to which this constraint
+belongs (see <a href="#chapter-groups">[chapter-groups]</a>). This must default to an empty array of type Class&lt;?&gt;.</p>
+</li>
+<li>
+<p>an attribute <code>payload</code> that can be used by clients of the Jakarta Bean Validation API to assign custom
+payload objects to a constraint. This attribute is not used by the API itself. An example for a
+custom payload could be the definition of a severity:</p>
+<div class="exampleblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/payload/Severity.java[]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/payload/ContactDetails.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Now a client can after the validation of a <code>ContactDetails</code> instance access the severity of a
+constraint using <code>ConstraintViolation.getConstraintDescriptor().getPayload()</code> and adjust its behavior
+depending on the severity.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Besides these three mandatory attributes there is another one, <code>value</code>, allowing for the required case
+mode to be specified. The name <code>value</code> is a special one, which can be omitted when using the
+annotation, if it is the only attribute specified, as e.g. in <code>@CheckCase(CaseMode.UPPER)</code>.</p>
+</div>
+<div class="paragraph">
+<p>In addition, the constraint annotation is decorated with a couple of meta annotations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>@Target({ FIELD, METHOD, PARAMETER, ANNOTATION_TYPE, TYPE_USE})</code>: Defines the supported target
+element types for the constraint. <code>@CheckCase</code> may be used on fields (element type <code>FIELD</code>), JavaBeans properties
+as well as method return values (<code>METHOD</code>), method/constructor parameters (<code>PARAMETER</code>) and type argument of
+parameterized types (<code>TYPE_USE</code>). The element type <code>ANNOTATION_TYPE</code> allows for the creation of composed
+constraints (see <a href="#section-constraint-composition">Constraint composition</a>) based on <code>@CheckCase</code>.</p>
+<div class="paragraph">
+<p>When creating a class-level constraint (see <a href="#validator-usingvalidator-classlevel">[validator-usingvalidator-classlevel]</a>), the element
+type <code>TYPE</code> would have to be used. Constraints targeting the return value of a constructor need to
+support the element type <code>CONSTRUCTOR</code>. Cross-parameter constraints (see
+<a href="#section-cross-parameter-constraints">Cross-parameter constraints</a>) which are used to validate all the parameters of a method
+or constructor together, must support <code>METHOD</code> or <code>CONSTRUCTOR</code>, respectively.</p>
+</div>
+</li>
+<li>
+<p><code>@Retention(RUNTIME)</code>: Specifies, that annotations of this type will be available at runtime by the
+means of reflection</p>
+</li>
+<li>
+<p><code>@Constraint(validatedBy = CheckCaseValidator.class)</code>: Marks the annotation type as constraint
+annotation and specifies the validator to be used to validate elements annotated with <code>@CheckCase</code>.
+If a constraint may be used on several data types, several validators may be specified, one for
+each data type.</p>
+</li>
+<li>
+<p><code>@Documented</code>: Says, that the use of <code>@CheckCase</code> will be contained in the JavaDoc of elements
+annotated with it</p>
+</li>
+<li>
+<p><code>@Repeatable(List.class)</code>: Indicates that the annotation can be repeated several times at the
+same place, usually with a different configuration. <code>List</code> is the containing annotation type.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This containing annotation type named <code>List</code> is also shown in the example. It allows to specify several
+<code>@CheckCase</code> annotations on the same element, e.g. with different validation groups and messages.
+While another name could be used, the Jakarta Bean Validation specification recommends to use the name
+<code>List</code> and make the annotation an inner annotation of the corresponding constraint type.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-constraint-validator">The constraint validator</h4>
+<div class="paragraph">
+<p>Having defined the annotation, you need to create a constraint validator, which is able to validate
+elements with a <code>@CheckCase</code> annotation. To do so, implement the Jakarta Bean Validation interface <code>ConstraintValidator</code>
+as shown below:</p>
+</div>
+<div id="example-constraint-validator" class="exampleblock">
+<div class="title">Example 3. Implementing a constraint validator for the constraint <code>@CheckCase</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/CheckCaseValidator.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>ConstraintValidator</code> interface defines two type parameters which are set in the implementation.
+The first one specifies the annotation type to be validated (<code>CheckCase</code>), the second one the type of
+elements, which the validator can handle (<code>String</code>). In case a constraint supports several data types,
+a <code>ConstraintValidator</code> for each allowed type has to be implemented and registered at the constraint
+annotation as shown above.</p>
+</div>
+<div class="paragraph">
+<p>The implementation of the validator is straightforward. The <code>initialize()</code> method gives you access to
+the attribute values of the validated constraint and allows you to store them in a field of the
+validator as shown in the example.</p>
+</div>
+<div class="paragraph">
+<p>The <code>isValid()</code> method contains the actual validation logic. For <code>@CheckCase</code> this is the check whether
+a given string is either completely lower case or upper case, depending on the case mode retrieved
+in <code>initialize()</code>. Note that the Jakarta Bean Validation specification recommends to consider null values as
+being valid. If <code>null</code> is not a valid value for an element, it should be annotated with <code>@NotNull</code>
+explicitly.</p>
+</div>
+<div class="sect4">
+<h5 id="_the_constraintvalidatorcontext">The <code>ConstraintValidatorContext</code></h5>
+<div class="paragraph">
+<p><a href="#example-constraint-validator">Implementing a constraint validator for the constraint <code>@CheckCase</code></a>
+relies on the default error message generation by just returning <code>true</code> or <code>false</code> from the <code>isValid()</code>
+method. Using the passed <code>ConstraintValidatorContext</code> object, it is possible to either add additional
+error messages or completely disable the default error message generation and solely define custom
+error messages. The <code>ConstraintValidatorContext</code> API is modeled as fluent interface and is best
+demonstrated with an example:</p>
+</div>
+<div id="example-constraint-validator-context" class="exampleblock">
+<div class="title">Example 4. Using <code>ConstraintValidatorContext</code> to define custom error messages</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/constraintvalidatorcontext/CheckCaseValidator.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="#example-constraint-validator-context">Using <code>ConstraintValidatorContext</code> to define custom error messages</a>
+shows how you can disable the default error message generation and add a custom error message using
+a specified message template. In this example the use of the <code>ConstraintValidatorContext</code> results in
+the same error message as the default error message generation.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>It is important to add each configured constraint violation by calling <code>addConstraintViolation()</code>.
+Only after that the new constraint violation will be created.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>By default, Expression Language is not enabled for custom violations created in the <code>ConstraintValidatorContext</code>.</p>
+</div>
+<div class="paragraph">
+<p>However, for some advanced requirements, using Expression Language might be necessary.</p>
+</div>
+<div class="paragraph">
+<p>In this case, you need to unwrap the <code>HibernateConstraintValidatorContext</code> and enable Expression Language explicitly.
+See <a href="#section-hibernateconstraintvalidatorcontext">[section-hibernateconstraintvalidatorcontext]</a> for more information.</p>
+</div>
+<div class="paragraph">
+<p>Refer to <a href="#section-custom-property-paths">Custom property paths</a> to learn how to use the <code>ConstraintValidatorContext</code> API to
+control the property path of constraint violations for class-level constraints.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="constraint-validator-hibernateconstraintvalidator">The <code>HibernateConstraintValidator</code> extension</h5>
+<div class="paragraph">
+<p>Hibernate Validator provides an extension to the <code>ConstraintValidator</code> contract: <code>HibernateConstraintValidator</code>.</p>
+</div>
+<div class="paragraph">
+<p>The purpose of this extension is to provide more contextual information to the <code>initialize()</code> method
+as, in the current <code>ConstraintValidator</code> contract, only the annotation is passed as parameter.</p>
+</div>
+<div class="paragraph">
+<p>The <code>initialize()</code> method of <code>HibernateConstraintValidator</code> takes two parameters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>ConstraintDescriptor</code> of the constraint at hand.
+You can get access to the annotation using <code>ConstraintDescriptor#getAnnotation()</code>.</p>
+</li>
+<li>
+<p>The <code>HibernateConstraintValidatorInitializationContext</code> which provides useful helpers and contextual
+information, such as the clock provider or the temporal validation tolerance.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This extension is marked as incubating so it might be subject to change.
+The plan is to standardize it and to include it in Jakarta Bean Validation in the future.</p>
+</div>
+<div class="paragraph">
+<p>The example below shows how to base your validators on <code>HibernateConstraintValidator</code>:</p>
+</div>
+<div id="example-constraint-validator-hibernateconstraintvalidator" class="exampleblock">
+<div class="title">Example 5. Using the <code>HibernateConstraintValidator</code> contract</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/MyFutureValidator.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You should only implement one of the <code>initialize()</code> methods. Be aware that both are called when initializing the validator.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="constraint-validator-payload">Passing a payload to the constraint validator</h5>
+<div class="paragraph">
+<p>From time to time, you might want to condition the constraint validator behavior on some external parameters.</p>
+</div>
+<div class="paragraph">
+<p>For instance, your zip code validator could vary depending on the locale of your application instance if you have one
+instance per country.
+Another requirement could be to have different behaviors on specific environments: the staging environment may not have
+access to some external production resources necessary for the correct functioning of a validator.</p>
+</div>
+<div class="paragraph">
+<p>The notion of constraint validator payload was introduced for all these use cases.
+It is an object passed from the <code>Validator</code> instance to each constraint validator via the <code>HibernateConstraintValidatorContext</code>.</p>
+</div>
+<div class="paragraph">
+<p>The example below shows how to set a constraint validator payload during the <code>ValidatorFactory</code> initialization.
+Unless you override this default value, all the <code>Validator</code>s created by this <code>ValidatorFactory</code> will have this
+constraint validator payload value set.</p>
+</div>
+<div id="example-constraint-validator-payload-definition-validatorfactory" class="exampleblock">
+<div class="title">Example 6. Defining a constraint validator payload during the <code>ValidatorFactory</code> initialization</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/constraintvalidatorpayload/ConstraintValidatorPayloadTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Another option is to set the constraint validator payload per <code>Validator</code> using a context:</p>
+</div>
+<div id="example-constraint-validator-payload-definition-validatorcontext" class="exampleblock">
+<div class="title">Example 7. Defining a constraint validator payload using a <code>Validator</code> context</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/constraintvalidatorpayload/ConstraintValidatorPayloadTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Once you have set the constraint validator payload, it can be used in your constraint validators as shown in the example below:</p>
+</div>
+<div id="example-constraint-validator-payload-usage" class="exampleblock">
+<div class="title">Example 8. Using the constraint validator payload in a constraint validator</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/constraintvalidatorpayload/ZipCodeValidator.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><code>HibernateConstraintValidatorContext#getConstraintValidatorPayload()</code> has a type parameter
+and returns the payload only if the payload is of the given type.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>It is important to note that the constraint validator payload is different from the dynamic payload you can include in
+the constraint violation raised.</p>
+</div>
+<div class="paragraph">
+<p>The whole purpose of this constraint validator payload is to be used to condition the behavior of your constraint validators.
+It is not included in the constraint violations, unless a specific <code>ConstraintValidator</code> implementation passes on the
+payload to emitted constraint violations by using the <a href="#section-dynamic-payload">constraint violation dynamic payload mechanism</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="validator-customconstraints-errormessage">The error message</h4>
+<div class="paragraph">
+<p>The last missing building block is an error message which should be used in case a <code>@CheckCase</code>
+constraint is violated. To define this, create a file <em>ValidationMessages.properties</em> with the
+following contents (see also <a href="#section-message-interpolation">[section-message-interpolation]</a>):</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 9. Defining a custom error message for the <code>CheckCase</code> constraint</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre>org.hibernate.validator.referenceguide.chapter06.CheckCase.message=Case mode must be {value}.</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>If a validation error occurs, the validation runtime will use the default value, that you specified
+for the message attribute of the <code>@CheckCase</code> annotation to look up the error message in this resource
+bundle.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="validator-customconstraints-using">Using the constraint</h4>
+<div class="paragraph">
+<p>You can now use the constraint in the <code>Car</code> class from the <a href="#validator-gettingstarted">[validator-gettingstarted]</a> chapter to
+specify that the <code>licensePlate</code> field should only contain upper-case strings:</p>
+</div>
+<div id="example-car-with-checkcase" class="exampleblock">
+<div class="title">Example 10. Applying the <code>@CheckCase</code> constraint</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/Car.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, <a href="#example-using-checkcase">Validating objects with the <code>@CheckCase</code> constraint</a> demonstrates how validating a <code>Car</code> instance with an invalid
+license plate causes the <code>@CheckCase</code> constraint to be violated.</p>
+</div>
+<div id="example-using-checkcase" class="exampleblock">
+<div class="title">Example 11. Validating objects with the <code>@CheckCase</code> constraint</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/CarTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="section-class-level-constraints">Class-level constraints</h3>
+<div class="paragraph">
+<p>As discussed earlier, constraints can also be applied on the class level to validate the state of an
+entire object. Class-level constraints are defined in the same way as are property constraints.
+<a href="#example-implementing-classlevel-constraint">Implementing a class-level constraint</a> shows constraint annotation and validator of the
+<code>@ValidPassengerCount</code> constraint you already saw in use in <a href="#example-class-level">[example-class-level]</a>.</p>
+</div>
+<div id="example-implementing-classlevel-constraint" class="exampleblock">
+<div class="title">Example 12. Implementing a class-level constraint</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/classlevel/ValidPassengerCount.java[]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/classlevel/ValidPassengerCountValidator.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>As the example demonstrates, you need to use the element type <code>TYPE</code> in the <code>@Target</code> annotation. This
+allows the constraint to be put on type definitions. The validator of the constraint in the example
+receives a <code>Car</code> in the <code>isValid()</code> method and can access the complete object state to decide whether
+the given instance is valid or not.</p>
+</div>
+<div class="sect3">
+<h4 id="section-custom-property-paths">Custom property paths</h4>
+<div class="paragraph">
+<p>By default the constraint violation for a class-level constraint is reported on the level of the
+annotated type, e.g. <code>Car</code>.</p>
+</div>
+<div class="paragraph">
+<p>In some cases it is preferable though that the violation&#8217;s property path refers to one of the
+involved properties. For instance you might want to report the <code>@ValidPassengerCount</code> constraint
+against the passengers property instead of the <code>Car</code> bean.</p>
+</div>
+<div class="paragraph">
+<p><a href="#example-custom-error">Adding a new <code>ConstraintViolation</code> with custom property path</a>
+shows how this can be done by using the constraint validator context passed to <code>isValid()</code> to build a
+custom constraint violation with a property node for the property passengers. Note that you also
+could add several property nodes, pointing to a sub-entity of the validated bean.</p>
+</div>
+<div id="example-custom-error" class="exampleblock">
+<div class="title">Example 13. Adding a new <code>ConstraintViolation</code> with custom property path</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/custompath/ValidPassengerCountValidator.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="section-cross-parameter-constraints">Cross-parameter constraints</h3>
+<div class="paragraph">
+<p>Jakarta Bean Validation distinguishes between two different kinds of constraints.</p>
+</div>
+<div class="paragraph">
+<p>Generic constraints (which have been discussed so far) apply to the annotated element, e.g. a type,
+field, container element, method parameter or return value etc.
+Cross-parameter constraints, in contrast, apply to the array of parameters of a method or constructor
+and can be used to express validation logic which depends on several parameter values.</p>
+</div>
+<div class="paragraph">
+<p>In order to define a cross-parameter constraint, its validator class must be annotated with
+<code>@SupportedValidationTarget(ValidationTarget.PARAMETERS)</code>. The type parameter <code>T</code> from the
+<code>ConstraintValidator</code> interface must resolve to either <code>Object</code> or <code>Object[]</code> in order to receive the
+array of method/constructor arguments in the <code>isValid()</code> method.</p>
+</div>
+<div class="paragraph">
+<p>The following example shows the definition of a cross-parameter constraint which can be used to
+check that two <code>Date</code> parameters of a method are in the correct order:</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 14. Cross-parameter constraint</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/crossparameter/ConsistentDateParameters.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The definition of a cross-parameter constraint isn&#8217;t any different from defining a generic
+constraint, i.e. it must specify the members <code>message()</code>, <code>groups()</code> and <code>payload()</code> and be annotated with
+<code>@Constraint</code>. This meta annotation also specifies the corresponding validator, which is shown in
+<a href="#example-cross-parameter-validator">Generic and cross-parameter constraint</a>. Note that besides the element types <code>METHOD</code> and <code>CONSTRUCTOR</code>
+also <code>ANNOTATION_TYPE</code> is specified as target of the annotation, in order to enable the creation of
+composed constraints based on <code>@ConsistentDateParameters</code> (see
+<a href="#section-constraint-composition">Constraint composition</a>).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Cross-parameter constraints are specified directly on the declaration of a method or constructor,
+which is also the case for return value constraints. In order to improve code readability, it is
+therefore recommended to choose constraint names - such as <code>@ConsistentDateParameters</code> - which make the
+constraint target apparent.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="example-cross-parameter-validator" class="exampleblock">
+<div class="title">Example 15. Generic and cross-parameter constraint</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/crossparameter/ConsistentDateParametersValidator.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>As discussed above, the validation target <code>PARAMETERS</code> must be configured for a cross-parameter
+validator by using the <code>@SupportedValidationTarget</code> annotation. Since a cross-parameter constraint
+could be applied to any method or constructor, it is considered a best practice to check for the
+expected number and types of parameters in the validator implementation.</p>
+</div>
+<div class="paragraph">
+<p>As with generic constraints, <code>null</code> parameters should be considered valid and <code>@NotNull</code> on the
+individual parameters should be used to make sure that parameters are not <code>null</code>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Similar to class-level constraints, you can create custom constraint violations on single parameters
+instead of all parameters when validating a cross-parameter constraint. Just obtain a node builder
+from the <code>ConstraintValidatorContext</code> passed to <code>isValid()</code> and add a parameter node by calling
+<code>addParameterNode()</code>. In the example you could use this to create a constraint violation on the end
+date parameter of the validated method.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In rare situations a constraint is both, generic and cross-parameter. This is the case if a
+constraint has a validator class which is annotated with
+<code>@SupportedValidationTarget({ValidationTarget.PARAMETERS, ValidationTarget.ANNOTATED_ELEMENT})</code> or if
+it has a generic and a cross-parameter validator class.</p>
+</div>
+<div class="paragraph">
+<p>When declaring such a constraint on a method which has parameters and also a return value, the
+intended constraint target can&#8217;t be determined. Constraints which are generic and cross-parameter at
+the same time must therefore define a member <code>validationAppliesTo()</code> which allows the constraint user
+to specify the constraint&#8217;s target as shown in <a href="#example-dual-cross-parameter-constraint">Generic and cross-parameter constraint</a>.</p>
+</div>
+<div id="example-dual-cross-parameter-constraint" class="exampleblock">
+<div class="title">Example 16. Generic and cross-parameter constraint</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/crossparameter/ScriptAssert.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>@ScriptAssert</code> constraint has two validators (not shown), a generic and a cross-parameter one and
+thus defines the member <code>validationAppliesTo()</code>. The default value <code>IMPLICIT</code> allows to derive the
+target automatically in situations where this is possible (e.g. if the constraint is declared on a
+field or on a method which has parameters but no return value).</p>
+</div>
+<div class="paragraph">
+<p>If the target can not be determined implicitly, it must be set by the user to either <code>PARAMETERS</code> or
+<code>RETURN_VALUE</code> as shown in <a href="#example-dual-cross-parameter-constraint-usage">Specifying the target for a generic and cross-parameter constraint</a>.</p>
+</div>
+<div id="example-dual-cross-parameter-constraint-usage" class="exampleblock">
+<div class="title">Example 17. Specifying the target for a generic and cross-parameter constraint</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/crossparameter/ScriptAssertTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="section-constraint-composition">Constraint composition</h3>
+<div class="paragraph">
+<p>Looking at the <code>licensePlate</code> field of the <code>Car</code> class in <a href="#example-car-with-checkcase">Applying the <code>@CheckCase</code> constraint</a>, you see three
+constraint annotations already. In more complex scenarios, where even more constraints could be applied
+to one element, this might easily become a bit confusing. Furthermore, if there was a <code>licensePlate</code>
+field in another class, you would have to copy all constraint declarations to the other class as
+well, violating the DRY principle.</p>
+</div>
+<div class="paragraph">
+<p>You can address this kind of problem by creating higher level constraints, composed from several
+basic constraints. <a href="#example-composed-constraint">Creating a composing constraint <code>@ValidLicensePlate</code></a> shows a composed constraint annotation which
+comprises the constraints <code>@NotNull</code>, <code>@Size</code> and <code>@CheckCase</code>:</p>
+</div>
+<div id="example-composed-constraint" class="exampleblock">
+<div class="title">Example 18. Creating a composing constraint <code>@ValidLicensePlate</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/constraintcomposition/ValidLicensePlate.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>To create a composed constraint, simply annotate the constraint declaration with its comprising
+constraints. If the composed constraint itself requires a validator, this validator is to be
+specified within the <code>@Constraint</code> annotation. For composed constraints which don&#8217;t need an additional
+validator such as <code>@ValidLicensePlate</code>, just set <code>validatedBy()</code> to an empty array.</p>
+</div>
+<div class="paragraph">
+<p>Using the new composed constraint at the <code>licensePlate</code> field is fully equivalent to the previous
+version, where the three constraints were declared directly at the field itself:</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 19. Application of composing constraint <code>ValidLicensePlate</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/constraintcomposition/Car.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The set of <code>ConstraintViolation</code>s retrieved when validating a <code>Car</code> instance will contain an entry for
+each violated composing constraint of the <code>@ValidLicensePlate</code> constraint. If you rather prefer a
+single <code>ConstraintViolation</code> in case any of the composing constraints is violated, the
+<code>@ReportAsSingleViolation</code> meta constraint can be used as follows:</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 20. Using @ReportAsSingleViolation</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter06/constraintcomposition/reportassingle/ValidLicensePlate.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2021-03-19 19:50:05 +0800
+</div>
+</div>
+</body>
+</html>

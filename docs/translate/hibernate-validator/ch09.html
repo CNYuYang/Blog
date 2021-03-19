@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.12">
+<title>Bootstrapping</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="chapter-bootstrapping">Bootstrapping</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In <a href="#section-obtaining-validator">[section-obtaining-validator]</a>, you already saw one way of creating a <code>Validator</code> instance - via
+<code>Validation#buildDefaultValidatorFactory()</code>. In this chapter, you will learn how to use the other
+methods in <code>jakarta.validation.Validation</code> in order to bootstrap specifically configured validators.</p>
+</div>
+<div class="sect2">
+<h3 id="section-retrieving-validator-factory-validator">Retrieving <code>ValidatorFactory</code> and <code>Validator</code></h3>
+<div class="paragraph">
+<p>You obtain a <code>Validator</code> by retrieving a <code>ValidatorFactory</code> via one of the static methods on
+<code>jakarta.validation.Validation</code> and calling <code>getValidator()</code> on the factory instance.</p>
+</div>
+<div class="paragraph">
+<p><a href="#example-build-default-validator-factory">Bootstrapping default <code>ValidatorFactory</code> and <code>Validator</code></a> shows how to obtain a validator from the default
+validator factory:</p>
+</div>
+<div id="example-build-default-validator-factory" class="exampleblock">
+<div class="title">Example 1. Bootstrapping default <code>ValidatorFactory</code> and <code>Validator</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/BootstrappingTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The generated <code>ValidatorFactory</code> and <code>Validator</code> instances are thread-safe and can be cached. As
+Hibernate Validator uses the factory as context for caching constraint metadata it is recommended to
+work with one factory instance within an application.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Jakarta Bean Validation supports working with several providers such as Hibernate Validator within one
+application. If more than one provider is present on the classpath, it is not guaranteed which one
+is chosen when creating a factory via <code>buildDefaultValidatorFactory()</code>.</p>
+</div>
+<div class="paragraph">
+<p>In this case, you can explicitly specify the provider to use via <code>Validation#byProvider()</code>, passing the
+provider&#8217;s <code>ValidationProvider</code> class as shown in <a href="#example-using-specific-provider">Bootstrapping <code>ValidatorFactory</code> and <code>Validator</code> using a specific provider</a>.</p>
+</div>
+<div id="example-using-specific-provider" class="exampleblock">
+<div class="title">Example 2. Bootstrapping <code>ValidatorFactory</code> and <code>Validator</code> using a specific provider</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/BootstrappingTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that the configuration object returned by <code>configure()</code> allows to specifically customize the
+factory before calling <code>buildValidatorFactory()</code>. The available options are discussed later in this
+chapter.</p>
+</div>
+<div class="paragraph">
+<p>Similarly you can retrieve the default validator factory for configuration which is demonstrated in
+<a href="#example-configuring-default-provider">Retrieving the default <code>ValidatorFactory</code> for configuration</a>.</p>
+</div>
+<div id="example-configuring-default-provider" class="exampleblock">
+<div class="title">Example 3. Retrieving the default <code>ValidatorFactory</code> for configuration</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/BootstrappingTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If a <code>ValidatorFactory</code> instance is no longer in use, it should be disposed by calling
+<code>ValidatorFactory#close()</code>. This will free any resources possibly allocated by the factory.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="section-validation-provider-resolver"><code>ValidationProviderResolver</code></h4>
+<div class="paragraph">
+<p>By default, available Jakarta Bean Validation providers are discovered using the
+{javaTechnotesBaseUrl}/guides/jar/jar.html#Service_Provider[Java
+Service Provider] mechanism.</p>
+</div>
+<div class="paragraph">
+<p>For that purpose, each provider includes the file <em>META-
+INF/services/jakarta.validation.spi.ValidationProvider</em>, containing the fully qualified classname of
+its <code>ValidationProvider</code> implementation. In the case of Hibernate Validator, this is
+<code>org.hibernate.validator.HibernateValidator</code>.</p>
+</div>
+<div class="paragraph">
+<p>Depending on your environment and its classloading specifics, provider discovery via the Java&#8217;s
+service loader mechanism might not work. In this case, you can plug in a custom
+<code>ValidationProviderResolver</code> implementation which performs the provider retrieval. An example is OSGi,
+where you could implement a provider resolver which uses OSGi services for provider discovery.</p>
+</div>
+<div class="paragraph">
+<p>To use a custom provider resolver, pass it via <code>providerResolver()</code> as shown in
+<a href="#example-using-custom-validation-provider-resolver">Using a custom <code>ValidationProviderResolver</code></a>.</p>
+</div>
+<div id="example-using-custom-validation-provider-resolver" class="exampleblock">
+<div class="title">Example 4. Using a custom <code>ValidationProviderResolver</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/OsgiServiceDiscoverer.java[]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/BootstrappingTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="section-configuring-validator-factory">Configuring a <code>ValidatorFactory</code></h3>
+<div class="paragraph">
+<p>By default, validator factories retrieved from <code>Validation</code> and any validators they create are
+configured as per the XML descriptor <em>META-INF/validation.xml</em> (see <a href="#chapter-xml-configuration">[chapter-xml-configuration]</a>),
+if present.</p>
+</div>
+<div class="paragraph">
+<p>If you want to disable the XML based configuration, you can do so by invoking
+<code>Configuration#ignoreXmlConfiguration()</code>.</p>
+</div>
+<div class="paragraph">
+<p>The different values of the XML configuration can be accessed via
+<code>Configuration#getBootstrapConfiguration()</code>. This can for instance be helpful if you want to integrate
+Jakarta Bean Validation into a managed environment and want to create managed instances of the objects
+configured via XML.</p>
+</div>
+<div class="paragraph">
+<p>Using the fluent configuration API, you can override one or more of the settings when bootstrapping
+the factory. The following sections show how to make use of the different options. Note that the
+<code>Configuration</code> class exposes the default implementations of the different extension points which can
+be useful if you want to use these as delegates for your custom implementations.</p>
+</div>
+<div class="sect3">
+<h4 id="section-validator-factory-message-interpolator"><code>MessageInterpolator</code></h4>
+<div class="paragraph">
+<p>Message interpolators are used by the validation engine to create user readable error messages from
+constraint message descriptors.</p>
+</div>
+<div class="paragraph">
+<p>In case the default message interpolation algorithm described in <a href="#chapter-message-interpolation">[chapter-message-interpolation]</a>
+is not sufficient for your needs, you can pass in your own implementation of the <code>MessageInterpolator</code>
+interface via <code>Configuration#messageInterpolator()</code> as shown in
+<a href="#example-using-custom-message-interpolator">Using a custom <code>MessageInterpolator</code></a>.</p>
+</div>
+<div id="example-using-custom-message-interpolator" class="exampleblock">
+<div class="title">Example 5. Using a custom <code>MessageInterpolator</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/MyMessageInterpolator.java[]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/BootstrappingTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-validator-factory-traversable-resolver"><code>TraversableResolver</code></h4>
+<div class="paragraph">
+<p>In some cases the validation engine should not access the state of a bean property.
+The most obvious example for that is a lazily loaded property or association of a JPA entity.
+Validating this lazy property or association would mean that its state would have to be accessed,
+triggering a load from the database.</p>
+</div>
+<div class="paragraph">
+<p>Which properties can be accessed and which ones not is controlled by querying the
+<code>TraversableResolver</code> interface. <a href="#example-using-custom-traversable-resolver">Using a custom <code>TraversableResolver</code></a> shows how to use a
+custom traversable resolver implementation.</p>
+</div>
+<div id="example-using-custom-traversable-resolver" class="exampleblock">
+<div class="title">Example 6. Using a custom <code>TraversableResolver</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/MyTraversableResolver.java[]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/BootstrappingTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>If no specific traversable resolver has been configured, the default behavior is to consider all properties as reachable and cascadable.
+When using Hibernate Validator together with a JPA 2 provider such as Hibernate ORM, only those properties will be considered reachable
+which already have been loaded by the persistence provider and all properties will be considered cascadable.</p>
+</div>
+<div class="paragraph">
+<p>By default, the traversable resolver calls are cached per validation call.
+This is especially important in a JPA environment where calling <code>isReachable()</code> has a significant cost.</p>
+</div>
+<div class="paragraph">
+<p>This caching adds some overhead.
+In the case your custom traversable resolver is very fast, it might be better to consider turning off the cache.</p>
+</div>
+<div class="paragraph">
+<p>You can disable the cache either via the XML configuration:</p>
+</div>
+<div id="example-disabling-traversable-resolver-result-cache-xml-configuration" class="exampleblock">
+<div class="title">Example 7. Disabling the <code>TraversableResolver</code> result cache via the XML configuration</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-XML" data-lang="XML">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/validation-DisableTraversableResolverResultCache.xml[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>or via the programmatic API:</p>
+</div>
+<div id="example-disabling-traversable-resolver-result-cache-programmatic-api" class="exampleblock">
+<div class="title">Example 8. Disabling the <code>TraversableResolver</code> result cache via the programmatic API</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/BootstrappingTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_constraintvalidatorfactory"><code>ConstraintValidatorFactory</code></h4>
+<div class="paragraph">
+<p><code>ConstraintValidatorFactory</code> is the extension point for customizing how constraint validators are
+instantiated and released.</p>
+</div>
+<div class="paragraph">
+<p>The default <code>ConstraintValidatorFactory</code> provided by Hibernate Validator requires a public no-arg
+constructor to instantiate <code>ConstraintValidator</code> instances (see <a href="#section-constraint-validator">[section-constraint-validator]</a>).
+Using a custom <code>ConstraintValidatorFactory</code> offers for example the possibility to use dependency
+injection in constraint validator implementations.</p>
+</div>
+<div class="paragraph">
+<p>To configure a custom constraint validator factory call <code>Configuration#constraintValidatorFactory()</code>
+(see <a href="#example-using-custom-constraint-validator-factory">Using a custom <code>ConstraintValidatorFactory</code></a>.</p>
+</div>
+<div id="example-using-custom-constraint-validator-factory" class="exampleblock">
+<div class="title">Example 9. Using a custom <code>ConstraintValidatorFactory</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/MyConstraintValidatorFactory.java[]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/BootstrappingTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Any constraint implementations relying on <code>ConstraintValidatorFactory</code> behaviors specific to an
+implementation (dependency injection, no no-arg constructor and so on) are not considered portable.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>ConstraintValidatorFactory</code> implementations should not cache validator instances as the state of each
+instance can be altered in the <code>initialize()</code> method.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-parameter-name-provider"><code>ParameterNameProvider</code></h4>
+<div class="paragraph">
+<p>In case a method or constructor parameter constraint is violated, the <code>ParameterNameProvider</code>
+interface is used to retrieve the parameter name and make it available to the user via the
+property path of the constraint violation.</p>
+</div>
+<div class="paragraph">
+<p>The default implementation returns parameter names as obtained through the Java reflection API.
+If you compile your sources using the <code>-parameters</code> compiler flag, the actual parameter names as
+in the source code will be returned. Otherwise synthetic names in the form of <code>arg0</code>, <code>arg1</code> etc.
+will be used.</p>
+</div>
+<div class="paragraph">
+<p>To use a custom parameter name provider either pass an instance of
+the provider during bootstrapping as shown in <a href="#example-using-custom-parameter-name-provider">Using a custom <code>ParameterNameProvider</code></a>,
+or specify the fully qualified class name of the provider as value for
+the <code>&lt;parameter-name-provider&gt;</code> element in the <em>META-INF/validation.xml</em> file
+(see <a href="#section-configuration-validation-xml">[section-configuration-validation-xml]</a>). This is demonstrated in
+<a href="#example-using-custom-parameter-name-provider">Using a custom <code>ParameterNameProvider</code></a>.</p>
+</div>
+<div id="example-using-custom-parameter-name-provider" class="exampleblock">
+<div class="title">Example 10. Using a custom <code>ParameterNameProvider</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/MyParameterNameProvider.java[]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/BootstrappingTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Hibernate Validator comes with a custom <code>ParameterNameProvider</code> implementation based on the
+<a href="https://github.com/paul-hammant/paranamer/">ParaNamer</a> library which provides several ways
+for obtaining parameter names at runtime. Refer to <a href="#section-paranamer-parameternameprovider">[section-paranamer-parameternameprovider]</a>
+to learn more about this specific implementation.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-clock-provider"><code>ClockProvider</code> and temporal validation tolerance</h4>
+<div class="paragraph">
+<p>For time related validation (<code>@Past</code> and <code>@Future</code> constraints for instance), it might be useful to define what is
+considered <code>now</code>.</p>
+</div>
+<div class="paragraph">
+<p>This is especially important when you want to test your constraints in a reliable manner.</p>
+</div>
+<div class="paragraph">
+<p>The reference time is defined by the <code>ClockProvider</code> contract. The responsibility of the <code>ClockProvider</code> is to
+provide a <code>java.time.Clock</code> defining <code>now</code> for time related validators.</p>
+</div>
+<div id="example-using-custom-clock-provider" class="exampleblock">
+<div class="title">Example 11. Using a custom <code>ClockProvider</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/FixedClockProvider.java[]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/BootstrappingTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, you can specify the fully-qualified classname of a <code>ClockProvider</code> implementation using the
+<code>&lt;clock-provider&gt;</code> element when configuring the default validator factory via <em>META-INF/validation.xml</em>
+(see <a href="#chapter-xml-configuration">[chapter-xml-configuration]</a>).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When validating <code>@Future</code> and <code>@Past</code> constraints, you might want to obtain the current time.</p>
+</div>
+<div class="paragraph">
+<p>You can obtain the <code>ClockProvider</code> in your validators by calling the
+<code>ConstraintValidatorContext#getClockProvider()</code> method.</p>
+</div>
+<div class="paragraph">
+<p>For instance, this might be useful if you want to replace the default message of the <code>@Future</code>
+constraint with a more explicit one.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When dealing with distributed architectures, you might need some tolerance when applying temporal constraints
+such as <code>@Past</code> or <code>@Future</code>.</p>
+</div>
+<div class="paragraph">
+<p>You can set a temporal validation tolerance by bootstrapping your <code>ValidatorFactory</code> as below:</p>
+</div>
+<div id="example-using-temporal-validation-tolerance" class="exampleblock">
+<div class="title">Example 12. Using temporal validation tolerance</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/BootstrappingTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, you can define it in the XML configuration by setting the <code>hibernate.validator.temporal_validation_tolerance</code> property
+in your <em>META-INF/validation.xml</em>.</p>
+</div>
+<div class="paragraph">
+<p>The value of this property must be a <code>long</code> defining the tolerance in milliseconds.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When implementing your own temporal constraints, you might need to have access to the temporal validation tolerance.</p>
+</div>
+<div class="paragraph">
+<p>It can be obtained by calling the <code>HibernateConstraintValidatorInitializationContext#getTemporalValidationTolerance()</code> method.</p>
+</div>
+<div class="paragraph">
+<p>Note that to get access to this context at initialization, your constraint validator has to implement
+the <code>HibernateConstraintValidator</code> contract (see <a href="#constraint-validator-hibernateconstraintvalidator">[constraint-validator-hibernateconstraintvalidator]</a>).
+This contract is currently marked as incubating: it might be subject to change in the future.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-bootstrapping-valueextractors">Registering <code>ValueExtractor</code>s</h4>
+<div class="paragraph">
+<p>As mentioned in <a href="#chapter-valueextraction">[chapter-valueextraction]</a>, additional value extractors can be registered during bootstrapping
+(see <a href="#section-valueextraction-registeringvalueextractor">[section-valueextraction-registeringvalueextractor]</a> for the other ways to register a value extractor).</p>
+</div>
+<div class="paragraph">
+<p><a href="#example-registering-value-extractor">Registering additional value extractors</a> shows how we would register the value extractors we previously created
+to extract the keys and the values of Guava&#8217;s <code>Multimap</code>.</p>
+</div>
+<div id="example-registering-value-extractor" class="exampleblock">
+<div class="title">Example 13. Registering additional value extractors</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/BootstrappingTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_adding_mapping_streams">Adding mapping streams</h4>
+<div class="paragraph">
+<p>As discussed earlier, you can configure the constraints applied to your Java beans using XML based
+constraint mappings.</p>
+</div>
+<div class="paragraph">
+<p>Besides the mapping files specified in <em>META-INF/validation.xml</em>, you can add further mappings via
+<code>Configuration#addMapping()</code> (see <a href="#example-adding-mapping-streams">Adding constraint mapping streams</a>). Note that the passed input
+stream(s) must adhere to the XML schema for constraint mappings presented in
+<a href="#section-mapping-xml-constraints">[section-mapping-xml-constraints]</a>.</p>
+</div>
+<div id="example-adding-mapping-streams" class="exampleblock">
+<div class="title">Example 14. Adding constraint mapping streams</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/BootstrappingTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>You should close any passed input stream after the validator factory has been created.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-provider-specific-settings">Provider-specific settings</h4>
+<div class="paragraph">
+<p>Via the configuration object returned by <code>Validation#byProvider()</code>, provider specific options can be
+configured.</p>
+</div>
+<div class="paragraph">
+<p>In the case of Hibernate Validator, this e.g. allows you to enable the fail fast mode and pass one or
+more programmatic constraint mappings as demonstrated in
+<a href="#example-hibernate-validator-specific-options">Setting Hibernate Validator specific options</a>.</p>
+</div>
+<div id="example-hibernate-validator-specific-options" class="exampleblock">
+<div class="title">Example 15. Setting Hibernate Validator specific options</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/BootstrappingTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, provider-specific options can be passed via <code>Configuration#addProperty()</code>. Hibernate
+Validator supports enabling the fail fast mode that way, too:</p>
+</div>
+<div id="example-hibernate-validator-specific-option-via-addproperty" class="exampleblock">
+<div class="title">Example 16. Enabling a Hibernate Validator specific option via <code>addProperty()</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/BootstrappingTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Refer to <a href="#section-fail-fast">[section-fail-fast]</a> and <a href="#section-programmatic-api">[section-programmatic-api]</a> to learn more about the fail fast
+mode and the constraint declaration API.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-script-evaluator-factory">Configuring the <code>ScriptEvaluatorFactory</code></h4>
+<div class="paragraph">
+<p>For constraints like <code>@ScriptAssert</code> and <code>@ParameterScriptAssert</code>, it might be useful to configure
+how the script engines are initialized and how the script evaluators are built.
+This can be done by setting a custom implementation of <code>ScriptEvaluatorFactory</code>.</p>
+</div>
+<div class="paragraph">
+<p>In particular, this is important for modular environments (e.g. OSGi), where user might face issues
+with modular class loading and <a href="https://www.jcp.org/en/jsr/detail?id=223">JSR 223</a>.
+It also allows to use any custom script engine, not necessarily based on the
+<a href="https://www.jcp.org/en/jsr/detail?id=223">JSR 223</a> (e.g. Spring Expression Language).</p>
+</div>
+<div class="sect4">
+<h5 id="_xml_configuration">XML configuration</h5>
+<div class="paragraph">
+<p>To specify the <code>ScriptEvaluatorFactory</code> via XML, you need to define the <code>hibernate.validator.script_evaluator_factory</code>
+property.</p>
+</div>
+<div id="example-script-evaluator-factory-xml" class="exampleblock">
+<div class="title">Example 17. Defining the <code>ScriptEvaluatorFactory</code> via XML</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-XML" data-lang="XML">link:{resourcesdir}/org/hibernate/validator/referenceguide/chapter09/script-evaluator-factory-validation.xml[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case, the specified <code>ScriptEvaluatorFactory</code> must have a no-arg constructor.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_programmatic_configuration">Programmatic configuration</h5>
+<div class="paragraph">
+<p>To configure it programmatically, you need to pass an instance of <code>ScriptEvaluatorFactory</code> to the <code>ValidatorFactory</code>.
+This gives more flexibility in the configuration of the <code>ScriptEvaluatorFactory</code>. <a href="#example-script-evaluator-factory-programmatically">Defining the <code>ScriptEvaluatorFactory</code> programmatically</a>
+shows how this can be done.</p>
+</div>
+<div id="example-script-evaluator-factory-programmatically" class="exampleblock">
+<div class="title">Example 18. Defining the <code>ScriptEvaluatorFactory</code> programmatically</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/BootstrappingTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_custom_scriptevaluatorfactory_implementation_examples">Custom <code>ScriptEvaluatorFactory</code> implementation examples</h5>
+<div class="paragraph">
+<p>This section shows a couple of custom <code>ScriptEvaluatorFactory</code> implementations that can be used
+in modular environments as well as one using the <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#expressions">Spring Expression Language</a>
+for writing constraint scripts.</p>
+</div>
+<div class="paragraph">
+<p>Problems with modular environments and <a href="https://www.jcp.org/en/jsr/detail?id=223">JSR 223</a> come from the class loading.
+The class loader where the script engine is available might be different from the one of Hibernate Validator.
+Thus the script engine wouldn&#8217;t be found using the default strategy.</p>
+</div>
+<div class="paragraph">
+<p>To solve this issue, the <code>MultiClassLoaderScriptEvaluatorFactory</code> class below can be introduced:</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{osgi-integrationtest-sourcedir}/org/hibernate/validator/osgi/scripting/MultiClassLoaderScriptEvaluatorFactory.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>and then declared with:</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{osgi-integrationtest-sourcedir}/org/hibernate/validator/osgi/integrationtest/OsgiIntegrationTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>This way, it is possible to pass multiple <code>ClassLoader</code> instances: typically the class loaders of the wanted <code>ScriptEngine</code>s.</p>
+</div>
+<div class="paragraph">
+<p>An alternative approach for OSGi environments can be to use the <code>OsgiScriptEvaluatorFactory</code> defined below:</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{osgi-integrationtest-sourcedir}/org/hibernate/validator/osgi/scripting/OsgiScriptEvaluatorFactory.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>and then declared with:</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{osgi-integrationtest-sourcedir}/org/hibernate/validator/osgi/integrationtest/OsgiIntegrationTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>It is designed specifically for OSGi environments and allows you to pass the <code>BundleContext</code> which will be used to search
+for <code>ScriptEngineFactory</code> as a parameter.</p>
+</div>
+<div class="paragraph">
+<p>As already mentioned, you can also use script engines that are not based on <a href="https://www.jcp.org/en/jsr/detail?id=223">JSR 223</a>.</p>
+</div>
+<div class="paragraph">
+<p>For instance, to use the <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#expressions">Spring Expression Language</a>,
+you can define a <code>SpringELScriptEvaluatorFactory</code> as:</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/SpringELScriptEvaluatorFactory.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>This factory allows to use Spring Expression Language in <code>ScriptAssert</code> and <code>ParameterScriptAssert</code>
+constraints:</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/CustomScriptEvaluatorFactoryForSpringELTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="section-configuring-validator">Configuring a Validator</h3>
+<div class="paragraph">
+<p>When working with a configured validator factory it can occasionally be required to apply a
+different configuration to a single <code>Validator</code> instance. <a href="#example-using-context">Configuring a <code>Validator</code> instance via <code>usingContext()</code></a> shows how this can
+be achieved by calling <code>ValidatorFactory#usingContext()</code>.</p>
+</div>
+<div id="example-using-context" class="exampleblock">
+<div class="title">Example 19. Configuring a <code>Validator</code> instance via <code>usingContext()</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter09/BootstrappingTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2021-03-19 19:50:05 +0800
+</div>
+</div>
+</body>
+</html>

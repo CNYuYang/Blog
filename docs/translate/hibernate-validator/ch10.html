@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.12">
+<title>Using constraint metadata</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="validator-metadata-api">Using constraint metadata</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Jakarta Bean Validation specification provides not only a validation engine, but also an API for
+retrieving constraint metadata in a uniform way, no matter whether the constraints are declared
+using annotations or via XML mappings. Read this chapter to learn more about this API and its
+possibilities. You can find all the metadata API types in the package <code>jakarta.validation.metadata</code>.</p>
+</div>
+<div class="paragraph">
+<p>The examples presented in this chapter are based on the classes and constraint declarations shown in
+<a href="#metadata-example-car">Example classes</a>.</p>
+</div>
+<div id="metadata-example-car" class="exampleblock">
+<div class="title">Example 1. Example classes</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter10/Person.java[]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter10/Vehicle.java[]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter10/Car.java[]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter10/Library.java[]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter10/Book.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_beandescriptor"><code>BeanDescriptor</code></h3>
+<div class="paragraph">
+<p>The entry point into the metadata API is the method <code>Validator#getConstraintsForClass()</code>, which
+returns an instance of the {bvApiDocsUrl}?jakarta/validation/metadata/BeanDescriptor.html[<code>BeanDescriptor</code>] interface. Using this
+descriptor, you can obtain metadata for constraints declared directly on the bean itself (class- or
+property-level), but also retrieve metadata descriptors representing single properties, methods and
+constructors.</p>
+</div>
+<div class="paragraph">
+<p><a href="#metadata-example-using-beandescriptor">Using <code>BeanDescriptor</code></a> demonstrates how to retrieve a <code>BeanDescriptor</code> for the
+<code>Car</code> class and how to use this descriptor in form of assertions.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If a constraint declaration hosted by the requested class is invalid, a <code>ValidationException</code> is thrown.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="metadata-example-using-beandescriptor" class="exampleblock">
+<div class="title">Example 2. Using <code>BeanDescriptor</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter10/CarTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>You can determine whether the specified class hosts any class- or property-level constraints via
+<code>isBeanConstrained()</code>. Method or constructor constraints are not considered by <code>isBeanConstrained()</code>.</p>
+</div>
+<div class="paragraph">
+<p>The method <code>getConstraintDescriptors()</code> is common to all descriptors derived from <code>ElementDescriptor</code>
+(see <a href="#validator-metadata-api-elementdescriptor"><code>ElementDescriptor</code></a>) and returns a set of descriptors representing the
+constraints directly declared on the given element. In case of <code>BeanDescriptor</code>, the bean&#8217;s class-
+level constraints are returned. More details on <code>ConstraintDescriptor</code> can be found in
+<a href="#section-constraint-descriptor"><code>ConstraintDescriptor</code></a>.</p>
+</div>
+<div class="paragraph">
+<p>Via <code>getConstraintsForProperty()</code>, <code>getConstraintsForMethod()</code> and <code>getConstraintsForConstructor()</code> you
+can obtain a descriptor representing one given property or executable element, identified by its
+name and, in case of methods and constructors, parameter types. The different descriptor types
+returned by these methods are described in the following sections.</p>
+</div>
+<div class="paragraph">
+<p>Note that these methods consider constraints declared at super-types according to the rules for
+constraint inheritance as described in <a href="#section-constraint-inheritance">[section-constraint-inheritance]</a>. An example is the
+descriptor for the <code>manufacturer</code> property, which provides access to all constraints defined on
+<code>Vehicle#getManufacturer()</code> and the implementing method <code>Car#getManufacturer()</code>. <code>null</code> is returned in
+case the specified element does not exist or is not constrained.</p>
+</div>
+<div class="paragraph">
+<p>The methods <code>getConstrainedProperties()</code>, <code>getConstrainedMethods()</code> and <code>getConstrainedConstructors()</code>
+return (potentially empty) sets with all constrained properties, methods and constructors,
+respectively. An element is considered constrained if it has at least one constraint or is marked
+for cascaded validation. When invoking <code>getConstrainedMethods()</code>, you can specify the type of the
+methods to be returned (getters, non-getters or both).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="section-property-descriptor"><code>PropertyDescriptor</code></h3>
+<div class="paragraph">
+<p>The interface
+{bvApiDocsUrl}?jakarta/validation/metadata/PropertyDescriptor.html[<code>PropertyDescriptor</code>] represents one given property of a
+class. It is transparent whether constraints are declared on a field or a property getter, provided
+the JavaBeans naming conventions are respected. <a href="#metadata-example-using-propertydescriptor">Using <code>PropertyDescriptor</code></a> shows
+how to use the <code>PropertyDescriptor</code> interface.</p>
+</div>
+<div id="metadata-example-using-propertydescriptor" class="exampleblock">
+<div class="title">Example 3. Using <code>PropertyDescriptor</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter10/CarTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Using <code>getConstraintDescriptors()</code>, you can retrieve a set of <code>ConstraintDescriptors</code> providing more
+information on the individual constraints of a given property. The method <code>isCascaded()</code> returns
+<code>true</code> if the property is marked for cascaded validation (either using the <code>@Valid</code> annotation or via
+XML), <code>false</code> otherwise. Any configured group conversions are returned by <code>getGroupConversions()</code>. See
+<a href="#section-group-conversion-descriptor"><code>GroupConversionDescriptor</code></a> for more details on <code>GroupConversionDescriptor</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_methoddescriptor_and_constructordescriptor"><code>MethodDescriptor</code> and <code>ConstructorDescriptor</code></h3>
+<div class="paragraph">
+<p>Constrained methods and constructors are represented by the interfaces
+{bvApiDocsUrl}?jakarta/validation/metadata/MethodDescriptor.html[<code>MethodDescriptor</code>]
+{bvApiDocsUrl}?jakarta/validation/metadata/ConstructorDescriptor.html[<code>ConstructorDescriptor</code>], respectively.
+<a href="#metadata-example-using-methodandconstructordescriptor">Using <code>MethodDescriptor</code> and <code>ConstructorDescriptor</code></a> demonstrates how to work with these
+descriptors.</p>
+</div>
+<div id="metadata-example-using-methodandconstructordescriptor" class="exampleblock">
+<div class="title">Example 4. Using <code>MethodDescriptor</code> and <code>ConstructorDescriptor</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter10/CarTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><code>getName()</code> returns the name of the given method or constructor. The methods
+<code>hasConstrainedParameters()</code> and <code>hasConstrainedReturnValue()</code> can be used to perform a quick check
+whether an executable element has any parameter constraints (either constraints on single parameters
+or cross-parameter constraints) or return value constraints.</p>
+</div>
+<div class="paragraph">
+<p>Note that constraints are not directly exposed on <code>MethodDescriptor</code> and <code>ConstructorDescriptor</code>,
+but rather on dedicated descriptors representing an executable&#8217;s parameters, its return value and
+its cross-parameter constraints. To get hold of one of these descriptors, invoke
+<code>getParameterDescriptors()</code>, <code>getReturnValueDescriptor()</code> or <code>getCrossParameterDescriptor()</code>,
+respectively.</p>
+</div>
+<div class="paragraph">
+<p>These descriptors provide access to the element&#8217;s constraints (<code>getConstraintDescriptors()</code>) and, in
+the case of parameters and return value, to its configuration for cascaded validation (<code>isValid()</code> and
+<code>getGroupConversions()</code>). For parameters, you also can retrieve the index and the name, as returned by
+the currently used parameter name provider (see <a href="#section-parameter-name-provider">[section-parameter-name-provider]</a>) via <code>getName()</code>
+and <code>getIndex()</code>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Getter methods following the JavaBeans naming conventions are considered as bean properties but also
+as constrained methods.</p>
+</div>
+<div class="paragraph">
+<p>That means you can retrieve the related metadata either by obtaining a <code>PropertyDescriptor</code> (e.g.
+<code>BeanDescriptor.getConstraintsForProperty("foo")</code>) or by examining the return value descriptor of the
+getter&#8217;s <code>MethodDescriptor</code> (e.g.
+<code>BeanDescriptor.getConstraintsForMethod("getFoo").getReturnValueDescriptor())</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="validator-metadata-api-elementdescriptor"><code>ElementDescriptor</code></h3>
+<div class="paragraph">
+<p>The {bvApiDocsUrl}?jakarta/validation/metadata/ElementDescriptor.html[<code>ElementDescriptor</code>]
+interface is the common base class for the
+individual descriptor types such as <code>BeanDescriptor</code>, <code>PropertyDescriptor</code> etc. Besides
+<code>getConstraintDescriptors()</code> it provides some more methods common to all descriptors.</p>
+</div>
+<div class="paragraph">
+<p><code>hasConstraints()</code> allows for a quick check whether an element has any direct constraints (e.g. class-
+level constraints in case of <code>BeanDescriptor</code>).</p>
+</div>
+<div class="paragraph">
+<p><code>getElementClass()</code> returns the Java type of the element
+represented by a given descriptor. More specifically, the method returns</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the object type when invoked on <code>BeanDescriptor</code>,</p>
+</li>
+<li>
+<p>the type of a property or parameter when invoked on <code>PropertyDescriptor</code> or <code>ParameterDescriptor</code>
+respectively,</p>
+</li>
+<li>
+<p><code>Object[].class</code> when invoked on <code>CrossParameterDescriptor</code>,</p>
+</li>
+<li>
+<p>the return type when invoked on <code>ConstructorDescriptor</code>, <code>MethodDescriptor</code> or <code>ReturnValueDescriptor</code>.
+<code>void.class</code> will be returned for methods which don&#8217;t have a return value.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="#metadata-example-using-elementdescriptor">Using <code>ElementDescriptor methods</code></a> shows how these methods are used.</p>
+</div>
+<div id="metadata-example-using-elementdescriptor" class="exampleblock">
+<div class="title">Example 5. Using <code>ElementDescriptor methods</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter10/CarTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, <code>ElementDescriptor</code> offers access to the <code>ConstraintFinder</code> API which allows you to query for
+constraint metadata in a fine grained way. <a href="#example-constraint-finder">Usage of <code>ConstraintFinder</code></a> shows how to retrieve a
+<code>ConstraintFinder</code> instance via <code>findConstraints()</code> and use the API to query for constraint metadata.</p>
+</div>
+<div id="example-constraint-finder" class="exampleblock">
+<div class="title">Example 6. Usage of <code>ConstraintFinder</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter10/CarTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Via <code>declaredOn()</code> you can search for <code>ConstraintDescriptors</code> declared on certain element types. This is
+useful to find property constraints declared on either fields or getter methods.</p>
+</div>
+<div class="paragraph">
+<p><code>unorderedAndMatchingGroups()</code> restricts the resulting constraints to those matching the given
+validation group(s).</p>
+</div>
+<div class="paragraph">
+<p><code>lookingAt()</code> allows to distinguish between constraints directly specified on the element
+(<code>Scope.LOCAL_ELEMENT</code>) or constraints belonging to the element but hosted anywhere in the class
+hierarchy (<code>Scope.HIERARCHY</code>).</p>
+</div>
+<div class="paragraph">
+<p>You can also combine the different options as shown in the last example.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Order is not respected by <code>unorderedAndMatchingGroups()</code>, but group inheritance and inheritance via
+sequence are.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_containerdescriptor_and_containerelementtypedescriptor"><code>ContainerDescriptor</code> and <code>ContainerElementTypeDescriptor</code></h3>
+<div class="paragraph">
+<p>The {bvApiDocsUrl}?jakarta/validation/metadata/ContainerDescriptor.html[<code>ContainerDescriptor</code>]
+interface is the common interface for all the elements that support container element constraints and cascading
+validation (<code>PropertyDescriptor</code>, <code>ParameterDescriptor</code>, <code>ReturnValueDescriptor</code>).</p>
+</div>
+<div class="paragraph">
+<p>It has a single method <code>getConstrainedContainerElementTypes()</code> that returns a set of <code>ContainerElementTypeDescriptor</code>.</p>
+</div>
+<div class="paragraph">
+<p><code>ContainerElementTypeDescriptor</code> extends <code>ContainerDescriptor</code> to support nested container element constraints.</p>
+</div>
+<div class="paragraph">
+<p><code>ContainerElementTypeDescriptor</code> contains the information about the container, the constraints and the cascading
+validation.</p>
+</div>
+<div class="paragraph">
+<p><a href="#metadata-example-using-containerelementtypedescriptor">Using <code>ContainerElementTypeDescriptor</code></a> shows how to use <code>getConstrainedContainerElementTypes()</code>
+to retrieve the set of <code>ContainerElementTypeDescriptor</code>.</p>
+</div>
+<div id="metadata-example-using-containerelementtypedescriptor" class="exampleblock">
+<div class="title">Example 7. Using <code>ContainerElementTypeDescriptor</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter10/LibraryTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="section-group-conversion-descriptor"><code>GroupConversionDescriptor</code></h3>
+<div class="paragraph">
+<p>All those descriptor types that represent elements which can be subject of cascaded validation
+(i.e., <code>PropertyDescriptor</code>, <code>ParameterDescriptor</code> and <code>ReturnValueDescriptor</code>) provide access to the
+element&#8217;s group conversions via <code>getGroupConversions()</code>. The returned set contains a
+{bvApiDocsUrl}?jakarta/validation//metadata/GroupConversionDescriptor.html[<code>GroupConversionDescriptor</code>]
+for each configured conversion, allowing to retrieve
+source and target groups of the conversion. <a href="#metadata-example-using-groupconversiondescriptor">Using <code>GroupConversionDescriptor</code></a>
+shows an example.</p>
+</div>
+<div id="metadata-example-using-groupconversiondescriptor" class="exampleblock">
+<div class="title">Example 8. Using <code>GroupConversionDescriptor</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter10/CarTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="section-constraint-descriptor"><code>ConstraintDescriptor</code></h3>
+<div class="paragraph">
+<p>Last but not least, the
+{bvApiDocsUrl}?jakarta/validation/metadata/ConstraintDescriptor.html[<code>ConstraintDescriptor</code>]
+interface describes a
+single constraint together with its composing constraints. Via an instance of this interface you get
+access to the constraint annotation and its parameters.</p>
+</div>
+<div class="paragraph">
+<p><a href="#metadata-example-using-constraintdescriptor">Using <code>ConstraintDescriptor</code></a>
+shows how to retrieve default constraint attributes (such as message template, groups etc.) as well
+as custom constraint attributes (<code>piecesOfLuggagePerPassenger</code>) and other metadata such as the
+constraint&#8217;s annotation type and its validators from a <code>ConstraintDescriptor</code>.</p>
+</div>
+<div id="metadata-example-using-constraintdescriptor" class="exampleblock">
+<div class="title">Example 9. Using <code>ConstraintDescriptor</code></div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-JAVA" data-lang="JAVA">link:{sourcedir}/org/hibernate/validator/referenceguide/chapter10/CarTest.java[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2021-03-19 19:50:05 +0800
+</div>
+</div>
+</body>
+</html>
