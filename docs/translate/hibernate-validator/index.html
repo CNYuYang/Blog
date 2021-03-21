@@ -668,19 +668,19 @@
             clear: both
         }
         
-        :not(pre).nobreak {
+         :not(pre).nobreak {
             word-wrap: normal
         }
         
-        :not(pre).nowrap {
+         :not(pre).nowrap {
             white-space: nowrap
         }
         
-        :not(pre).pre-wrap {
+         :not(pre).pre-wrap {
             white-space: pre-wrap
         }
         
-        :not(pre):not([class^=L])>code {
+         :not(pre):not([class^=L])>code {
             font-size: .9375em;
             font-style: normal!important;
             letter-spacing: 0;
@@ -2495,10 +2495,10 @@
                                 <li><a href="#section-object-graph-validation">2.1.6. 对象图</a></li>
                             </ul>
                         </li>
-                        <li><a href="#section-validating-bean-constraints">2.2. Validating bean constraints</a>
+                        <li><a href="#section-validating-bean-constraints">2.2. 验证 bean 约束</a>
                             <ul class="sectlevel3">
-                                <li><a href="#section-obtaining-validator">2.2.1. Obtaining a <code>Validator</code> instance</a></li>
-                                <li><a href="#_validator_methods">2.2.2. Validator methods</a>
+                                <li><a href="#section-obtaining-validator">2.2.1. 获取 <code>Validator</code> 实例</a></li>
+                                <li><a href="#_validator_方法">2.2.2. Validator 方法</a>
                                     <ul class="sectlevel4">
                                         <li><a href="#_validatorvalidate">2.2.2.1. <code>Validator#validate()</code></a></li>
                                         <li><a href="#_validatorvalidateproperty">2.2.2.2. <code>Validator#validateProperty()</code></a></li>
@@ -2507,15 +2507,15 @@
                                 </li>
                                 <li><a href="#section-constraint-violation-methods">2.2.3. <code>ConstraintViolation</code></a>
                                     <ul class="sectlevel4">
-                                        <li><a href="#_constraintviolation_methods">2.2.3.1. <code>ConstraintViolation</code> methods</a></li>
-                                        <li><a href="#_exploiting_the_property_path">2.2.3.2. Exploiting the property path</a></li>
+                                        <li><a href="#_constraintviolation_的方法">2.2.3.1. <code>ConstraintViolation</code> 的方法</a></li>
+                                        <li><a href="#_利用_property_path">2.2.3.2. 利用 property path</a></li>
                                     </ul>
                                 </li>
                             </ul>
                         </li>
-                        <li><a href="#section-builtin-constraints">2.3. Built-in constraints</a>
+                        <li><a href="#section-builtin-constraints">2.3. 内置约束</a>
                             <ul class="sectlevel3">
-                                <li><a href="#validator-defineconstraints-spec">2.3.1. Jakarta Bean Validation constraints</a></li>
+                                <li><a href="#validator-defineconstraints-spec">2.3.1. Jakarta Bean Validation 约束</a></li>
                                 <li><a href="#validator-defineconstraints-hv-constraints">2.3.2. Additional constraints</a>
                                     <ul class="sectlevel4">
                                         <li><a href="#_country_specific_constraints">2.3.2.1. Country specific constraints</a></li>
@@ -3247,9 +3247,8 @@ public class CarTest {
                 <a class="anchor" href="#chapter-bean-constraints"></a>2. 声明和校验 bean 约束</h2>
             <div class="sectionbody">
                 <div class="paragraph">
-                    <p>在本章中，您将学习如何声明 (see <a href="#section-declaring-bean-constraints">Section 2.1, &#8220;声明 bean 约束&#8221;</a>) 以及 校验 (see <a href="#section-validating-bean-constraints">Section 2.2, &#8220;Validating bean constraints&#8221;</a>) bean
-                        约束。
-                        <a href="#section-builtin-constraints">Section 2.3, &#8220;Built-in constraints&#8221;</a> 概述了 Hibernate Validator提供的所有内置约束。</p>
+                    <p>在本章中，您将学习如何声明 (see <a href="#section-declaring-bean-constraints">Section 2.1, &#8220;声明 bean 约束&#8221;</a>) 以及 校验 (see <a href="#section-validating-bean-constraints">Section 2.2, &#8220;验证 bean 约束&#8221;</a>) bean 约束。
+                        <a href="#section-builtin-constraints">Section 2.3, &#8220;内置约束&#8221;</a> 概述了 Hibernate Validator提供的所有内置约束。</p>
                 </div>
                 <div class="paragraph">
                     <p>如果您对方法参数和返回值应用约束感兴趣，请参阅 <a href="#chapter-method-constraints">Chapter 3, <em>Declaring and validating method constraints</em></a>.</p>
@@ -3348,7 +3347,7 @@ public class Car {
                             <a class="anchor" href="#_属性级约束"></a>2.1.2. 属性级约束</h4>
                         <div class="paragraph">
                             <p>如果您的类遵循
-                                <a href="http://www.oracle.com/technetwork/articles/javaee/spec-136004.html">JavaBeans</a> 标准, 那么也可以对 bean 类的属性而不是字段进行注释。
+                                <a href="http://www.oracle.com/technetwork/articles/javaee/spec-136004.html">JavaBeans</a> 标准, 那么也可以对 bean 类的属性而不是字段进行注解。
                                 <a href="#example-property-level">Example 12, &#8220;属性级约束&#8221;</a> 使用与 <a href="#example-field-level">Example 11, &#8220;字段级约束&#8221;</a> 相同的实体，但是，使用了属性级别的约束。</p>
                         </div>
                         <div id="example-property-level" class="exampleblock">
@@ -3416,7 +3415,7 @@ public class Car {
                                     </td>
                                     <td class="content">
                                         <div class="paragraph">
-                                            <p>建议在一个类中坚持使用字段 <em>或</em> 属性注解。不建议对字段 <em>和</em> 附带的 getter 方法同时进行注释，因为这会导致对字段进行两次验证。</p>
+                                            <p>建议在一个类中坚持使用字段 <em>或</em> 属性注解。不建议对字段 <em>和</em> 附带的 getter 方法同时进行注解，因为这会导致对字段进行两次验证。</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -3462,7 +3461,7 @@ public class Car {
                                     </td>
                                     <td class="content">
                                         <div class="paragraph">
-                                            <p>在6之前的版本中，支持容器元素约束的子集。在容器级别需要@valid 注释来启用它们。从 Hibernate Validator 6开始就不再需要这个了。</p>
+                                            <p>在6之前的版本中，支持容器元素约束的子集。在容器级别需要@valid 注解来启用它们。从 Hibernate Validator 6开始就不再需要这个了。</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -3913,7 +3912,7 @@ public class Car {
                         <h4 id="section-constraint-inheritance">
                             <a class="anchor" href="#section-constraint-inheritance"></a>2.1.5. 约束继承</h4>
                         <div class="paragraph">
-                            <p>当一个类实现一个接口或扩展另一个类时，在父类型上声明的所有约束注释以与在类本身上指定的约束相同的方式应用。为了让事情更清楚，让我们看看下面的例子:</p>
+                            <p>当一个类实现一个接口或扩展另一个类时，在父类型上声明的所有约束注解以与在类本身上指定的约束相同的方式应用。为了让事情更清楚，让我们看看下面的例子:</p>
                         </div>
                         <div class="exampleblock">
                             <div class="title">Example 20. 约束继承</div>
@@ -3962,7 +3961,7 @@ public class RentalCar extends Car {
                             <p>如果 <code>Car</code> 不是一个超类，而是由 `RentalCar`实现的接口，情况也是如此。</p>
                         </div>
                         <div class="paragraph">
-                            <p>如果方法被重写，则约束注释将被聚合。因此，如果 <code>RentalCar</code> 覆盖了 <code>Car</code> 中的
+                            <p>如果方法被重写，则约束注解将被聚合。因此，如果 <code>RentalCar</code> 覆盖了 <code>Car</code> 中的
                                 <code>getManufacturer()</code> 方法, 那么除了超类中的 <code>@NotNull</code> 约束之外，还将校验覆盖方法中注解的任何约束。</p>
                         </div>
                     </div>
@@ -4015,7 +4014,7 @@ public class Person {
                             <p>注意，在级联验证过程中忽略 <code>null</code> 。</p>
                         </div>
                         <div class="paragraph">
-                            <p>作为约束，对象图验证也适用于容器元素。这意味着容器的任何类型参数都可以用 <code>@valid</code> 注释，这将导致在验证父对象时验证每个包含的元素。</p>
+                            <p>作为约束，对象图验证也适用于容器元素。这意味着容器的任何类型参数都可以用 <code>@valid</code> 注解，这将导致在验证父对象时验证每个包含的元素。</p>
                         </div>
                         <div class="admonitionblock note">
                             <table>
@@ -4113,18 +4112,15 @@ public class Manufacturer {
                 </div>
                 <div class="sect2">
                     <h3 id="section-validating-bean-constraints">
-                        <a class="anchor" href="#section-validating-bean-constraints"></a>2.2. Validating bean constraints</h3>
+                        <a class="anchor" href="#section-validating-bean-constraints"></a>2.2. 验证 bean 约束</h3>
                     <div class="paragraph">
-                        <p>The <code>Validator</code> interface is the most important object in Jakarta Bean Validation. The next section shows how to obtain a <code>Validator</code> instance. Afterwards you&#8217;ll learn how to use the different methods
-                            of the
-                            <code>Validator</code> interface.</p>
+                        <p><code>Validator</code> 接口是 Jakarta Bean Validation中最重要的对象。下一节将展示如何获取 <code>Validator</code> 实例。之后，您将学习如何使用 <code>Validator</code> 接口定义的不同方法。</p>
                     </div>
                     <div class="sect3">
                         <h4 id="section-obtaining-validator">
-                            <a class="anchor" href="#section-obtaining-validator"></a>2.2.1. Obtaining a <code>Validator</code> instance</h4>
+                            <a class="anchor" href="#section-obtaining-validator"></a>2.2.1. 获取 <code>Validator</code> 实例</h4>
                         <div class="paragraph">
-                            <p>The first step towards validating an entity instance is to get hold of a <code>Validator</code> instance. The road to this instance leads via the <code>Validation</code> class and a <code>ValidatorFactory</code>. The easiest
-                                way is to use the static method <code>Validation#buildDefaultValidatorFactory()</code>:</p>
+                            <p>校验实例的第一步是获得 <code>Validator</code> 实例。为获取这个实例的需要通过 <code>Validation</code> 类和 <code>ValidatorFactory</code> 。最简单的方法是使用静态方法 <code>Validation # builddefaultvalidatorfactory()</code> :</p>
                         </div>
                         <div class="exampleblock">
                             <div class="title">Example 23. <code>Validation#buildDefaultValidatorFactory()</code></div>
@@ -4138,35 +4134,31 @@ validator = factory.getValidator();</code></pre>
                             </div>
                         </div>
                         <div class="paragraph">
-                            <p>This bootstraps a validator in the default configuration. Refer to <a href="#chapter-bootstrapping">Chapter 9, <em>Bootstrapping</em></a> to learn more about the different bootstrapping methods and how to obtain a specifically
-                                configured
-                                <code>Validator</code> instance.</p>
+                            <p>这将在默认配置中引导验证程序。请参阅 <a href="#chapter-bootstrapping">Chapter 9, <em>Bootstrapping</em></a> 以了解更多关于不同的 Bootstrapping 方法以及如何获得特定配置的 <code>Validator</code> 实例。</p>
                         </div>
                     </div>
                     <div class="sect3">
-                        <h4 id="_validator_methods">
-                            <a class="anchor" href="#_validator_methods"></a>2.2.2. Validator methods</h4>
+                        <h4 id="_validator_方法">
+                            <a class="anchor" href="#_validator_方法"></a>2.2.2. Validator 方法</h4>
                         <div class="paragraph">
-                            <p>The <code>Validator</code> interface contains three methods that can be used to either validate entire entities or just single properties of the entity.</p>
+                            <p><code>Validator</code> 接口包含三个方法，可用于验证整个实体或仅验证实体的单个属性。</p>
                         </div>
                         <div class="paragraph">
-                            <p>All three methods return a <code>Set&lt;ConstraintViolation&gt;</code>. The set is empty, if the validation succeeds. Otherwise a <code>ConstraintViolation</code> instance is added for each violated constraint.</p>
+                            <p>这三个方法都返回一个 <code>Set&lt;ConstraintViolation&gt;</code>。如果验证成功，集合是空的。否则，将为每个违反的约束添加一个 <code>ConstraintViolation</code> 实例。</p>
                         </div>
                         <div class="paragraph">
-                            <p>All the validation methods have a var-args parameter which can be used to specify which validation groups shall be considered when performing the validation. If the parameter is not specified, the default validation group (<code>jakarta.validation.groups.Default</code>)
-                                is used. The topic of validation groups is discussed in detail in <a href="#chapter-groups">Chapter 5, <em>Grouping constraints</em></a>.</p>
+                            <p>所有的验证方法都有一个 var-args 参数，可以用来指定在执行验证时应该考虑哪些验证组。如果未指定参数，则默认验证组( <code>jakarta.validation.groups.Default</code>) . 将在 <a href="#chapter-groups">Chapter 5, <em>Grouping constraints</em></a> 中详细讨论 .</p>
                         </div>
                         <div class="sect4">
                             <h5 id="_validatorvalidate">
                                 <a class="anchor" href="#_validatorvalidate"></a>2.2.2.1. <code>Validator#validate()</code></h5>
                             <div class="paragraph">
-                                <p>Use the <code>validate()</code> method to perform validation of all constraints of a given bean.
-                                    <a href="#example-validator-validate">Example 24, &#8220;Using <code>Validator#validate()</code>&#8221;</a> shows the validation of an instance of the <code>Car</code> class from
-                                    <a href="#example-property-level">Example 12, &#8220;属性级约束&#8221;</a> which fails to satisfy the <code>@NotNull</code> constraint on the <code>manufacturer</code> property. The validation call therefore returns one
-                                    <code>ConstraintViolation</code> object.</p>
+                                <p>使用 <code>validate()</code> 方法对给定 bean 的所有约束执行校验。
+                                    <a href="#example-validator-validate">Example 24, &#8220;使用 <code>Validator#validate()</code>&#8221;</a> 中的 <code>Car</code> 类来自
+                                    <a href="#example-property-level">Example 12, &#8220;属性级约束&#8221;</a> 该实例未能满足 <code>manufacturer</code> 字段上的 <code>@NotNull</code> 约束。因此，validation 调用返回一个 <code>ConstraintViolation</code> 对象。</p>
                             </div>
                             <div id="example-validator-validate" class="exampleblock">
-                                <div class="title">Example 24. Using <code>Validator#validate()</code></div>
+                                <div class="title">Example 24. 使用 <code>Validator#validate()</code></div>
                                 <div class="content">
                                     <div class="listingblock">
                                         <div class="content">
@@ -4185,10 +4177,10 @@ assertEquals( "must not be null", constraintViolations.iterator().next().getMess
                             <h5 id="_validatorvalidateproperty">
                                 <a class="anchor" href="#_validatorvalidateproperty"></a>2.2.2.2. <code>Validator#validateProperty()</code></h5>
                             <div class="paragraph">
-                                <p>With help of the <code>validateProperty()</code> you can validate a single named property of a given object. The property name is the JavaBeans property name.</p>
+                                <p>借助 <code>validateProperty()</code> 您可以校验给定对象的单个命名属性。</p>
                             </div>
                             <div class="exampleblock">
-                                <div class="title">Example 25. Using <code>Validator#validateProperty()</code></div>
+                                <div class="title">Example 25. 使用 <code>Validator#validateProperty()</code></div>
                                 <div class="content">
                                     <div class="listingblock">
                                         <div class="content">
@@ -4210,10 +4202,10 @@ assertEquals( "must not be null", constraintViolations.iterator().next().getMess
                             <h5 id="_validatorvalidatevalue">
                                 <a class="anchor" href="#_validatorvalidatevalue"></a>2.2.2.3. <code>Validator#validateValue()</code></h5>
                             <div class="paragraph">
-                                <p>By using the <code>validateValue()</code> method you can check whether a single property of a given class can be validated successfully, if the property had the specified value:</p>
+                                <p>通过使用 <code>validateValue()</code> 方法，您可以检查给定类的单个属性是否可以成功验证，如果该属性具有指定的值:</p>
                             </div>
                             <div class="exampleblock">
-                                <div class="title">Example 26. Using <code>Validator#validateValue()</code></div>
+                                <div class="title">Example 26. 使用 <code>Validator#validateValue()</code></div>
                                 <div class="content">
                                     <div class="listingblock">
                                         <div class="content">
@@ -4237,15 +4229,14 @@ assertEquals( "must not be null", constraintViolations.iterator().next().getMess
                                         </td>
                                         <td class="content">
                                             <div class="paragraph">
-                                                <p><code>@Valid</code> is not honored by <code>validateProperty()</code> or <code>validateValue()</code>.</p>
+                                                <p><code>@Valid</code> 不在 <code>validateProperty()</code> 或 <code>validateValue()</code> 方法里生效。</p>
                                             </div>
                                         </td>
                                     </tr>
                                 </table>
                             </div>
                             <div class="paragraph">
-                                <p><code>Validator#validateProperty()</code> is for example used in the integration of Jakarta Bean Validation into JSF 2 (see <a href="#section-presentation-layer">Section 11.2, &#8220;JSF &amp; Seam&#8221;</a>) to perform
-                                    a validation of the values entered into a form before they are propagated to the model.</p>
+                                <p>例如，<code>Validator#validateProperty()</code> 用于将 Jakarta Bean Validation 集成到 JSF 2中(see <a href="#section-presentation-layer">Section 11.2, &#8220;JSF &amp; Seam&#8221;</a>) ，以便对输入到表单中的值执行验证，然后将它们传播到模型中。</p>
                             </div>
                         </div>
                     </div>
@@ -4253,11 +4244,10 @@ assertEquals( "must not be null", constraintViolations.iterator().next().getMess
                         <h4 id="section-constraint-violation-methods">
                             <a class="anchor" href="#section-constraint-violation-methods"></a>2.2.3. <code>ConstraintViolation</code></h4>
                         <div class="sect4">
-                            <h5 id="_constraintviolation_methods">
-                                <a class="anchor" href="#_constraintviolation_methods"></a>2.2.3.1. <code>ConstraintViolation</code> methods</h5>
+                            <h5 id="_constraintviolation_的方法">
+                                <a class="anchor" href="#_constraintviolation_的方法"></a>2.2.3.1. <code>ConstraintViolation</code> 的方法</h5>
                             <div class="paragraph">
-                                <p>Now it is time to have a closer look at what a <code>ConstraintViolation</code> is. Using the different methods of <code>ConstraintViolation</code> a lot of useful information about the cause of the validation failure can
-                                    be determined. The following gives an overview of these methods. The values under "Example" column refer to <a href="#example-validator-validate">Example 24, &#8220;Using <code>Validator#validate()</code>&#8221;</a>.</p>
+                                <p>现在是时候仔细研究一下什么是 <code>ConstraintViolation</code> 了。使用 <code>ConstraintViolation</code> 中不同的方法可以确定校验失败原因的许多有用信息。以下是这些方法的概述。 列下的值引用了 <a href="#example-validator-validate">Example 24, &#8220;使用 <code>Validator#validate()</code>&#8221;</a>.</p>
                             </div>
                             <div class="dlist">
                                 <dl>
@@ -4361,36 +4351,32 @@ assertEquals( "must not be null", constraintViolations.iterator().next().getMess
                             </div>
                         </div>
                         <div class="sect4">
-                            <h5 id="_exploiting_the_property_path">
-                                <a class="anchor" href="#_exploiting_the_property_path"></a>2.2.3.2. Exploiting the property path</h5>
+                            <h5 id="_利用_property_path">
+                                <a class="anchor" href="#_利用_property_path"></a>2.2.3.2. 利用 property path</h5>
                             <div class="paragraph">
-                                <p>To determine the element that triggered the violation, you need to exploit the result of the <code>getPropertyPath()</code> method.
-                                </p>
+                                <p>要确定触发冲突的原因，需要利用 <code>getPropertyPath()</code> 方法的结果。</p>
                             </div>
                             <div class="paragraph">
-                                <p>The returned <code>Path</code> is composed of <code>Node</code>s describing the path to the element.</p>
+                                <p>返回的 <code>Path</code> 由描述元素路径的 <code>Node</code>s 组成</p>
                             </div>
                             <div class="paragraph">
-                                <p>More information about the structure of the <code>Path</code> and the various types of <code>Node</code>s can be found in {bvSpecUrl}#validationapi-constraintviolation[the <code>ConstraintViolation</code> section] of the
-                                    Jakarta Bean Validation specification.</p>
+                                <p>关于 <code>Path</code> 的结构和各种类型的 <code>Node</code>s 的更多信息可以在 Jakarta Bean Validation specification 中的 <code>ConstraintViolation</code> 章节找到.</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="sect2">
                     <h3 id="section-builtin-constraints">
-                        <a class="anchor" href="#section-builtin-constraints"></a>2.3. Built-in constraints</h3>
+                        <a class="anchor" href="#section-builtin-constraints"></a>2.3. 内置约束</h3>
                     <div class="paragraph">
-                        <p>Hibernate Validator comprises a basic set of commonly used constraints. These are foremost the constraints defined by the Jakarta Bean Validation specification (see <a href="#validator-defineconstraints-spec">Section 2.3.1, &#8220;Jakarta Bean Validation constraints&#8221;</a>).
-                            Additionally, Hibernate Validator provides useful custom constraints (see
-                            <a href="#validator-defineconstraints-hv-constraints">Section 2.3.2, &#8220;Additional constraints&#8221;</a>).</p>
+                        <p>Hibernate Validator 包含一组常用的约束。这些都是 Jakarta Bean Validation 规范定义 (see <a href="#validator-defineconstraints-spec">Section 2.3.1, &#8220;Jakarta Bean Validation 约束&#8221;</a>)。 此外，Hibernate Validator 还提供了有用的自定义约束 (see
+                            <a href="#validator-defineconstraints-hv-constraints">Section 2.3.2, &#8220;Additional constraints&#8221;</a>)。</p>
                     </div>
                     <div class="sect3">
                         <h4 id="validator-defineconstraints-spec">
-                            <a class="anchor" href="#validator-defineconstraints-spec"></a>2.3.1. Jakarta Bean Validation constraints</h4>
+                            <a class="anchor" href="#validator-defineconstraints-spec"></a>2.3.1. Jakarta Bean Validation 约束</h4>
                         <div class="paragraph">
-                            <p>Below you can find a list of all constraints specified in the Jakarta Bean Validation API. All these constraints apply to the field/property level, there are no class-level constraints defined in the Jakarta Bean Validation
-                                specification. If you are using the Hibernate object-relational mapper, some of the constraints are taken into account when creating the DDL for your model (see "Hibernate metadata impact").</p>
+                            <p>下面是 Jakarta Bean Validation API 中指定的所有约束的列表。 所有这些约束都适用于字段/属性级别，在 Jakarta Bean 验证规范中没有定义类级别约束。如果您使用 Hibernate 对象关系映射器，那么在为您的模型创建 DDL 时会考虑到一些约束 (see "Hibernate metadata impact").</p>
                         </div>
                         <div class="admonitionblock note">
                             <table>
@@ -4400,8 +4386,7 @@ assertEquals( "must not be null", constraintViolations.iterator().next().getMess
                                     </td>
                                     <td class="content">
                                         <div class="paragraph">
-                                            <p>Hibernate Validator allows some constraints to be applied to more data types than required by the Jakarta Bean Validation specification (e.g. <code>@Max</code> can be applied to strings). Relying on this feature
-                                                can impact portability of your application between Jakarta Bean Validation providers.</p>
+                                            <p>Hibernate Validator 允许将一些约束应用于更多的数据类型，而不是 Jakarta Bean Validation 规范所要求的数据类型 (e.g. <code>@Max</code> 可以应用于字符串)。依赖此特性可能会影响应用程序在 Jakarta Bean Validation 提供程序之间的可移植性。</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -4411,7 +4396,7 @@ assertEquals( "must not be null", constraintViolations.iterator().next().getMess
                             <dl>
                                 <dt class="hdlist1"><code>@AssertFalse</code></dt>
                                 <dd>
-                                    <p>Checks that the annotated element is false</p>
+                                    <p>检查带注解的元素是否为false</p>
                                     <div class="dlist">
                                         <dl>
                                             <dt class="hdlist1">Supported data types</dt>
@@ -4427,7 +4412,7 @@ assertEquals( "must not be null", constraintViolations.iterator().next().getMess
                                 </dd>
                                 <dt class="hdlist1"><code>@AssertTrue</code></dt>
                                 <dd>
-                                    <p>Checks that the annotated element is true</p>
+                                    <p>检查带注解的元素是否为true</p>
                                     <div class="dlist">
                                         <dl>
                                             <dt class="hdlist1">Supported data types</dt>
@@ -4443,15 +4428,12 @@ assertEquals( "must not be null", constraintViolations.iterator().next().getMess
                                 </dd>
                                 <dt class="hdlist1"><code>@DecimalMax(value=, inclusive=)</code></dt>
                                 <dd>
-                                    <p>Checks whether the annotated value is less than the specified maximum, when <code>inclusive</code>=false. Otherwise whether the value is less than or equal to the specified maximum. The parameter value is the string
-                                        representation of the max value according to the <code>BigDecimal</code> string representation.</p>
+                                    <p>当 <code>inclusive</code> = false 时，检查带注解的值是否小于指定的最大值。否则，该值是否小于或等于指定的最大值。参数值是根据 <code>BigDecimal</code> 字符串表示形式的值。</p>
                                     <div class="dlist">
                                         <dl>
                                             <dt class="hdlist1">Supported data types</dt>
                                             <dd>
-                                                <p><code>BigDecimal</code>, <code>BigInteger</code>, <code>CharSequence</code>, <code>byte</code>, <code>short</code>, <code>int</code>, <code>long</code> and the respective wrappers of the primitive types;
-                                                    additionally supported by HV: any sub-type of <code>Number</code> and <code>javax.money.MonetaryAmount</code> (if the <a href="https://jcp.org/en/jsr/detail?id=354">JSR 354 API</a> and an implementation
-                                                    is on the class path)</p>
+                                                <p><code>BigDecimal</code>, <code>BigInteger</code>, <code>CharSequence</code>, <code>byte</code>, <code>short</code>, <code>int</code>, <code>long</code> 以及各自的基本类型包装器; <code>Number</code> 和 <code>javax.money.MonetaryAmount</code>                                                    的任何子类型都支持 (如果 <a href="https://jcp.org/en/jsr/detail?id=354">JSR 354 API</a> 和一个实现位于类路径上)</p>
                                             </dd>
                                             <dt class="hdlist1">Hibernate metadata impact</dt>
                                             <dd>
@@ -4960,7 +4942,8 @@ assertEquals( "must not be null", constraintViolations.iterator().next().getMess
                                     <p>Checks that the digits within the annotated character sequence pass the generic mod 10 checksum algorithm. <code>multiplier</code> determines the multiplier for odd numbers (defaults to 3), <code>weight</code> the weight
                                         for even numbers (defaults to 1). <code>startIndex</code> and <code>endIndex</code> allow to only run the algorithm on the specified sub-string. <code>checkDigitIndex</code> allows to use an arbitrary digit within
                                         the character sequence as the check digit. If not specified it is assumed that the check digit is part of the specified range. Last but not least, <code>ignoreNonDigitCharacters</code> allows to ignore non digit
-                                        characters.</p>
+                                        characters.
+                                    </p>
                                     <div class="dlist">
                                         <dl>
                                             <dt class="hdlist1">Supported data types</dt>
@@ -5656,7 +5639,8 @@ public class Garage {
                         </div>
                         <div class="paragraph">
                             <p>These rules are motivated by the concept of <em>behavioral subtyping</em> which requires that wherever a type <code>T</code> is used, also a subtype <code>S</code> of <code>T</code> may be used without altering the program&#8217;s
-                                behavior.</p>
+                                behavior.
+                            </p>
                         </div>
                         <div class="paragraph">
                             <p>As an example, consider a class invoking a method on an object with the static type <code>T</code>. If the runtime type of that object was <code>S</code> and <code>S</code> imposed additional preconditions, the client class
@@ -6107,7 +6091,7 @@ assertEquals( 0, parameterNode.getParameterIndex() );</code></pre>
                         <a class="anchor" href="#section-builtin-method-constraints"></a>3.3. Built-in method constraints</h3>
                     <div class="paragraph">
                         <p>In addition to the built-in bean and property-level constraints discussed in
-                            <a href="#section-builtin-constraints">Section 2.3, &#8220;Built-in constraints&#8221;</a>, Hibernate Validator currently provides one method-level constraint,
+                            <a href="#section-builtin-constraints">Section 2.3, &#8220;内置约束&#8221;</a>, Hibernate Validator currently provides one method-level constraint,
                             <code>@ParameterScriptAssert</code>. This is a generic cross-parameter constraint which allows to implement validation routines using any JSR 223 compatible ("Scripting for the Java<sup>TM</sup> Platform") scripting language,
                             provided an engine for this language is available on the classpath.</p>
                     </div>
@@ -6375,7 +6359,8 @@ public class Car {
                                 </li>
                                 <li>
                                     <p>finally, the <code>@DecimalMax</code> constraint on <code>price</code> shows that parameter interpolation has precedence over expression evaluation, causing the <code>$</code> sign to show up in front of the maximum
-                                        price</p>
+                                        price
+                                    </p>
                                 </li>
                             </ul>
                         </div>
@@ -6512,7 +6497,8 @@ assertEquals( "Price must not be higher than $100000", message );</code></pre>
                         </div>
                         <div class="paragraph">
                             <p>Note that the bundles are processed in the order as passed to the constructor. That means if several bundles contain an entry for a given message key, the value will be taken from the first bundle in the list containing the
-                                key.</p>
+                                key.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -6882,7 +6868,8 @@ assertThat( constraintViolations ).extracting( "message" ).containsOnly(
                     <div class="paragraph">
                         <p>In order to implement such a validation order you just need to define an interface and annotate it with <code>@GroupSequence</code>, defining the order in which the groups have to be validated (see
                             <a href="#example-defining-group-sequence">Example 55, &#8220;Defining a group sequence&#8221;</a>). If at least one constraint fails in a sequenced group, none of the constraints of the following groups in the sequence get
-                            validated.</p>
+                            validated.
+                        </p>
                     </div>
                     <div id="example-defining-group-sequence" class="exampleblock">
                         <div class="title">Example 55. Defining a group sequence</div>
@@ -7843,7 +7830,8 @@ public class ZipCodeValidator implements ConstraintValidator&lt;ZipCode, String&
                             <a class="anchor" href="#validator-customconstraints-using"></a>6.1.4. Using the constraint</h4>
                         <div class="paragraph">
                             <p>You can now use the constraint in the <code>Car</code> class from the <a href="#validator-gettingstarted">Chapter 1, <em>快速开始</em></a> chapter to specify that the <code>licensePlate</code> field should only contain upper-case
-                                strings:</p>
+                                strings:
+                            </p>
                         </div>
                         <div id="example-car-with-checkcase" class="exampleblock">
                             <div class="title">Example 71. Applying the <code>@CheckCase</code> constraint</div>
@@ -8748,7 +8736,8 @@ private ReadOnlyListProperty&lt;@NotBlank String&gt; listProperty;</code></pre>
                             <dt class="hdlist1">Via the Java service loader mechanism</dt>
                             <dd>
                                 <p>The file <code>META-INF/services/jakarta.validation.valueextraction.ValueExtractor</code> must be provided, with the fully-qualified names of one or more value extractor implementations as its contents, each on a separate
-                                    line.</p>
+                                    line.
+                                </p>
                             </dd>
                             <dt class="hdlist1">In the <code>META-INF/validation.xml</code> file</dt>
                             <dd>
@@ -9192,7 +9181,7 @@ private ReadOnlyListProperty&lt;@NotBlank String&gt; listProperty;</code></pre>
                 <a class="anchor" href="#chapter-bootstrapping"></a>9. Bootstrapping</h2>
             <div class="sectionbody">
                 <div class="paragraph">
-                    <p>In <a href="#section-obtaining-validator">Section 2.2.1, &#8220;Obtaining a <code>Validator</code> instance&#8221;</a>, you already saw one way of creating a <code>Validator</code> instance - via
+                    <p>In <a href="#section-obtaining-validator">Section 2.2.1, &#8220;获取 <code>Validator</code> 实例&#8221;</a>, you already saw one way of creating a <code>Validator</code> instance - via
                         <code>Validation#buildDefaultValidatorFactory()</code>. In this chapter, you will learn how to use the other methods in <code>jakarta.validation.Validation</code> in order to bootstrap specifically configured validators.</p>
                 </div>
                 <div class="sect2">
@@ -9412,7 +9401,8 @@ Validator validator = validatorFactory.getValidator();</code></pre>
                         <div class="paragraph">
                             <p>Which properties can be accessed and which ones not is controlled by querying the
                                 <code>TraversableResolver</code> interface. <a href="#example-using-custom-traversable-resolver">Example 103, &#8220;Using a custom <code>TraversableResolver</code>&#8221;</a> shows how to use a custom traversable resolver
-                                implementation.</p>
+                                implementation.
+                            </p>
                         </div>
                         <div id="example-using-custom-traversable-resolver" class="exampleblock">
                             <div class="title">Example 103. Using a custom <code>TraversableResolver</code></div>
@@ -9589,7 +9579,8 @@ Validator validator = validatorFactory.getValidator();</code></pre>
                             <a class="anchor" href="#section-parameter-name-provider"></a>9.2.4. <code>ParameterNameProvider</code></h4>
                         <div class="paragraph">
                             <p>In case a method or constructor parameter constraint is violated, the <code>ParameterNameProvider</code> interface is used to retrieve the parameter name and make it available to the user via the property path of the constraint
-                                violation.</p>
+                                violation.
+                            </p>
                         </div>
                         <div class="paragraph">
                             <p>The default implementation returns parameter names as obtained through the Java reflection API. If you compile your sources using the <code>-parameters</code> compiler flag, the actual parameter names as in the source code
@@ -10858,7 +10849,8 @@ assertEquals(
                         <a class="anchor" href="#_containerdescriptor_and_containerelementtypedescriptor"></a>10.5. <code>ContainerDescriptor</code> and <code>ContainerElementTypeDescriptor</code></h3>
                     <div class="paragraph">
                         <p>The {bvApiDocsUrl}?jakarta/validation/metadata/ContainerDescriptor.html[<code>ContainerDescriptor</code>] interface is the common interface for all the elements that support container element constraints and cascading validation
-                            (<code>PropertyDescriptor</code>, <code>ParameterDescriptor</code>, <code>ReturnValueDescriptor</code>).</p>
+                            (
+                            <code>PropertyDescriptor</code>, <code>ParameterDescriptor</code>, <code>ReturnValueDescriptor</code>).</p>
                     </div>
                     <div class="paragraph">
                         <p>It has a single method <code>getConstrainedContainerElementTypes()</code> that returns a set of <code>ContainerElementTypeDescriptor</code>.</p>
@@ -11042,7 +11034,7 @@ assertEquals(
                         </div>
                         <div class="paragraph">
                             <p>If, for some reason, the feature needs to be disabled, set <code>hibernate.validator.apply_to_ddl</code> to
-                                <code>false</code>. See also <a href="#validator-defineconstraints-spec">Section 2.3.1, &#8220;Jakarta Bean Validation constraints&#8221;</a> and <a href="#validator-defineconstraints-hv-constraints">Section 2.3.2, &#8220;Additional constraints&#8221;</a>.</p>
+                                <code>false</code>. See also <a href="#validator-defineconstraints-spec">Section 2.3.1, &#8220;Jakarta Bean Validation 约束&#8221;</a> and <a href="#validator-defineconstraints-hv-constraints">Section 2.3.2, &#8220;Additional constraints&#8221;</a>.</p>
                         </div>
                         <div class="paragraph">
                             <p>You can also limit the DDL constraint generation to a subset of the defined constraints by setting the property <code>org.hibernate.validator.group.ddl</code>. The property specifies the comma-separated, fully specified class
@@ -12351,7 +12343,8 @@ public class ValidPassengerCountValidator implements ConstraintValidator&lt;Vali
                     </div>
                     <div class="paragraph">
                         <p>On the constraint violation processing side, a <code>jakarta.validation.ConstraintViolation</code> can then in turn be unwrapped to <code>HibernateConstraintViolation</code> in order to retrieve the dynamic payload for further
-                            processing.</p>
+                            processing.
+                        </p>
                     </div>
                     <div id="example-retrieving-dynamic-payload" class="exampleblock">
                         <div class="title">Example 149. Retrieval of a <code>ConstraintViolation</code>'s dynamic payload</div>
@@ -12916,7 +12909,8 @@ public class MyFutureValidatorMessageParameter implements ConstraintValidator&lt
                             <p>Hibernate Validator also offers a custom extension of <code>MessageInterpolatorContext</code>, namely
                                 <code>HibernateMessageInterpolatorContext</code> (see <a href="#example-custom-message-interpolator-context">Example 154, &#8220;<code>HibernateMessageInterpolatorContext</code>&#8221;</a>). This subtype was introduced
                                 to allow a better integration of Hibernate Validator into Glassfish. The root bean type was in this case needed to determine the right class loader for the message resource bundle. If you have any other use cases, let us
-                                know.</p>
+                                know.
+                            </p>
                         </div>
                         <div id="example-custom-message-interpolator-context" class="exampleblock">
                             <div class="title">Example 154. <code>HibernateMessageInterpolatorContext</code></div>
