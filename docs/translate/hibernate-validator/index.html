@@ -2522,42 +2522,42 @@
                         <li><a href="#section-builtin-method-constraints">3.3. 内置方法约束</a></li>
                     </ul>
                 </li>
-                <li><a href="#chapter-message-interpolation">4. Interpolating constraint error messages</a>
+                <li><a href="#chapter-message-interpolation">4. 添加约束错误消息</a>
                     <ul class="sectlevel2">
-                        <li><a href="#section-message-interpolation">4.1. Default message interpolation</a>
+                        <li><a href="#section-message-interpolation">4.1. 默认消息插值</a>
                             <ul class="sectlevel3">
-                                <li><a href="#section-special-characters">4.1.1. Special characters</a></li>
-                                <li><a href="#section-interpolation-with-message-expressions">4.1.2. Interpolation with message expressions</a></li>
-                                <li><a href="#_examples">4.1.3. Examples</a></li>
+                                <li><a href="#section-special-characters">4.1.1. 特殊字符</a></li>
+                                <li><a href="#section-interpolation-with-message-expressions">4.1.2. 带有消息表达式的插值</a></li>
+                                <li><a href="#_示例">4.1.3. 示例</a></li>
                             </ul>
                         </li>
-                        <li><a href="#section-custom-message-interpolation">4.2. Custom message interpolation</a>
+                        <li><a href="#section-custom-message-interpolation">4.2. 自定义消息插值</a>
                             <ul class="sectlevel3">
                                 <li><a href="#section-resource-bundle-locator">4.2.1. <code>ResourceBundleLocator</code></a></li>
                             </ul>
                         </li>
                     </ul>
                 </li>
-                <li><a href="#chapter-groups">5. Grouping constraints</a>
+                <li><a href="#chapter-groups">5. 分组约束</a>
                     <ul class="sectlevel2">
-                        <li><a href="#_requesting_groups">5.1. Requesting groups</a></li>
-                        <li><a href="#section-group-inheritance">5.2. Group inheritance</a></li>
-                        <li><a href="#section-defining-group-sequences">5.3. Defining group sequences</a></li>
-                        <li><a href="#section-default-group-class">5.4. Redefining the default group sequence</a>
+                        <li><a href="#_请求分组">5.1. 请求分组</a></li>
+                        <li><a href="#section-group-inheritance">5.2. 分组继承</a></li>
+                        <li><a href="#section-defining-group-sequences">5.3. 定义分组序列</a></li>
+                        <li><a href="#section-default-group-class">5.4. 重新定义默认组序列</a>
                             <ul class="sectlevel3">
                                 <li><a href="#_groupsequence">5.4.1. <code>@GroupSequence</code></a></li>
                                 <li><a href="#_groupsequenceprovider">5.4.2. <code>@GroupSequenceProvider</code></a></li>
                             </ul>
                         </li>
-                        <li><a href="#section-group-conversion">5.5. Group conversion</a></li>
+                        <li><a href="#section-group-conversion">5.5. 分组转化</a></li>
                     </ul>
                 </li>
-                <li><a href="#validator-customconstraints">6. Creating custom constraints</a>
+                <li><a href="#validator-customconstraints">6. 自定义约束</a>
                     <ul class="sectlevel2">
-                        <li><a href="#validator-customconstraints-simple">6.1. Creating a simple constraint</a>
+                        <li><a href="#validator-customconstraints-simple">6.1. 创建一个简单的约束</a>
                             <ul class="sectlevel3">
-                                <li><a href="#validator-customconstraints-constraintannotation">6.1.1. The constraint annotation</a></li>
-                                <li><a href="#section-constraint-validator">6.1.2. The constraint validator</a></li>
+                                <li><a href="#validator-customconstraints-constraintannotation">6.1.1. 约束注解</a></li>
+                                <li><a href="#section-constraint-validator">6.1.2. 约束校验器</a></li>
                                 <li><a href="#validator-customconstraints-errormessage">6.1.3. The error message</a></li>
                                 <li><a href="#validator-customconstraints-using">6.1.4. Using the constraint</a></li>
                             </ul>
@@ -2772,8 +2772,8 @@
                         <h4 id="validator-gettingstarted-uel">
                             <a class="anchor" href="#validator-gettingstarted-uel"></a>1.1.1. 统一的EL表达式</h4>
                         <div class="paragraph">
-                            <p>Hibernate Validator 需要一个 <a href="https://projects.eclipse.org/projects/ee4j.el">Jakarta Expression Language</a> 的实现来能够动态使用表达式计算校验结果 ( <a href="#section-message-interpolation">Section 4.1, &#8220;Default message interpolation&#8221;</a>).
-                                当您的应用程序在 Java EE 容器(如 JOSS AS)中运行时，相关容器已经提供了EL实现。 但是，在Java SE环境中，您必须将一个实现作为依赖项添加到您的POM文件。例如，您可以添加以下依赖项来使用 Jakarta EL <a href="https://github.com/eclipse-ee4j/el-ri">reference
+                            <p>Hibernate Validator 需要一个 <a href="https://projects.eclipse.org/projects/ee4j.el">Jakarta Expression Language</a> 的实现来能够动态使用表达式计算校验结果 ( <a href="#section-message-interpolation">Section 4.1, &#8220;默认消息插值&#8221;</a>). 当您的应用程序在
+                                Java EE 容器(如 JOSS AS)中运行时，相关容器已经提供了EL实现。 但是，在Java SE环境中，您必须将一个实现作为依赖项添加到您的POM文件。例如，您可以添加以下依赖项来使用 Jakarta EL <a href="https://github.com/eclipse-ee4j/el-ri">reference
 implementation</a>引用:</p>
                         </div>
                         <div class="exampleblock">
@@ -3220,7 +3220,7 @@ public class CarTest {
                                 </td>
                                 <td class="content">
                                     <div class="paragraph">
-                                        <p>并非所有的约束都可以放在所有这些级别上。事实上，Jakarta Bean Validation 定义的约束都不能放在类级别上。相关约束注解的 <code>java.lang.annotation.Target</code> 确定可以在哪些类型上使用。 请参见 <a href="#validator-customconstraints">Chapter 6, <em>Creating custom constraints</em></a>                                            获取更多信息。</p>
+                                        <p>并非所有的约束都可以放在所有这些级别上。事实上，Jakarta Bean Validation 定义的约束都不能放在类级别上。相关约束注解的 <code>java.lang.annotation.Target</code> 确定可以在哪些类型上使用。 请参见 <a href="#validator-customconstraints">Chapter 6, <em>自定义约束</em></a> 获取更多信息。</p>
                                     </div>
                                 </td>
                             </tr>
@@ -4084,7 +4084,7 @@ validator = factory.getValidator();</code></pre>
                             <p>这三个方法都返回一个 <code>Set&lt;ConstraintViolation&gt;</code>。如果验证成功，集合是空的。否则，将为每个违反的约束添加一个 <code>ConstraintViolation</code> 实例。</p>
                         </div>
                         <div class="paragraph">
-                            <p>所有的验证方法都有一个 var-args 参数，可以用来指定在执行验证时应该考虑哪些验证组。如果未指定参数，则默认验证组( <code>jakarta.validation.groups.Default</code>) . 将在 <a href="#chapter-groups">Chapter 5, <em>Grouping constraints</em></a> 中详细讨论 .</p>
+                            <p>所有的验证方法都有一个 var-args 参数，可以用来指定在执行验证时应该考虑哪些验证组。如果未指定参数，则默认验证组( <code>jakarta.validation.groups.Default</code>) . 将在 <a href="#chapter-groups">Chapter 5, <em>分组约束</em></a> 中详细讨论 .</p>
                         </div>
                         <div class="sect4">
                             <h5 id="_validatorvalidate">
@@ -5154,7 +5154,7 @@ assertEquals( "must not be null", constraintViolations.iterator().next().getMess
                                         </td>
                                         <td class="content">
                                             <div class="paragraph">
-                                                <p>在某些情况下，Jakarta Bean Validation 约束和 Hibernate Validator提供的自定义约束都不能满足您的需求。在这种情况下，您可以很容易地编写自己的约束。你可以 <a href="#validator-customconstraints">Chapter 6, <em>Creating custom constraints</em></a> 中找到更多信息。</p>
+                                                <p>在某些情况下，Jakarta Bean Validation 约束和 Hibernate Validator提供的自定义约束都不能满足您的需求。在这种情况下，您可以很容易地编写自己的约束。你可以 <a href="#validator-customconstraints">Chapter 6, <em>自定义约束</em></a> 中找到更多信息。</p>
                                             </div>
                                         </td>
                                     </tr>
@@ -6003,22 +6003,19 @@ public class Car {
         </div>
         <div class="sect1">
             <h2 id="chapter-message-interpolation">
-                <a class="anchor" href="#chapter-message-interpolation"></a>4. Interpolating constraint error messages</h2>
+                <a class="anchor" href="#chapter-message-interpolation"></a>4. 添加约束错误消息</h2>
             <div class="sectionbody">
                 <div class="paragraph">
-                    <p>Message interpolation is the process of creating error messages for violated Jakarta Bean Validation constraints. In this chapter you will learn how such messages are defined and resolved and how you can plug in custom message interpolators
-                        in case the default algorithm is not sufficient for your requirements.
-                    </p>
+                    <p>消息插值是违反 Jakarta Bean Validation 约束后创建错误消息的过程。在本章中，您将学习如何定义和解析这些消息，以及如何在默认算法不足以满足需求的情况下插入自定义消息插入器。</p>
                 </div>
                 <div class="sect2">
                     <h3 id="section-message-interpolation">
-                        <a class="anchor" href="#section-message-interpolation"></a>4.1. Default message interpolation</h3>
+                        <a class="anchor" href="#section-message-interpolation"></a>4.1. 默认消息插值</h3>
                     <div class="paragraph">
-                        <p>Constraint violation messages are retrieved from so called message descriptors. Each constraint defines its default message descriptor using the message attribute. At declaration time, the default descriptor can be overridden with
-                            a specific value as shown in <a href="#example-overriding-message">Example 44, &#8220;Specifying a message descriptor using the message attribute&#8221;</a>.</p>
+                        <p>违反约束的消息是从所谓的消息descriptors(描述器)中检索的。每个约束都定义了它们自己其默认消息descriptors(描述器)。在声明时，默认descriptors(描述器)可以被特定的值覆盖，如 <a href="#example-overriding-message">Example 44, &#8220;使用消息属性指定消息描述符&#8221;</a>.</p>
                     </div>
                     <div id="example-overriding-message" class="exampleblock">
-                        <div class="title">Example 44. Specifying a message descriptor using the message attribute</div>
+                        <div class="title">Example 44. 使用消息属性指定消息描述符</div>
                         <div class="content">
                             <div class="listingblock">
                                 <div class="content">
@@ -6036,33 +6033,25 @@ public class Car {
                         </div>
                     </div>
                     <div class="paragraph">
-                        <p>If a constraint is violated, its descriptor will be interpolated by the validation engine using the currently configured <code>MessageInterpolator</code>. The interpolated error message can then be retrieved from the resulting
-                            constraint violation by calling <code>ConstraintViolation#getMessage()</code>.</p>
+                        <p>如果违反了相关约束注解，将由validation引擎使用当前配置的 <code>MessageInterpolator</code> 进行消息的构建。然后通过调用 <code>ConstraintViolation#getMessage()</code> 方法可以获取结果。</p>
                     </div>
                     <div class="paragraph">
-                        <p>Message descriptors can contain <em>message parameters</em> as well as <em>message expressions</em> which will be resolved during interpolation. Message parameters are string literals enclosed in <code>{}</code>, while message
-                            expressions are string literals enclosed in <code>${}</code>. The following algorithm is applied during method interpolation:</p>
+                        <p>消息描述符可以包含 <em>message parameters(消息参数)</em> 以及在插值期间将要解析的 <em>message expressions(消息表达式)</em> 。消息参数是封闭在 <code>{}</code> 中的字符串，而消息表达式是封闭在 <code>${}</code> 中的字符串。在方法插值过程中应用了以下算法:</p>
                     </div>
                     <div class="olist arabic">
                         <ol class="arabic">
                             <li>
-                                <p>Resolve any message parameters by using them as key for the resource bundle <em>ValidationMessages</em>. If this bundle contains an entry for a given message parameter, that parameter will be replaced in the message with
-                                    the corresponding value from the bundle. This step will be executed recursively in case the replaced value again contains message parameters. The resource bundle is expected to be provided by the application developer,
-                                    e.g. by adding a file named <em>ValidationMessages.properties</em> to the classpath. You can also create localized error messages by providing locale specific variations of this bundle, such as <em>ValidationMessages_en_US.properties</em>.
-                                    By default, the JVM&#8217;s default locale (
-                                    <code>Locale#getDefault()</code>) will be used when looking up messages in the bundle.</p>
+                                <p>将 <em>message parameters(消息参数)</em> 作为键值(key)在资源包 <em>ValidationMessages</em> 中检索value值。 如果这个资源包包含给定 <em>message parameters(消息参数)</em> ，那么该参数的value将在消息中的 <em>message parameters(消息参数)</em> 替换。如果替换的值再次包含消息参数，将递归地执行此步骤。资源包应该由应用程序开发人员提供，例如，通过将名为
+                                    <em>ValidationMessages.properties</em> 的文件添加到类路径中。您还可以通过提供此包的特定于国家的语言文件(如 <em>ValidationMessages_en_US.properties</em> )来创建本地化的错误消息。默认情况下，在包中查找消息时将使用 JVM 的默认语言环境( <code>Locale#getDefault()</code> )。</p>
                             </li>
                             <li>
-                                <p>Resolve any message parameters by using them as key for a resource bundle containing the standard error messages for the built-in constraints as defined in Appendix B of the Jakarta Bean Validation specification. In the
-                                    case of Hibernate Validator, this bundle is named
-                                    <code>org.hibernate.validator.ValidationMessages</code>. If this step triggers a replacement, step 1 is executed again, otherwise step 3 is applied.</p>
+                                <p>通过将任何消息参数用作包含 Jakarta Bean Validation规范附录 B 中定义的内置约束的标准错误消息的资源包的键来解析它们。对于 Hibernate Validator，这个绑定包名为 <code>org.hibernate.validator.ValidationMessages</code> 。如果此步骤触发替换，则再次执行步骤1，否则应用步骤3。</p>
                             </li>
                             <li>
-                                <p>Resolve any message parameters by replacing them with the value of the constraint annotation member of the same name. This allows to refer to attribute values of the constraint (e.g. <code>Size#min()</code>) in the error
-                                    message (e.g. "must be at least ${min}").</p>
+                                <p>通过将任何消息参数替换为具有相同名称的约束注解成员的值来解析它们。这允许在错误消息中引用约束的属性值(例如 <code>Size#min()</code>)(例如"must be at least ${ min }")。</p>
                             </li>
                             <li>
-                                <p>Resolve any message expressions by evaluating them as expressions of the Unified Expression Language. See <a href="#section-interpolation-with-message-expressions">Section 4.1.2, &#8220;Interpolation with message expressions&#8221;</a>                                    to learn more about the usage of Unified EL in error messages.</p>
+                                <p>通过将任何消息表达式计算为统一表达式语言表达式来解析它们。请参阅<a href="#section-interpolation-with-message-expressions">Section 4.1.2, &#8220;带有消息表达式的插值&#8221;</a> 了解有关在错误消息中使用统一 EL 的更多信息。</p>
                             </li>
                         </ol>
                     </div>
@@ -6074,7 +6063,7 @@ public class Car {
                                 </td>
                                 <td class="content">
                                     <div class="paragraph">
-                                        <p>You can find the formal definition of the interpolation algorithm in section {bvSpecUrl}#validationapi-message-defaultmessageinterpolation-resolutionalgorithm[6.3.1.1] of the Jakarta Bean Validation specification.</p>
+                                        <p>您可以在 Jakarta Bean Validation 规范的6.3.1.1节中找到插值算法的形式化定义。</p>
                                     </div>
                                 </td>
                             </tr>
@@ -6082,89 +6071,84 @@ public class Car {
                     </div>
                     <div class="sect3">
                         <h4 id="section-special-characters">
-                            <a class="anchor" href="#section-special-characters"></a>4.1.1. Special characters</h4>
+                            <a class="anchor" href="#section-special-characters"></a>4.1.1. 特殊字符</h4>
                         <div class="paragraph">
-                            <p>Since the characters <code>{</code>, <code>}</code> and <code>$</code> have a special meaning in message descriptors, they need to be escaped if you want to use them literally. The following rules apply:</p>
+                            <p>由于字符 <code>{</code>, <code>}</code> 和 <code>$</code> 在消息描述符中具有特殊的含义，如果要按字面意思使用它们，就需要对它们进行转义。以下规则适用:</p>
                         </div>
                         <div class="ulist">
                             <ul>
                                 <li>
-                                    <p><code>\{</code> is considered as the literal <code>{</code></p>
+                                    <p><code>\{</code> 代表字符 <code>{</code></p>
                                 </li>
                                 <li>
-                                    <p><code>\}</code> is considered as the literal <code>}</code></p>
+                                    <p><code>\}</code> 代表字符 <code>}</code></p>
                                 </li>
                                 <li>
-                                    <p><code>\$</code> is considered as the literal <code>$</code></p>
+                                    <p><code>\$</code> 代表字符 <code>$</code></p>
                                 </li>
                                 <li>
-                                    <p><code>\\</code> is considered as the literal <code>\</code></p>
+                                    <p><code>\\</code> 代表字符 <code>\</code></p>
                                 </li>
                             </ul>
                         </div>
                     </div>
                     <div class="sect3">
                         <h4 id="section-interpolation-with-message-expressions">
-                            <a class="anchor" href="#section-interpolation-with-message-expressions"></a>4.1.2. Interpolation with message expressions</h4>
+                            <a class="anchor" href="#section-interpolation-with-message-expressions"></a>4.1.2. 带有消息表达式的插值</h4>
                         <div class="paragraph">
-                            <p>As of Hibernate Validator 5 (Bean Validation 1.1) it is possible to use the
-                                <a href="https://projects.eclipse.org/projects/ee4j.el">Jakarta Expression Language</a> in constraint violation messages. This allows to define error messages based on conditional logic and also enables advanced formatting
-                                options. The validation engine makes the following objects available in the EL context:
-                            </p>
+                            <p>从 Hibernate Validator 5 (Bean Validation 1.1) 开始，可以在违反约束的消息中使用
+                                <a href="https://projects.eclipse.org/projects/ee4j.el">Jakarta Expression Language</a> 。这允许基于条件逻辑定义错误消息，还支持高级格式设置选项。验证引擎使以下对象在 EL 上下文中可用:</p>
                         </div>
                         <div class="ulist">
                             <ul>
                                 <li>
-                                    <p>the attribute values of the constraint mapped to the attribute names</p>
+                                    <p>通过约束的属性名称映射到配置的值</p>
                                 </li>
                                 <li>
-                                    <p>the currently validated value (property, bean, method parameter etc.) under the name <em>validatedValue</em></p>
+                                    <p><em>validatedValue</em> 表式的当前验证的值(属性、 bean、方法参数等)</p>
                                 </li>
                                 <li>
-                                    <p>a bean mapped to the name formatter exposing the var-arg method
-                                        <code>format(String format, Object&#8230;&#8203; args)</code> which behaves like
-                                        <code>java.util.Formatter.format(String format, Object&#8230;&#8203; args)</code>.</p>
+                                    <p>也可以用 <code>format(String format, Object…​ args)</code> 格式化输出，它的行为类似于 <code>java.util.Formatter.format(String format, Object&#8230;&#8203; args)</code> 。</p>
                                 </li>
                             </ul>
                         </div>
                         <div class="paragraph">
-                            <p>Expression Language is very flexible and Hibernate Validator offers several feature levels that you can use to enable Expression Language features through the <code>ExpressionLanguageFeatureLevel</code> enum:</p>
+                            <p>Expression Language非常灵活，Hibernate Validator 提供了几个特性级别，您可以通过 <code>ExpressionLanguageFeatureLevel</code> 这个枚举来启用不同等级表达式语言特性:</p>
                         </div>
                         <div class="ulist">
                             <ul>
                                 <li>
-                                    <p><code>NONE</code>: Expression Language interpolation is fully disabled.</p>
+                                    <p><code>NONE</code>: Expression Language 插值完全禁用。</p>
                                 </li>
                                 <li>
-                                    <p><code>VARIABLES</code>: Allow interpolation of the variables injected via <code>addExpressionVariable()</code>, resources bundles and usage of the <code>formatter</code> object.</p>
+                                    <p><code>VARIABLES</code>: 允许通过 <code>addExpressionVariable()</code>, 资源包 和 <code>formatter</code> 对象.</p>
                                 </li>
                                 <li>
-                                    <p><code>BEAN_PROPERTIES</code>: Allow everything <code>VARIABLES</code> allows plus the interpolation of bean properties.</p>
+                                    <p><code>BEAN_PROPERTIES</code>: 除了 <code>VARIABLES</code> 允许的还包括插入bean的属性。</p>
                                 </li>
                                 <li>
-                                    <p><code>BEAN_METHODS</code>: Also allow execution of bean methods. Can be considered safe for hardcoded constraint messages but not for <a href="#section-hibernateconstraintvalidatorcontext">custom violations</a> where
-                                        extra care is required.</p>
+                                    <p><code>BEAN_METHODS</code>: 也允许执行BEAN方法。对于硬编码的约束消息可以认为是安全的，但是对于需要额外注意的 <a href="#section-hibernateconstraintvalidatorcontext">custom violations</a> (自定义约束)。</p>
                                 </li>
                             </ul>
                         </div>
                         <div class="paragraph">
-                            <p>The default feature level for constraint messages is <code>BEAN_PROPERTIES</code>.</p>
+                            <p>约束消息的默认特性级别是 <code>BEAN_PROPERTIES</code>.</p>
                         </div>
                         <div class="paragraph">
-                            <p>You can define the Expression Language feature level when <a href="#el-features">bootstrapping the <code>ValidatorFactory</code></a>.</p>
+                            <p>你也可以在启动的时候设置级别 <a href="#el-features">bootstrapping the <code>ValidatorFactory</code></a>.</p>
                         </div>
                         <div class="paragraph">
-                            <p>The following section provides several examples for using EL expressions in error messages.</p>
+                            <p>以下部分提供了在错误消息中使用 EL 表达式的几个示例：</p>
                         </div>
                     </div>
                     <div class="sect3">
-                        <h4 id="_examples">
-                            <a class="anchor" href="#_examples"></a>4.1.3. Examples</h4>
+                        <h4 id="_示例">
+                            <a class="anchor" href="#_示例"></a>4.1.3. 示例</h4>
                         <div class="paragraph">
-                            <p><a href="#example-message-descriptors">Example 45, &#8220;Specifying message descriptors&#8221;</a> shows how to make use of the different options for specifying message descriptors.</p>
+                            <p><a href="#example-message-descriptors">Example 45, &#8220;指定消息descriptors(描述符)&#8221;</a> 展示了如何使用不同的选项来指定消息descriptors(描述符)。</p>
                         </div>
                         <div id="example-message-descriptors" class="exampleblock">
-                            <div class="title">Example 45. Specifying message descriptors</div>
+                            <div class="title">Example 45. 指定消息descriptors(描述符)</div>
                             <div class="content">
                                 <div class="listingblock">
                                     <div class="content">
@@ -6218,28 +6202,24 @@ public class Car {
                             </div>
                         </div>
                         <div class="paragraph">
-                            <p>Validating an invalid <code>Car</code> instance yields constraint violations with the messages shown by the assertions in <a href="#example-expected-error-messages">Example 46, &#8220;Expected error messages&#8221;</a>:</p>
+                            <p>校验一个无效的 <code>Car</code> 实例会产生违反约束的行为，用该单元测试验证 <a href="#example-expected-error-messages">Example 46, &#8220;判断是否为预期的错误消息&#8221;</a></p>
                         </div>
                         <div class="ulist">
                             <ul>
                                 <li>
-                                    <p>the <code>@NotNull</code> constraint on the <code>manufacturer</code> field causes the error message "must not be null", as this is the default message defined by the Jakarta Bean Validation specification and no specific
-                                        descriptor is given in the message attribute</p>
+                                    <p><code>manufacturer</code> 字段的 <code>@NotNull</code> 约束将输出错误信息 "must not be null" ，这是由的Jakarta Bean Validation 规范定义的，加之你没有特殊的指定输出信息。</p>
                                 </li>
                                 <li>
-                                    <p>the <code>@Size</code> constraint on the <code>licensePlate</code> field shows the interpolation of message parameters (
-                                        <code>{min}</code>, <code>{max}</code>) and how to add the validated value to the error message using the EL expression <code>${validatedValue}</code></p>
+                                    <p><code>licensePlate</code> 字段的 <code>@Size</code> 约束，展示如何使用 <em>message parameters(消息参数)</em> (<code>{min}</code>, <code>{max}</code>) 以及如何添加当前校验值，通过EL表达式: <code>${validatedValue}</code>。</p>
                                 </li>
                                 <li>
-                                    <p>the <code>@Min</code> constraint on <code>seatCount</code> demonstrates how to use an EL expression with a ternary expression to dynamically choose singular or plural form, depending on an attribute of the constraint
-                                        ("There must be at least 1 seat" vs. "There must be at least 2 seats")</p>
+                                    <p><code>seatCount</code> 字段的 <code>@Min</code> 约束，演示了如何使用带有三元表达式的 EL 表达式动态选择单数或复数形式，这取决于约束的属性("There must be at least 1 seat" vs. "There must be at least 2 seats")</p>
                                 </li>
                                 <li>
-                                    <p>the message for the <code>@DecimalMax</code> constraint on <code>topSpeed</code> shows how to format the validated value using the formatter instance</p>
+                                    <p><code>topSpeed</code> 字段的 <code>@DecimalMax</code> 展示了如何使用格式化程序实例格式化已验证的值</p>
                                 </li>
                                 <li>
-                                    <p>finally, the <code>@DecimalMax</code> constraint on <code>price</code> shows that parameter interpolation has precedence over expression evaluation, causing the <code>$</code> sign to show up in front of the maximum
-                                        price</p>
+                                    <p>最后，<code>price</code> 字段的 <code>@DecimalMax</code> 约束显示参数插值优先于表达式求值，导致 <code>$</code> 符号显示在最大价格前面</p>
                                 </li>
                             </ul>
                         </div>
@@ -6251,16 +6231,15 @@ public class Car {
                                     </td>
                                     <td class="content">
                                         <div class="paragraph">
-                                            <p>Only actual constraint attributes can be interpolated using message parameters in the form
-                                                <code>{attributeName}</code>. When referring to the validated value or custom expression variables added to the interpolation context (see <a href="#section-hibernateconstraintvalidatorcontext">Section 12.13.1, &#8220;<code>HibernateConstraintValidatorContext</code>&#8221;</a>),
-                                                an EL expression in the form <code>${attributeName}</code> must be used.</p>
+                                            <p>只有实际的约束属性可以使用格式 <code>{attributeName}</code> 。当引用添加到插值上下文中的验证值或自定义表达式变量时(参见 <a href="#section-hibernateconstraintvalidatorcontext">Section 12.13.1, &#8220;<code>HibernateConstraintValidatorContext</code>&#8221;</a>),
+                                                必须使用形式为 <code>${attributeName}</code> 的 EL 表达式。</p>
                                         </div>
                                     </td>
                                 </tr>
                             </table>
                         </div>
                         <div id="example-expected-error-messages" class="exampleblock">
-                            <div class="title">Example 46. Expected error messages</div>
+                            <div class="title">Example 46. 判断是否为预期的错误消息</div>
                             <div class="content">
                                 <div class="listingblock">
                                     <div class="content">
@@ -6297,35 +6276,30 @@ assertEquals( "Price must not be higher than $100000", message );</code></pre>
                 </div>
                 <div class="sect2">
                     <h3 id="section-custom-message-interpolation">
-                        <a class="anchor" href="#section-custom-message-interpolation"></a>4.2. Custom message interpolation</h3>
+                        <a class="anchor" href="#section-custom-message-interpolation"></a>4.2. 自定义消息插值</h3>
                     <div class="paragraph">
-                        <p>If the default message interpolation algorithm does not fit your requirements, it is also possible to plug in a custom <code>MessageInterpolator</code> implementation.</p>
+                        <p>如果默认的消息插值算法不符合您的要求，也可以自己实现一个 <code>MessageInterpolator</code> 。</p>
                     </div>
                     <div class="paragraph">
-                        <p>Custom interpolators must implement the interface <code>jakarta.validation.MessageInterpolator</code>. Note that implementations must be thread-safe. It is recommended that custom message interpolators delegate final implementation
-                            to the default interpolator, which can be obtained via
-                            <code>Configuration#getDefaultMessageInterpolator()</code>.</p>
+                        <p>自定义插值器必须实现接口 <code>jakarta.validation.MessageInterpolator</code>。 注意，您的实现必须是线程安全的。建议自定义消息内插器将最终实现委托给缺省的内插器，可以通过
+                            <code>Configuration#getDefaultMessageInterpolator()</code> 获取。</p>
                     </div>
                     <div class="paragraph">
-                        <p>In order to use a custom message interpolator it must be registered either by configuring it in the Jakarta Bean Validation XML descriptor <em>META-INF/validation.xml</em> (see
-                            <a href="#section-configuration-validation-xml">Section 8.1, &#8220;Configuring the validator factory in <em>validation.xml</em>&#8221;</a>) or by passing it when bootstrapping a <code>ValidatorFactory</code> or
-                            <code>Validator</code> (see <a href="#section-validator-factory-message-interpolator">Section 9.2.1, &#8220;<code>MessageInterpolator</code>&#8221;</a> and
-                            <a href="#section-configuring-validator">Section 9.3, &#8220;Configuring a Validator&#8221;</a>, respectively).</p>
+                        <p>为了使用自定义消息插入器，必须在 Jakarta Bean Validation XML 配置文件 <em>META-INF/validation.xml</em> (see <a href="#section-configuration-validation-xml">Section 8.1, &#8220;Configuring the validator factory in <em>validation.xml</em>&#8221;</a>)
+                            中配置它，或者启动过程中配置 <code>ValidatorFactory</code> 或 <code>Validator</code> 时传递它 (see <a href="#section-validator-factory-message-interpolator">Section 9.2.1, &#8220;<code>MessageInterpolator</code>&#8221;</a> and <a href="#section-configuring-validator">Section 9.3, &#8220;Configuring a Validator&#8221;</a>,
+                            respectively).</p>
                     </div>
                     <div class="sect3">
                         <h4 id="section-resource-bundle-locator">
                             <a class="anchor" href="#section-resource-bundle-locator"></a>4.2.1. <code>ResourceBundleLocator</code></h4>
                         <div class="paragraph">
-                            <p>In some use cases, you want to use the message interpolation algorithm as defined by the Bean Validation specification, but retrieve error messages from other resource bundles than
-                                <em>ValidationMessages</em>. In this situation Hibernate Validator&#8217;s <code>ResourceBundleLocator</code> SPI can help.</p>
+                            <p>在某些用例中，您希望使用 Bean Validation 规范定义的消息插值算法，但是从 <em>ValidationMessages</em> 以外的其他资源包中检索错误消息。在这种情况下 Hibernate Validator 的 <code>ResourceBundleLocator</code> SPI 可以提供帮助。</p>
                         </div>
                         <div class="paragraph">
-                            <p>The default message interpolator in Hibernate Validator, <code>ResourceBundleMessageInterpolator</code>, delegates retrieval of resource bundles to that SPI. Using an alternative bundle only requires passing an instance of
-                                <code>PlatformResourceBundleLocator</code> with the bundle name when bootstrapping the
-                                <code>ValidatorFactory</code> as shown in <a href="#example-using-specific-resource-bundle-locator">Example 47, &#8220;Using a specific resource bundle&#8221;</a>.</p>
+                            <p>Hibernate Validator 中的缺省消息内插器 <code>ResourceBundleMessageInterpolator</code> 资源包的检索委托给该 SPI。在启动加载程序 <code>ValidatorFactory</code> 时，使用替代的资源包只需要传递一个具有资源包名称的 <code>PlatformResourceBundleLocator</code> 实例，如 <a href="#example-using-specific-resource-bundle-locator">Example 47, &#8220;使用特定的资源包&#8221;</a>.</p>
                         </div>
                         <div id="example-using-specific-resource-bundle-locator" class="exampleblock">
-                            <div class="title">Example 47. Using a specific resource bundle</div>
+                            <div class="title">Example 47. 使用特定的资源包</div>
                             <div class="content">
                                 <div class="listingblock">
                                     <div class="content">
@@ -6343,16 +6317,14 @@ assertEquals( "Price must not be higher than $100000", message );</code></pre>
                             </div>
                         </div>
                         <div class="paragraph">
-                            <p>Of course you also could implement a completely different <code>ResourceBundleLocator</code>, which for instance returns bundles backed by records in a database. In this case, you can obtain the default locator via
-                                <code>HibernateValidatorConfiguration#getDefaultResourceBundleLocator()</code>, which you e.g. could use as fall-back for your custom locator.</p>
+                            <p>当然，您也可以实现一个完全不同的 <code>ResourceBundleLocator</code>, 例如，它返回由数据库中的记录支持的包。在这种情况下，您可以通过
+                                <code>HibernateValidatorConfiguration#getDefaultResourceBundleLocator()</code>, 获得默认定位器，例如，您可以使用它作为定制定位器的备用定位器。</p>
                         </div>
                         <div class="paragraph">
-                            <p>Besides <code>PlatformResourceBundleLocator</code>, Hibernate Validator provides another resource bundle locator implementation out of the box, namely <code>AggregateResourceBundleLocator</code>, which allows to retrieve error
-                                messages from more than one resource bundle. You could for instance use this implementation in a multi-module application where you want to have one message bundle per module.
-                                <a href="#example-using-aggregate-resource-bundle-locator">Example 48, &#8220;Using <code>AggregateResourceBundleLocator</code>&#8221;</a> shows how to use <code>AggregateResourceBundleLocator</code>.</p>
+                            <p>除了 <code>PlatformResourceBundleLocator</code> 之外，Hibernate Validator还提供了另一个资源包定位器实现，即 <code>AggregateResourceBundleLocator</code> ，它允许从多个资源包检索错误消息。例如，您可以在多模块应用程序中使用此实现，其中每个模块需要一个消息包。<a href="#example-using-aggregate-resource-bundle-locator">Example 48, &#8220;使用 <code>AggregateResourceBundleLocator</code>&#8221;</a>                                展示了如何使用 <code>AggregateResourceBundleLocator</code> 。</p>
                         </div>
                         <div id="example-using-aggregate-resource-bundle-locator" class="exampleblock">
-                            <div class="title">Example 48. Using <code>AggregateResourceBundleLocator</code></div>
+                            <div class="title">Example 48. 使用 <code>AggregateResourceBundleLocator</code></div>
                             <div class="content">
                                 <div class="listingblock">
                                     <div class="content">
@@ -6375,8 +6347,7 @@ assertEquals( "Price must not be higher than $100000", message );</code></pre>
                             </div>
                         </div>
                         <div class="paragraph">
-                            <p>Note that the bundles are processed in the order as passed to the constructor. That means if several bundles contain an entry for a given message key, the value will be taken from the first bundle in the list containing the
-                                key.</p>
+                            <p>请注意，资源包是按照传递给构造函数的顺序处理的。这意味着，如果多个资源包包含给定消息键的条目，则该值将从包含该键的列表中的第一个资源包中取出。</p>
                         </div>
                     </div>
                 </div>
@@ -6384,24 +6355,19 @@ assertEquals( "Price must not be higher than $100000", message );</code></pre>
         </div>
         <div class="sect1">
             <h2 id="chapter-groups">
-                <a class="anchor" href="#chapter-groups"></a>5. Grouping constraints</h2>
+                <a class="anchor" href="#chapter-groups"></a>5. 分组约束</h2>
             <div class="sectionbody">
                 <div class="paragraph">
-                    <p>All validation methods on <code>Validator</code> and <code>ExecutableValidator</code> discussed in earlier chapters also take a var-arg argument <code>groups</code>. So far we have been ignoring this parameter, but it is time to have
-                        a closer look.</p>
+                    <p>在前面几章中讨论的 <code>Validator</code> 和 <code>ExecutableValidator</code> 中的所有校验方法都可以输入参数 <code>groups</code> 。到目前为止，我们一直忽略这个参数，但是现在是时候仔细研究一下了。</p>
                 </div>
                 <div class="sect2">
-                    <h3 id="_requesting_groups">
-                        <a class="anchor" href="#_requesting_groups"></a>5.1. Requesting groups</h3>
+                    <h3 id="_请求分组">
+                        <a class="anchor" href="#_请求分组"></a>5.1. 请求分组</h3>
                     <div class="paragraph">
-                        <p>Groups allow you to restrict the set of constraints applied during validation. One use case for validation groups are UI wizards where in each step only a specified subset of constraints should get validated. The groups targeted
-                            are passed as var-arg parameters to the appropriate validate method.
-                        </p>
+                        <p>(分组)Groups允许你在校验的时候限制校验范围，校验分组的一个使用场景是UI导航，其中每个步骤中只有指定的约束子集应该得到校验。目标分组作为参数传递给适当的校验方法。</p>
                     </div>
                     <div class="paragraph">
-                        <p>Let&#8217;s have a look at an example. The class <code>Person</code> in <a href="#example-person">Example 49, &#8220;Example class <code>Person</code>&#8221;</a> has a <code>@NotNull</code> constraint on <code>name</code>. Since
-                            no group is specified for this annotation the default group
-                            <code>jakarta.validation.groups.Default</code> is assumed.</p>
+                        <p>让我们来看接下来的这个例子， <a href="#example-person">Example 49, &#8220;实体类 <code>Person</code>&#8221;</a> 中的 <code>Person</code> 类的 <code>name</code> 有一个 <code>@NotNull</code> 注解约束。如果没有特别指定分组，那么会分组为默认的 <code>jakarta.validation.groups.Default</code>                            。</p>
                     </div>
                     <div class="admonitionblock note">
                         <table>
@@ -6411,15 +6377,14 @@ assertEquals( "Price must not be higher than $100000", message );</code></pre>
                                 </td>
                                 <td class="content">
                                     <div class="paragraph">
-                                        <p>When more than one group is requested, the order in which the groups are evaluated is not deterministic. If no group is specified the default group <code>jakarta.validation.groups.Default</code> is assumed.
-                                        </p>
+                                        <p>当校验一个或多个分组的时候，也没有显示的指定分组。那么会被分类至 <code>jakarta.validation.groups.Default</code> 。</p>
                                     </div>
                                 </td>
                             </tr>
                         </table>
                     </div>
                     <div id="example-person" class="exampleblock">
-                        <div class="title">Example 49. Example class <code>Person</code></div>
+                        <div class="title">Example 49. 实体类 <code>Person</code></div>
                         <div class="content">
                             <div class="listingblock">
                                 <div class="content">
@@ -6441,9 +6406,7 @@ public class Person {
                         </div>
                     </div>
                     <div class="paragraph">
-                        <p>The class <code>Driver</code> in <a href="#example-driver">Example 50, &#8220;Driver&#8221;</a> extends <code>Person</code> and adds the properties <code>age</code> and
-                            <code>hasDrivingLicense</code>. Drivers must be at least 18 years old (<code>@Min(18)</code>) and have a driving license (
-                            <code>@AssertTrue</code>). Both constraints defined on these properties belong to the group <code>DriverChecks</code> which is just a simple tagging interface.</p>
+                        <p><a href="#example-driver">Example 50, &#8220;Driver类&#8221;</a> 中的 <code>Driver</code> 类继承至 <code>Person</code> 类，同时添加了 <code>age</code> 和 <code>hasDrivingLicense</code> 两个字段。司机必须年满18岁(<code>@Min(18)</code>)并持有驾驶执照( <code>@AssertTrue</code>                            ) ， 在这些属性上定义的约束都属于 <code>DriverChecks</code> 分组，它只是一个简单的标记接口。</p>
                     </div>
                     <div class="admonitionblock tip">
                         <table>
@@ -6453,14 +6416,14 @@ public class Person {
                                 </td>
                                 <td class="content">
                                     <div class="paragraph">
-                                        <p>Using interfaces makes the usage of groups type-safe and allows for easy refactoring. It also means that groups can inherit from each other via class inheritance. See <a href="#section-group-inheritance">Section 5.2, &#8220;Group inheritance&#8221;</a>.</p>
+                                        <p>使用接口使得组的使用类型安全，并且允许轻松地进行重构。这也意味着组可以通过类继承彼此继承。见 <a href="#section-group-inheritance">Section 5.2, &#8220;分组继承&#8221;</a></p>
                                     </div>
                                 </td>
                             </tr>
                         </table>
                     </div>
                     <div id="example-driver" class="exampleblock">
-                        <div class="title">Example 50. Driver</div>
+                        <div class="title">Example 50. Driver类</div>
                         <div class="content">
                             <div class="listingblock">
                                 <div class="content">
@@ -6510,11 +6473,10 @@ public interface DriverChecks {
                         </div>
                     </div>
                     <div class="paragraph">
-                        <p>Finally the class <code>Car</code> (<a href="#example-car">Example 51, &#8220;Car&#8221;</a>) has some constraints which are part of the default group as well as <code>@AssertTrue</code> in the group <code>CarChecks</code> on the
-                            property <code>passedVehicleInspection</code> which indicates whether a car passed the road worthy tests.</p>
+                        <p>最后 <code>Car</code> 类(<a href="#example-car">Example 51, &#8220;Car类&#8221;</a>) 具有一些约束，这些约束是默认组的一部分，但是 <code>passedVehicleInspection</code> 字段的 <code>@AssertTrue</code> 约束注解属于 <code>CarChecks</code> 分组，它表示一辆汽车是否通过了道路测试。</p>
                     </div>
                     <div id="example-car" class="exampleblock">
-                        <div class="title">Example 51. Car</div>
+                        <div class="title">Example 51. Car类</div>
                         <div class="content">
                             <div class="listingblock">
                                 <div class="content">
@@ -6577,26 +6539,27 @@ public interface CarChecks {
                         </div>
                     </div>
                     <div class="paragraph">
-                        <p>Overall three different groups are used in the example:</p>
+                        <p>总的来说，示例中使用了三个不同的组:</p>
                     </div>
                     <div class="ulist">
                         <ul>
                             <li>
-                                <p>The constraints on <code>Person.name</code>, <code>Car.manufacturer</code>, <code>Car.licensePlate</code> and <code>Car.seatCount</code> all belong to the <code>Default</code> group</p>
+                                <p><code>Person.name</code>, <code>Car.manufacturer</code>, <code>Car.licensePlate</code> 和 <code>Car.seatCount</code> 字段属于 <code>Default</code> 分组</p>
                             </li>
                             <li>
-                                <p>The constraints on <code>Driver.age</code> and <code>Driver.hasDrivingLicense</code> belong to <code>DriverChecks</code></p>
+                                <p><code>Driver.age</code> 和 <code>Driver.hasDrivingLicense</code> 字段属于 <code>DriverChecks</code> 分组</p>
                             </li>
                             <li>
-                                <p>The constraint on <code>Car.passedVehicleInspection</code> belongs to the group <code>CarChecks</code></p>
+                                <p><code>Car.passedVehicleInspection</code> 字段属于 <code>CarChecks</code> 分组</p>
                             </li>
                         </ul>
                     </div>
                     <div class="paragraph">
-                        <p><a href="#example-drive-away">Example 52, &#8220;Using validation groups&#8221;</a> shows how passing different group combinations to the <code>Validator#validate()</code> method results in different validation results.</p>
+                        <p><a href="#example-drive-away">Example 52, &#8220;使用校验分组&#8221;</a> 展示了如何将不同的组合传递给 <code>Validator#validate()</code> 方法，从而导致不同的校验结果。
+                        </p>
                     </div>
                     <div id="example-drive-away" class="exampleblock">
-                        <div class="title">Example 52. Using validation groups</div>
+                        <div class="title">Example 52. 使用校验分组</div>
                         <div class="content">
                             <div class="listingblock">
                                 <div class="content">
@@ -6646,32 +6609,29 @@ assertEquals(
                         </div>
                     </div>
                     <div class="paragraph">
-                        <p>The first <code>validate()</code> call in <a href="#example-drive-away">Example 52, &#8220;Using validation groups&#8221;</a> is done using no explicit group. There are no validation errors, even though the property <code>passedVehicleInspection</code>                            is per default <code>false</code> as the constraint defined on this property does not belong to the default group.</p>
+                        <p><a href="#example-drive-away">Example 52, &#8220;使用校验分组&#8221;</a> 中第一次调用 <code>validate()</code> 方法是在没有显式指定分组的情况下完成的。没有验证错误，即使 <code>passedVehicleInspection</code> 的默认值是 <code>false</code> ，因为在该属性上定义的约束不属于默认组。</p>
                     </div>
                     <div class="paragraph">
-                        <p>The next validation using the <code>CarChecks</code> group fails until the car passes the vehicle inspection. Adding a driver to the car and validating against <code>DriverChecks</code> again yields one constraint violation due
-                            to the fact that the driver has not yet passed the driving test. Only after setting
-                            <code>passedDrivingTest</code> to <code>true</code> the validation against <code>DriverChecks</code> passes.</p>
+                        <p>第二次校验的是 <code>CarChecks</code> 分组，会校验失败除非汽车通过车辆检查(passedVehicleInspection = true)。为汽车添加一个驾驶员，会再次导致校验失败，因为驾驶员尚未通过驾驶考试，只有将 <code>passedDrivingTest</code> 设置为 <code>true</code> 后，对 <code>DriverChecks</code> 的分组才会通过。</p>
                     </div>
                     <div class="paragraph">
-                        <p>The last <code>validate()</code> call finally shows that all constraints are passing by validating against all defined groups.</p>
+                        <p>最后一次调用 <code>validate()</code> 表示所有定义的分组的约束都通过校验。</p>
                     </div>
                 </div>
                 <div class="sect2">
                     <h3 id="section-group-inheritance">
-                        <a class="anchor" href="#section-group-inheritance"></a>5.2. Group inheritance</h3>
+                        <a class="anchor" href="#section-group-inheritance"></a>5.2. 分组继承</h3>
                     <div class="paragraph">
-                        <p>In <a href="#example-drive-away">Example 52, &#8220;Using validation groups&#8221;</a>, we need to call <code>validate()</code> for each validation group, or specify all of them one by one.</p>
+                        <p>在 <a href="#example-drive-away">Example 52, &#8220;使用校验分组&#8221;</a>, 我们需要为每个校验分组调用一次 <code>validate()</code> ， 或者一次性指定他们所有。</p>
                     </div>
                     <div class="paragraph">
-                        <p>In some situations, you may want to define a group of constraints which includes another group. You can do that using group inheritance.</p>
+                        <p>在某些情况下，您可能希望定义一组包含另一组的约束。您可以使用分组继承来实现这一点。</p>
                     </div>
                     <div class="paragraph">
-                        <p>In <a href="#example-supercar">Example 53, &#8220;SuperCar&#8221;</a>, we define a <code>SuperCar</code> and a group <code>RaceCarChecks</code> that extends the <code>Default</code> group. A <code>SuperCar</code> must have safety
-                            belts to be allowed to run in races.</p>
+                        <p>在 <a href="#example-supercar">Example 53, &#8220;SuperCar类&#8221;</a>中，我们定义了一个变量 <code>SuperCar</code> 和一个 <code>RaceCarChecks</code> 分组，<code>RaceCarChecks</code> 分组继承至 <code>Default</code> 分组。 <code>SuperCar</code> (超级跑车)必须配备安全带才能参加比赛。</p>
                     </div>
                     <div id="example-supercar" class="exampleblock">
-                        <div class="title">Example 53. SuperCar</div>
+                        <div class="title">Example 53. SuperCar类</div>
                         <div class="content">
                             <div class="listingblock">
                                 <div class="content">
@@ -6703,10 +6663,10 @@ public interface RaceCarChecks extends Default {
                         </div>
                     </div>
                     <div class="paragraph">
-                        <p>In the example below, we will check if a <code>SuperCar</code> with one seat and no security belts is a valid car and if it is a valid race-car.</p>
+                        <p>在下面的例子中，我们将校验 <code>SuperCar</code> 在只有一个座位且没有安全带，是否是合格的汽车？是否是合格的竞速车辆？</p>
                     </div>
                     <div id="example-group-inheritance" class="exampleblock">
-                        <div class="title">Example 54. Using group inheritance</div>
+                        <div class="title">Example 54. 使用分组继承</div>
                         <div class="content">
                             <div class="listingblock">
                                 <div class="content">
@@ -6726,30 +6686,26 @@ assertThat( constraintViolations ).extracting( "message" ).containsOnly(
                         </div>
                     </div>
                     <div class="paragraph">
-                        <p>On the first call to <code>validate()</code>, we do not specify a group. There is one validation error because a car must have at least one seat. It is the constraint from the <code>Default</code> group.</p>
+                        <p>在第一次调用 <code>validate()</code> 时，我们不指定分组。有一个验证错误，因为汽车必须至少有一个座位。它是来自 <code>Default</code> 分组的约束。</p>
                     </div>
                     <div class="paragraph">
-                        <p>On the second call, we specify only the group <code>RaceCarChecks</code>. There are two validation errors: one about the missing seat from the <code>Default</code> group, another one about the fact that there is no safety belts
-                            coming from the <code>RaceCarChecks</code> group.</p>
+                        <p>在第二次调用中，我们只指定 <code>RaceCarChecks</code> 分组。有两个验证错误: 一个是 <code>Default</code> 分组的座位丢失，另一个是 <code>RaceCarChecks</code> 分组没有安全带。</p>
                     </div>
                 </div>
                 <div class="sect2">
                     <h3 id="section-defining-group-sequences">
-                        <a class="anchor" href="#section-defining-group-sequences"></a>5.3. Defining group sequences</h3>
+                        <a class="anchor" href="#section-defining-group-sequences"></a>5.3. 定义分组序列</h3>
                     <div class="paragraph">
-                        <p>By default, constraints are evaluated in no particular order, regardless of which groups they belong to. In some situations, however, it is useful to control the order in which constraints are evaluated.</p>
+                        <p>默认情况下，不管约束属于哪个分组，约束都不按特定顺序进行计算。然而，在某些情况下，控制校验约束的顺序是有很用的。</p>
                     </div>
                     <div class="paragraph">
-                        <p>In the example from <a href="#example-drive-away">Example 52, &#8220;Using validation groups&#8221;</a> it could for instance be required that first all default car constraints are passing before checking the road worthiness of
-                            the car. Finally, before driving away, the actual driver constraints should be checked.</p>
+                        <p>在 <a href="#example-drive-away">Example 52, &#8220;使用校验分组&#8221;</a> 中。要求在检查汽车的适应性之前，首先要通过所有默认的汽车约束。最后，在开车离开之前，应该检查实际的驾驶员约束。</p>
                     </div>
                     <div class="paragraph">
-                        <p>In order to implement such a validation order you just need to define an interface and annotate it with <code>@GroupSequence</code>, defining the order in which the groups have to be validated (see
-                            <a href="#example-defining-group-sequence">Example 55, &#8220;Defining a group sequence&#8221;</a>). If at least one constraint fails in a sequenced group, none of the constraints of the following groups in the sequence get
-                            validated.</p>
+                        <p>为了实现这样的验证顺序，您只需定义一个接口并使用 <code>@GroupSequence</code> 对其进行注解，定义必须验证组的顺序(参见 <a href="#example-defining-group-sequence">Example 55, &#8220;定义一个分组序列&#8221;</a>). 如果序列组中有一个约束校验失败，序列组中以下各组的约束都不会得到验证。</p>
                     </div>
                     <div id="example-defining-group-sequence" class="exampleblock">
-                        <div class="title">Example 55. Defining a group sequence</div>
+                        <div class="title">Example 55. 定义一个分组序列</div>
                         <div class="content">
                             <div class="listingblock">
                                 <div class="content">
@@ -6773,19 +6729,17 @@ public interface OrderedChecks {
                                 </td>
                                 <td class="content">
                                     <div class="paragraph">
-                                        <p>Groups defining a sequence and groups composing a sequence must not be involved in a cyclic dependency either directly or indirectly, either through cascaded sequence definition or group inheritance. If a group
-                                            containing such a circularity is evaluated, a <code>GroupDefinitionException</code> is raised.
-                                        </p>
+                                        <p>定义序列的组和组成序列的组不能直接或间接地通过级联序列定义或组继承参与循环依赖。如果计算包含这种循环的组，则会引发 <code>GroupDefinitionException</code> 。</p>
                                     </div>
                                 </td>
                             </tr>
                         </table>
                     </div>
                     <div class="paragraph">
-                        <p>You then can use the new sequence as shown in in <a href="#example-group-sequence">Example 56, &#8220;Using a group sequence&#8221;</a>.</p>
+                        <p>然后您可以在<a href="#example-group-sequence">Example 56, &#8220;使用分组序列&#8221;</a>使用刚刚定义的分组序列。</p>
                     </div>
                     <div id="example-group-sequence" class="exampleblock">
-                        <div class="title">Example 56. Using a group sequence</div>
+                        <div class="title">Example 56. 使用分组序列</div>
                         <div class="content">
                             <div class="listingblock">
                                 <div class="content">
@@ -6805,19 +6759,18 @@ assertEquals( 0, validator.validate( car, OrderedChecks.class ).size() );</code>
                 </div>
                 <div class="sect2">
                     <h3 id="section-default-group-class">
-                        <a class="anchor" href="#section-default-group-class"></a>5.4. Redefining the default group sequence</h3>
+                        <a class="anchor" href="#section-default-group-class"></a>5.4. 重新定义默认组序列</h3>
                     <div class="sect3">
                         <h4 id="_groupsequence">
                             <a class="anchor" href="#_groupsequence"></a>5.4.1. <code>@GroupSequence</code></h4>
                         <div class="paragraph">
-                            <p>Besides defining group sequences, the <code>@GroupSequence</code> annotation also allows to redefine the default group for a given class. To do so, just add the <code>@GroupSequence</code> annotation to the class and specify
-                                the sequence of groups which substitute <code>Default</code> for this class within the annotation.</p>
+                            <p>除了定义组序列, <code>@GroupSequence</code> 分组还允许为给定的类重新定义默认组。为此，只需将 <code>@GroupSequence</code> 注释添加到类中，并指定在注释中用 <code>Default</code> 替换该类的组的顺序。</p>
                         </div>
                         <div class="paragraph">
-                            <p><a href="#example-rental-car">Example 57, &#8220;Class <code>RentalCar</code> with redefined default group&#8221;</a> introduces a new class <code>RentalCar</code> with a redefined default group.</p>
+                            <p><a href="#example-rental-car">Example 57, &#8220;为`RentalCar` 重新定义默认分组&#8221;</a> 介绍将 <code>RentalCar</code> 重新定义默认分组。</p>
                         </div>
                         <div id="example-rental-car" class="exampleblock">
-                            <div class="title">Example 57. Class <code>RentalCar</code> with redefined default group</div>
+                            <div class="title">Example 57. 为`RentalCar` 重新定义默认分组</div>
                             <div class="content">
                                 <div class="listingblock">
                                     <div class="content">
@@ -6853,11 +6806,10 @@ public interface RentalChecks {
                             </div>
                         </div>
                         <div class="paragraph">
-                            <p>With this definition you can evaluate the constraints belonging to <code>RentalChecks</code>, <code>CarChecks</code> and
-                                <code>RentalCar</code> by just requesting the <code>Default</code> group as seen in <a href="#example-testCarIsRented">Example 58, &#8220;Validating an object with redefined default group&#8221;</a>.</p>
+                            <p><a href="#example-testCarIsRented">Example 58, &#8220;验证具有重定义的默认组的对象&#8221;</a> 当做了上述定义后，当你校验 <code>Default</code> 分组时，会同时校验 <code>RentalChecks</code>, <code>CarChecks</code> 分组 <code>RentalCar</code> 。</p>
                         </div>
                         <div id="example-testCarIsRented" class="exampleblock">
-                            <div class="title">Example 58. Validating an object with redefined default group</div>
+                            <div class="title">Example 58. 验证具有重定义的默认组的对象</div>
                             <div class="content">
                                 <div class="listingblock">
                                     <div class="content">
@@ -6890,37 +6842,31 @@ assertEquals( 0, constraintViolations.size() );</code></pre>
                                     </td>
                                     <td class="content">
                                         <div class="paragraph">
-                                            <p>Since there must be no cyclic dependency in the group and group sequence definitions, one cannot just add <code>Default</code> to the sequence redefining <code>Default</code> for a class. Instead the class itself
-                                                has to be added.
-                                            </p>
+                                            <p>因为组和组序列定义中不能有循环依赖项，所以不能只是将 Default 添加到为类重新定义 Default 的序列中。相反，必须添加类本身。</p>
                                         </div>
                                     </td>
                                 </tr>
                             </table>
                         </div>
                         <div class="paragraph">
-                            <p>The <code>Default</code> group sequence overriding is local to the class it is defined on and is not propagated to associated objects. For the example, this means that adding <code>DriverChecks</code> to the default group sequence
-                                of <code>RentalCar</code> would not have any effects. Only the group <code>Default</code> will be propagated to the driver association.</p>
+                            <p><code>Default</code> 分组序列重写对于在其上定义的类是本地的，不会传播到关联的对象。对于本例，这意味着将 <code>DriverChecks</code> 添加到 <code>RentalCar</code> 的默认组序列中，而不会对其他类产生任何效果。只有组 <code>Default</code> 将被传播到驱动程序关联。</p>
                         </div>
                         <div class="paragraph">
-                            <p>Note that you can control the propagated group(s) by declaring a group conversion rule (see
-                                <a href="#section-group-conversion">Section 5.5, &#8220;Group conversion&#8221;</a>).</p>
+                            <p>请注意，您可以通过声明组转换规则来控制传播的组(
+                                <a href="#section-group-conversion">Section 5.5, &#8220;分组转化&#8221;</a>)。</p>
                         </div>
                     </div>
                     <div class="sect3">
                         <h4 id="_groupsequenceprovider">
                             <a class="anchor" href="#_groupsequenceprovider"></a>5.4.2. <code>@GroupSequenceProvider</code></h4>
                         <div class="paragraph">
-                            <p>In addition to statically redefining default group sequences via <code>@GroupSequence</code>, Hibernate Validator also provides an SPI for the dynamic redefinition of default group sequences depending on the object state.
-                            </p>
+                            <p>除了通过 <code>@GroupSequence</code> 静态重新定义默认组序列之外，Hibernate Validator 还提供了一个 SPI，用于根据对象状态动态重新定义默认组序列。</p>
                         </div>
                         <div class="paragraph">
-                            <p>For that purpose, you need to implement the interface <code>DefaultGroupSequenceProvider</code> and register this implementation with the target class via the <code>@GroupSequenceProvider</code> annotation. In the rental car
-                                scenario, you could for instance dynamically add the <code>CarChecks</code> as seen in
-                                <a href="#example-implementing-using-default-group-sequence-provider">Example 59, &#8220;Implementing and using a default group sequence provider&#8221;</a>.</p>
+                            <p>为此，需要实现接口 <code>DefaultGroupSequenceProvider</code> ，并通过 <code>@GroupSequenceProvider</code> 注解向目标类注册该实现。例如，在租车场景中，您可以动态地添加 <code>CarChecks</code> ，如<a href="#example-implementing-using-default-group-sequence-provider">Example 59, &#8220;实现和使用默认的组序列提供程序&#8221;</a></p>
                         </div>
                         <div id="example-implementing-using-default-group-sequence-provider" class="exampleblock">
-                            <div class="title">Example 59. Implementing and using a default group sequence provider</div>
+                            <div class="title">Example 59. 实现和使用默认的组序列提供程序</div>
                             <div class="content">
                                 <div class="listingblock">
                                     <div class="content">
@@ -6973,19 +6919,17 @@ public class RentalCar extends Car {
                 </div>
                 <div class="sect2">
                     <h3 id="section-group-conversion">
-                        <a class="anchor" href="#section-group-conversion"></a>5.5. Group conversion</h3>
+                        <a class="anchor" href="#section-group-conversion"></a>5.5. 分组转化</h3>
                     <div class="paragraph">
-                        <p>What if you wanted to validate the car related checks together with the driver checks? Of course you could pass the required groups to the validate call explicitly, but what if you wanted to make these validations occur as part
-                            of the <code>Default</code> group validation? Here <code>@ConvertGroup</code> comes into play which allows you to use a different group than the originally requested one during cascaded validation.</p>
+                        <p>如果你想校验汽车相关检查和驾驶员检查一起进行怎么办？当然，您可以显式地将所需的组传递给 validate 调用，但是如果您希望将这些验证作为 <code>Default</code> 分组验证的一部分进行呢？这里使用了 <code>@ConvertGroup</code> ，它允许您在级联验证期间使用与最初请求的组不同的组。</p>
                     </div>
                     <div class="paragraph">
-                        <p>Let&#8217;s have a look at <a href="#example-group-conversion-dedault-to-driver-checks">Example 60, &#8220;<code>@ConvertGroup</code> usage&#8221;</a>. Here <code>@GroupSequence({
-CarChecks.class, Car.class })</code> is used to combine the car related constraints under the <code>Default</code> group (see <a href="#section-default-group-class">Section 5.4, &#8220;Redefining the default group sequence&#8221;</a>). There is also a
-                            <code>@ConvertGroup(from = Default.class, to =
-DriverChecks.class)</code> which ensures the <code>Default</code> group gets converted to the <code>DriverChecks</code> group during cascaded validation of the driver association.</p>
+                        <p>让我们看看 <a href="#example-group-conversion-dedault-to-driver-checks">Example 60, &#8220;<code>@ConvertGroup</code> 用例&#8221;</a>。这里 <code>@GroupSequence({
+CarChecks.class, Car.class })</code> 是修改 <code>Default</code> 分组。 (see <a href="#section-default-group-class">Section 5.4, &#8220;重新定义默认组序列&#8221;</a>). 这里的 <code>@ConvertGroup(from = Default.class, to =
+DriverChecks.class)</code> 它确保在对汽车程序关联进行级联验证期间将 <code>Default</code> 分组转化为 <code>DriverChecks</code> 分组。</p>
                     </div>
                     <div id="example-group-conversion-dedault-to-driver-checks" class="exampleblock">
-                        <div class="title">Example 60. <code>@ConvertGroup</code> usage</div>
+                        <div class="title">Example 60. <code>@ConvertGroup</code> 用例</div>
                         <div class="content">
                             <div class="listingblock">
                                 <div class="content">
@@ -7085,11 +7029,10 @@ public class Car {
                         </div>
                     </div>
                     <div class="paragraph">
-                        <p>As a result the validation in <a href="#example-group-conversion-test">Example 61, &#8220;Test case for <code>@ConvertGroup</code>&#8221;</a> succeeds, even though the constraint on <code>hasDrivingLicense</code> belongs to the
-                            <code>DriverChecks</code> group and only the <code>Default</code> group is requested in the <code>validate()</code> call.</p>
+                        <p><a href="#example-group-conversion-test">Example 61, &#8220;测试用例 <code>@ConvertGroup</code>&#8221;</a> 的校验结果是成功的。即使 <code>hasDrivingLicense</code> 的约束属于 <code>DriverChecks</code> 分组，并且 <code>validate()</code> 方法只校验 <code>Default</code>                            分组。</p>
                     </div>
                     <div id="example-group-conversion-test" class="exampleblock">
-                        <div class="title">Example 61. Test case for <code>@ConvertGroup</code></div>
+                        <div class="title">Example 61. 测试用例 <code>@ConvertGroup</code></div>
                         <div class="content">
                             <div class="listingblock">
                                 <div class="content">
@@ -7117,23 +7060,21 @@ assertEquals(
                         </div>
                     </div>
                     <div class="paragraph">
-                        <p>You can define group conversions wherever <code>@Valid</code> can be used, namely associations as well as method and constructor parameters and return values. Multiple conversions can be specified using
-                            <code>@ConvertGroup.List</code>.</p>
+                        <p>您可以在任何使用 <code>@Valid</code> 注解的地方，使用分组转化。即关联、方法和构造函数参数以及返回值。可以使用 <code>@ConvertGroup.List</code> 同时指定多种转化。</p>
                     </div>
                     <div class="paragraph">
-                        <p>However, the following restrictions apply:</p>
+                        <p>不过，仅在下面的场景不适用:</p>
                     </div>
                     <div class="ulist">
                         <ul>
                             <li>
-                                <p><code>@ConvertGroup</code> must only be used in combination with <code>@Valid</code>. If used without, a
-                                    <code>ConstraintDeclarationException</code> is thrown.</p>
+                                <p><code>@ConvertGroup</code> 只能与 <code>@Valid</code> 结合使用。如果不使用，则引发 <code>ConstraintDeclarationException</code> 。</p>
                             </li>
                             <li>
-                                <p>It is not legal to have multiple conversion rules on the same element with the same from value. In this case, a <code>ConstraintDeclarationException</code> is raised.</p>
+                                <p>在同一个元素上具有相同的 <code>from</code> 值的多个转换规则是不合法的。在这种情况下，将引发 <code>ConstraintDeclarationException</code> 。</p>
                             </li>
                             <li>
-                                <p>The <code>from</code> attribute must not refer to a group sequence. A <code>ConstraintDeclarationException</code> is raised in this situation.</p>
+                                <p><code>from</code> 属性不能引用分组序列。在这种情况下会引发 <code>ConstraintDeclarationException</code> 。</p>
                             </li>
                         </ul>
                     </div>
@@ -7145,8 +7086,7 @@ assertEquals(
                                 </td>
                                 <td class="content">
                                     <div class="paragraph">
-                                        <p>Rules are not executed recursively. The first matching conversion rule is used and subsequent rules are ignored. For example if a set of <code>@ConvertGroup</code> declarations chains group <code>A</code> to <code>B</code>                                            and
-                                            <code>B</code> to <code>C</code>, the group <code>A</code> will be converted to <code>B</code> and not to <code>C</code>.</p>
+                                        <p>规则不是递归执行的。使用第一个匹配转换规则，并忽略后续规则。例如，如果一组 `@ConvertGroup`声明 a 到 b，b 到 c，组 a 将被转换为 b 而不是 c。</p>
                                     </div>
                                 </td>
                             </tr>
@@ -7157,42 +7097,42 @@ assertEquals(
         </div>
         <div class="sect1">
             <h2 id="validator-customconstraints">
-                <a class="anchor" href="#validator-customconstraints"></a>6. Creating custom constraints</h2>
+                <a class="anchor" href="#validator-customconstraints"></a>6. 自定义约束</h2>
             <div class="sectionbody">
                 <div class="paragraph">
-                    <p>The Jakarta Bean Validation API defines a whole set of standard constraint annotations such as <code>@NotNull</code>,
-                        <code>@Size</code> etc. In cases where these built-in constraints are not sufficient, you can easily create custom constraints tailored to your specific validation requirements.</p>
+                    <p>Jakarta Bean Validation API 定义了一整套标准约束注解，如 <code>@NotNull</code>,
+                        <code>@Size</code> 等。在这些内置约束不够充分的情况下，可以轻松地创建根据特定校验需求定制的自定义约束。</p>
                 </div>
                 <div class="sect2">
                     <h3 id="validator-customconstraints-simple">
-                        <a class="anchor" href="#validator-customconstraints-simple"></a>6.1. Creating a simple constraint</h3>
+                        <a class="anchor" href="#validator-customconstraints-simple"></a>6.1. 创建一个简单的约束</h3>
                     <div class="paragraph">
-                        <p>To create a custom constraint, the following three steps are required:</p>
+                        <p>要创建自定义约束，需要以下三个步骤:</p>
                     </div>
                     <div class="ulist">
                         <ul>
                             <li>
-                                <p>Create a constraint annotation</p>
+                                <p>创建一个约束注解</p>
                             </li>
                             <li>
-                                <p>Implement a validator</p>
+                                <p>实现一个校验器</p>
                             </li>
                             <li>
-                                <p>Define a default error message</p>
+                                <p>定义默认错误消息</p>
                             </li>
                         </ul>
                     </div>
                     <div class="sect3">
                         <h4 id="validator-customconstraints-constraintannotation">
-                            <a class="anchor" href="#validator-customconstraints-constraintannotation"></a>6.1.1. The constraint annotation</h4>
+                            <a class="anchor" href="#validator-customconstraints-constraintannotation"></a>6.1.1. 约束注解</h4>
                         <div class="paragraph">
-                            <p>This section shows how to write a constraint annotation which can be used to ensure that a given string is either completely upper case or lower case. Later on, this constraint will be applied to the <code>licensePlate</code>                                field of the <code>Car</code> class from <a href="#validator-gettingstarted">Chapter 1, <em>快速开始</em></a> to ensure that the field is always an upper-case string.</p>
+                            <p>本节展示如何编写一个约束注解，该注解可用于确保给定的字符串完全大写或小写。稍后，这个约束将应用于 <a href="#validator-gettingstarted">Chapter 1, <em>快速开始</em></a> 中的 <code>Car</code> 类 <code>licensePlate</code> 字段。确保该字段始终是大写字母字符串。</p>
                         </div>
                         <div class="paragraph">
-                            <p>The first thing needed is a way to express the two case modes. While you could use <code>String</code> constants, a better approach is using an enum for that purpose:</p>
+                            <p>首先需要的是一种表达这两种情况模式的方法。虽然可以使用 <code>String</code> 常量，但更好的方法是为此使用枚举:</p>
                         </div>
                         <div class="exampleblock">
-                            <div class="title">Example 62. Enum <code>CaseMode</code> to express upper vs. lower case</div>
+                            <div class="title">Example 62. 枚举 <code>CaseMode</code> 表示大小写两种状态</div>
                             <div class="content">
                                 <div class="listingblock">
                                     <div class="content">
@@ -7207,10 +7147,10 @@ public enum CaseMode {
                             </div>
                         </div>
                         <div class="paragraph">
-                            <p>The next step is to define the actual constraint annotation. If you&#8217;ve never designed an annotation before, this may look a bit scary, but actually it&#8217;s not that hard:</p>
+                            <p>下一步是定义约束注解。如果你以前从未设计过注解，这看起来可能有点吓人，但实际上并不难:</p>
                         </div>
                         <div id="example-defining-custom-constraint" class="exampleblock">
-                            <div class="title">Example 63. Defining the <code>@CheckCase</code> constraint annotation</div>
+                            <div class="title">Example 63. 定义 <code>@CheckCase</code> 约束注解</div>
                             <div class="content">
                                 <div class="listingblock">
                                     <div class="content">
@@ -7251,21 +7191,18 @@ public @interface CheckCase {
                             </div>
                         </div>
                         <div class="paragraph">
-                            <p>An annotation type is defined using the <code>@interface</code> keyword. All attributes of an annotation type are declared in a method-like manner. The specification of the Jakarta Bean Validation API demands, that any constraint
-                                annotation defines:</p>
+                            <p>使用 <code>@interface</code> 关键字定义注解类型。注解类型的所有属性都以类似于方法的方式声明。Jakarta Bean Validation API 规范要求任何约束注解定义:</p>
                         </div>
                         <div class="ulist">
                             <ul>
                                 <li>
-                                    <p>an attribute <code>message</code> that returns the default key for creating error messages in case the constraint is violated</p>
+                                    <p><code>message</code> 属性返回校验失败的默认错误信息。</p>
                                 </li>
                                 <li>
-                                    <p>an attribute <code>groups</code> that allows the specification of validation groups, to which this constraint belongs (see <a href="#chapter-groups">Chapter 5, <em>Grouping constraints</em></a>). This must default to
-                                        an empty array of type Class&lt;?&gt;.</p>
+                                    <p><code>groups</code> 属性允许对分组(see <a href="#chapter-groups">Chapter 5, <em>分组约束</em></a>)约束进行校验。这必须默认为 Class &lt; ? &gt; 类型的空数组.</p>
                                 </li>
                                 <li>
-                                    <p>an attribute <code>payload</code> that can be used by clients of the Jakarta Bean Validation API to assign custom payload objects to a constraint. This attribute is not used by the API itself. An example for a custom
-                                        payload could be the definition of a severity:</p>
+                                    <p><code>payload</code> 属性可以被Jakarta Bean Validation API的客户端用于将自定义有效负载对象分配给约束。API 本身不使用此属性。自定义有效负载的一个例子是严重性的定义:</p>
                                     <div class="exampleblock">
                                         <div class="content">
                                             <div class="listingblock">
@@ -7296,60 +7233,53 @@ public @interface CheckCase {
                                         </div>
                                     </div>
                                     <div class="paragraph">
-                                        <p>Now a client can after the validation of a <code>ContactDetails</code> instance access the severity of a constraint using <code>ConstraintViolation.getConstraintDescriptor().getPayload()</code> and adjust its behavior
-                                            depending on the severity.</p>
+                                        <p>现在，客户端可以在校验 <code>ContactDetails</code> 实例后，使用 <code>ConstraintViolation.getConstraintDescriptor().getPayload()</code> 访问约束的严重性。并其根据严重性调整其行为。</p>
                                     </div>
                                 </li>
                             </ul>
                         </div>
                         <div class="paragraph">
-                            <p>Besides these three mandatory attributes there is another one, <code>value</code>, allowing for the required case mode to be specified. The name <code>value</code> is a special one, which can be omitted when using the annotation,
-                                if it is the only attribute specified, as e.g. in <code>@CheckCase(CaseMode.UPPER)</code>.</p>
+                            <p>除了这三个强制属性外，还有另一个属性 <code>value</code>，它允许指定所需的 case 模式。<code>value</code> 值是一个特殊的值，如果它是唯一指定的属性，在使用注解时可以省略，例如 <code>@CheckCase(CaseMode.UPPER)</code> 。</p>
                         </div>
                         <div class="paragraph">
-                            <p>In addition, the constraint annotation is decorated with a couple of meta annotations:</p>
+                            <p>此外，约束注解还使用了一些元注解:</p>
                         </div>
                         <div class="ulist">
                             <ul>
                                 <li>
-                                    <p><code>@Target({ FIELD, METHOD, PARAMETER, ANNOTATION_TYPE, TYPE_USE})</code>: Defines the supported target element types for the constraint. <code>@CheckCase</code> may be used on fields (element type <code>FIELD</code>),
-                                        JavaBeans properties as well as method return values (<code>METHOD</code>), method/constructor parameters (<code>PARAMETER</code>) and type argument of parameterized types (<code>TYPE_USE</code>). The element type
-                                        <code>ANNOTATION_TYPE</code> allows for the creation of composed constraints (see <a href="#section-constraint-composition">Section 6.4, &#8220;Constraint composition&#8221;</a>) based on <code>@CheckCase</code>.</p>
+                                    <p><code>@Target({ FIELD, METHOD, PARAMETER, ANNOTATION_TYPE, TYPE_USE})</code>: 定义约束支持的目标元素类型。 <code>@CheckCase</code> 可用于字段 ( <code>FIELD</code>), JavaBeans properties 和返回值 (<code>METHOD</code>), 方法/构造函数参数 (<code>PARAMETER</code>)
+                                        和参数化类型的类型参数 (<code>TYPE_USE</code>)。元素类型 <code>ANNOTATION_TYPE</code> 允许 <code>@CheckCase</code> 创建组合约束。</p>
                                     <div class="paragraph">
-                                        <p>When creating a class-level constraint (see <a href="#validator-usingvalidator-classlevel">Section 2.1.4, &#8220;类层面的约束&#8221;</a>), the element type <code>TYPE</code> would have to be used. Constraints targeting
-                                            the return value of a constructor need to support the element type <code>CONSTRUCTOR</code>. Cross-parameter constraints (see
-                                            <a href="#section-cross-parameter-constraints">Section 6.3, &#8220;Cross-parameter constraints&#8221;</a>) which are used to validate all the parameters of a method or constructor together, must support <code>METHOD</code>                                            or <code>CONSTRUCTOR</code>, respectively.</p>
+                                        <p>在创建类级别约束 (see <a href="#validator-usingvalidator-classlevel">Section 2.1.4, &#8220;类层面的约束&#8221;</a>), <code>TYPE</code> 类型必须被支持。针对构造函数返回值的约束需要支持 <code>CONSTRUCTOR</code> 类型。 交叉参数的校验必须支持 <code>METHOD</code> 和 <code>CONSTRUCTOR</code>                                            。</p>
                                     </div>
                                 </li>
                                 <li>
-                                    <p><code>@Retention(RUNTIME)</code>: Specifies, that annotations of this type will be available at runtime by the means of reflection</p>
+                                    <p><code>@Retention(RUNTIME)</code>: 指定此类型的注解将在运行时通过反射的方式可用</p>
                                 </li>
                                 <li>
-                                    <p><code>@Constraint(validatedBy = CheckCaseValidator.class)</code>: Marks the annotation type as constraint annotation and specifies the validator to be used to validate elements annotated with <code>@CheckCase</code>.
-                                        If a constraint may be used on several data types, several validators may be specified, one for each data type.</p>
+                                    <p><code>@Constraint(validatedBy = CheckCaseValidator.class)</code>: 标记在使用 <code>@CheckCase</code> 时指定一个指定的validator(校验器)。 如果某个约束可用于多个数据类型，则可以指定多个校验器，每个校验器对应一个数据类型。</p>
                                 </li>
                                 <li>
-                                    <p><code>@Documented</code>: Says, that the use of <code>@CheckCase</code> will be contained in the JavaDoc of elements annotated with it</p>
+                                    <p><code>@Documented</code>: 表示 <code>@CheckCase</code> 的使用将包含在用它注解的元素的 JavaDoc 中。</p>
                                 </li>
                                 <li>
-                                    <p><code>@Repeatable(List.class)</code>: Indicates that the annotation can be repeated several times at the same place, usually with a different configuration. <code>List</code> is the containing annotation type.</p>
+                                    <p><code>@Repeatable(List.class)</code>: 表示注解可以在同一个地方重复多次，通常使用不同的配置。 <code>List</code> 是包含的注解类型。</p>
                                 </li>
                             </ul>
                         </div>
                         <div class="paragraph">
-                            <p>This containing annotation type named <code>List</code> is also shown in the example. It allows to specify several
-                                <code>@CheckCase</code> annotations on the same element, e.g. with different validation groups and messages. While another name could be used, the Jakarta Bean Validation specification recommends to use the name
-                                <code>List</code> and make the annotation an inner annotation of the corresponding constraint type.</p>
+                            <p>示例中还显示了这个包含注解类型名为 <code>List</code> 。它允许在同一个元素上指定多个 <code>@CheckCase</code> ，例如使用不同的校验组和消息。虽然可以使用另一个名称，但 Jakarta Bean Validation 范建议使用名称 <code>List</code> 并使注解成为相应约束类型的内部注解。</p>
                         </div>
                     </div>
                     <div class="sect3">
                         <h4 id="section-constraint-validator">
-                            <a class="anchor" href="#section-constraint-validator"></a>6.1.2. The constraint validator</h4>
+                            <a class="anchor" href="#section-constraint-validator"></a>6.1.2. 约束校验器</h4>
                         <div class="paragraph">
-                            <p>Having defined the annotation, you need to create a constraint validator, which is able to validate elements with a <code>@CheckCase</code> annotation. To do so, implement the Jakarta Bean Validation interface <code>ConstraintValidator</code>                                as shown below:</p>
+                            <p>在定义了注解之后，您需要创建一个约束校验器，它能够校验使用 <code>@CheckCase</code> 的元素。 为此，实现
+                                <code>ConstraintValidator</code>，如下所示:</p>
                         </div>
                         <div id="example-constraint-validator" class="exampleblock">
-                            <div class="title">Example 64. Implementing a constraint validator for the constraint <code>@CheckCase</code></div>
+                            <div class="title">Example 64. 实现 <code>@CheckCase</code> 约束的约束校验器</div>
                             <div class="content">
                                 <div class="listingblock">
                                     <div class="content">
@@ -7401,8 +7331,9 @@ public class CheckCaseValidator implements ConstraintValidator&lt;CheckCase, Str
                             <h5 id="_the_constraintvalidatorcontext">
                                 <a class="anchor" href="#_the_constraintvalidatorcontext"></a>6.1.2.1. The <code>ConstraintValidatorContext</code></h5>
                             <div class="paragraph">
-                                <p><a href="#example-constraint-validator">Example 64, &#8220;Implementing a constraint validator for the constraint <code>@CheckCase</code>&#8221;</a> relies on the default error message generation by just returning <code>true</code>                                    or <code>false</code> from the <code>isValid()</code> method. Using the passed <code>ConstraintValidatorContext</code> object, it is possible to either add additional error messages or completely disable the default
-                                    error message generation and solely define custom error messages. The <code>ConstraintValidatorContext</code> API is modeled as fluent interface and is best demonstrated with an example:</p>
+                                <p><a href="#example-constraint-validator">Example 64, &#8220;实现 <code>@CheckCase</code> 约束的约束校验器&#8221;</a> relies on the default error message generation by just returning <code>true</code> or <code>false</code> from the
+                                    <code>isValid()</code> method. Using the passed <code>ConstraintValidatorContext</code> object, it is possible to either add additional error messages or completely disable the default error message generation and solely
+                                    define custom error messages. The <code>ConstraintValidatorContext</code> API is modeled as fluent interface and is best demonstrated with an example:</p>
                             </div>
                             <div id="example-constraint-validator-context" class="exampleblock">
                                 <div class="title">Example 65. Using <code>ConstraintValidatorContext</code> to define custom error messages</div>
@@ -7685,7 +7616,7 @@ public class ZipCodeValidator implements ConstraintValidator&lt;ZipCode, String&
                             <a class="anchor" href="#validator-customconstraints-errormessage"></a>6.1.3. The error message</h4>
                         <div class="paragraph">
                             <p>The last missing building block is an error message which should be used in case a <code>@CheckCase</code> constraint is violated. To define this, create a file <em>ValidationMessages.properties</em> with the following contents
-                                (see also <a href="#section-message-interpolation">Section 4.1, &#8220;Default message interpolation&#8221;</a>):</p>
+                                (see also <a href="#section-message-interpolation">Section 4.1, &#8220;默认消息插值&#8221;</a>):</p>
                         </div>
                         <div class="exampleblock">
                             <div class="title">Example 70. Defining a custom error message for the <code>CheckCase</code> constraint</div>
@@ -8803,8 +8734,8 @@ private ReadOnlyListProperty&lt;@NotBlank String&gt; listProperty;</code></pre>
                         <div class="title">Figure 2. Validation mapping schema</div>
                     </div>
                     <div class="paragraph">
-                        <p><a href="#example-constraints-car">Example 96, &#8220;Bean constraints configured via XML&#8221;</a> shows how the classes Car and RentalCar from <a href="#example-car">Example 51, &#8220;Car&#8221;</a> resp.
-                            <a href="#example-rental-car">Example 57, &#8220;Class <code>RentalCar</code> with redefined default group&#8221;</a> could be mapped in XML.</p>
+                        <p><a href="#example-constraints-car">Example 96, &#8220;Bean constraints configured via XML&#8221;</a> shows how the classes Car and RentalCar from <a href="#example-car">Example 51, &#8220;Car类&#8221;</a> resp.
+                            <a href="#example-rental-car">Example 57, &#8220;为`RentalCar` 重新定义默认分组&#8221;</a> could be mapped in XML.</p>
                     </div>
                     <div id="example-constraints-car" class="exampleblock">
                         <div class="title">Example 96. Bean constraints configured via XML</div>
@@ -9013,8 +8944,8 @@ private ReadOnlyListProperty&lt;@NotBlank String&gt; listProperty;</code></pre>
                     </div>
                     <div class="paragraph">
                         <p>The <code>class</code> node also allows to reconfigure the default group sequence (see
-                            <a href="#section-default-group-class">Section 5.4, &#8220;Redefining the default group sequence&#8221;</a>) via the <code>group-sequence</code> node. Not shown in the example is the use of <code>convert-group</code> to specify
-                            group conversions (see <a href="#section-group-conversion">Section 5.5, &#8220;Group conversion&#8221;</a>). This node is available on <code>field</code>,
+                            <a href="#section-default-group-class">Section 5.4, &#8220;重新定义默认组序列&#8221;</a>) via the <code>group-sequence</code> node. Not shown in the example is the use of <code>convert-group</code> to specify group conversions (see
+                            <a href="#section-group-conversion">Section 5.5, &#8220;分组转化&#8221;</a>). This node is available on <code>field</code>,
                             <code>getter</code>, <code>container-element-type</code>, <code>parameter</code> and <code>return-value</code> and specifies a <code>from</code> and a <code>to</code> attributes to specify the groups.</p>
                     </div>
                     <div class="paragraph">
@@ -9227,8 +9158,7 @@ Validator validator = validatorFactory.getValidator();</code></pre>
                             <p>Message interpolators are used by the validation engine to create user readable error messages from constraint message descriptors.</p>
                         </div>
                         <div class="paragraph">
-                            <p>In case the default message interpolation algorithm described in <a href="#chapter-message-interpolation">Chapter 4, <em>Interpolating constraint error messages</em></a> is not sufficient for your needs, you can pass in your
-                                own implementation of the <code>MessageInterpolator</code> interface via <code>Configuration#messageInterpolator()</code> as shown in
+                            <p>In case the default message interpolation algorithm described in <a href="#chapter-message-interpolation">Chapter 4, <em>添加约束错误消息</em></a> is not sufficient for your needs, you can pass in your own implementation of the <code>MessageInterpolator</code>                                interface via <code>Configuration#messageInterpolator()</code> as shown in
                                 <a href="#example-using-custom-message-interpolator">Example 102, &#8220;Using a custom <code>MessageInterpolator</code>&#8221;</a>.</p>
                         </div>
                         <div id="example-using-custom-message-interpolator" class="exampleblock">
@@ -9380,7 +9310,7 @@ Validator validator = validatorFactory.getValidator();</code></pre>
                             <p><code>ConstraintValidatorFactory</code> is the extension point for customizing how constraint validators are instantiated and released.</p>
                         </div>
                         <div class="paragraph">
-                            <p>The default <code>ConstraintValidatorFactory</code> provided by Hibernate Validator requires a public no-arg constructor to instantiate <code>ConstraintValidator</code> instances (see <a href="#section-constraint-validator">Section 6.1.2, &#8220;The constraint validator&#8221;</a>).
+                            <p>The default <code>ConstraintValidatorFactory</code> provided by Hibernate Validator requires a public no-arg constructor to instantiate <code>ConstraintValidator</code> instances (see <a href="#section-constraint-validator">Section 6.1.2, &#8220;约束校验器&#8221;</a>).
                                 Using a custom <code>ConstraintValidatorFactory</code> offers for example the possibility to use dependency injection in constraint validator implementations.</p>
                         </div>
                         <div class="paragraph">
@@ -11536,7 +11466,7 @@ public class RentalStationBean {
                             </dd>
                             <dt class="hdlist1"><code>org.hibernate.validator.group</code>, <code>org.hibernate.validator.spi.group</code></dt>
                             <dd>
-                                <p>The group sequence provider feature which allows you to define dynamic default group sequences in function of the validated object state; the specifics can be found in <a href="#section-default-group-class">Section 5.4, &#8220;Redefining the default group sequence&#8221;</a>.</p>
+                                <p>The group sequence provider feature which allows you to define dynamic default group sequences in function of the validated object state; the specifics can be found in <a href="#section-default-group-class">Section 5.4, &#8220;重新定义默认组序列&#8221;</a>.</p>
                             </dd>
                             <dt class="hdlist1"><code>org.hibernate.validator.messageinterpolation</code>, <code>org.hibernate.validator.resourceloading</code>, <code>org.hibernate.validator.spi.resourceloading</code></dt>
                             <dd>
@@ -11650,7 +11580,7 @@ assertEquals( 1, constraintViolations.size() );</code></pre>
                                     <div class="paragraph">
                                         <p>There is no guarantee in which order the constraints are evaluated, i.e. it is not deterministic whether the returned violation originates from the <code>@NotNull</code> or the <code>@AssertTrue</code> constraint.
                                             If required, a deterministic evaluation order can be enforced using group sequences as described in
-                                            <a href="#section-defining-group-sequences">Section 5.3, &#8220;Defining group sequences&#8221;</a>.</p>
+                                            <a href="#section-defining-group-sequences">Section 5.3, &#8220;定义分组序列&#8221;</a>.</p>
                                     </div>
                                 </td>
                             </tr>
@@ -12351,7 +12281,7 @@ assertEquals( "Toyota Volta", suggestedCar );</code></pre>
                         <p>For environments where you cannot or do not want to provide an EL implementation, Hibernate Validator offers a non EL based message interpolator - <code>org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator</code>.</p>
                     </div>
                     <div class="paragraph">
-                        <p>Refer to <a href="#section-custom-message-interpolation">Section 4.2, &#8220;Custom message interpolation&#8221;</a> to see how to plug in custom message interpolator implementations.
+                        <p>Refer to <a href="#section-custom-message-interpolation">Section 4.2, &#8220;自定义消息插值&#8221;</a> to see how to plug in custom message interpolator implementations.
                         </p>
                     </div>
                     <div class="admonitionblock warning">
