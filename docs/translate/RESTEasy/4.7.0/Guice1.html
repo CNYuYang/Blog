@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 50 章 Guice 3.0 Integration</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="CDI.html" title="第 49 章 CDI Integration"/><link rel="next" href="RESTEasy_Client_Framework.html" title="第 51 章 RESTEasy Client API"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="CDI.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="RESTEasy_Client_Framework.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Guice1"/>第 50 章 Guice 3.0 Integration</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="Guice1.html#d4e3429">50.1. Request Scope</a></span></dt><dt><span class="section"><a href="Guice1.html#d4e3433">50.2. Binding JAX-RS utilities</a></span></dt><dt><span class="section"><a href="Guice1.html#d4e3436">50.3. Configuring Stage</a></span></dt><dt><span class="section"><a href="Guice1.html#d4e3440">50.4. Custom Injector creation</a></span></dt></dl></div>
+    
+    <p>RESTEasy has some simple integration with Guice 3.0.  RESTEasy will scan the binding types for a Guice Module
+        for @Path and @Provider annotations.  It will register these bindings with RESTEasy.  The guice-hello
+    project that comes in the RESTEasy examples/ directory gives a nice example of this.</p>
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("hello")
+public class HelloResource
+{
+   @GET
+   @Path("{name}")
+   public String hello(@PathParam("name") final String name) {
+      return "Hello " + name;
+   }
+}
+</pre>
+    <p>First you start off by specifying a JAX-RS resource class.  The HelloResource is just that.  Next you
+    create a Guice Module class that defines all your bindings:</p>
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+import com.google.inject.Module;
+import com.google.inject.Binder;
+
+public class HelloModule implements Module
+{
+    public void configure(final Binder binder)
+    {
+       binder.bind(HelloResource.class);
+    }
+}
+</pre>
+    <p>You put all these classes somewhere within your WAR WEB-INF/classes or in a JAR within WEB-INF/lib.  Then
+    you need to create your web.xml file.  You need to use the GuiceResteasyBootstrapServletContextListener as
+    follows</p>
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+
+&lt;web-app&gt;
+    &lt;display-name&gt;Guice Hello&lt;/display-name&gt;
+
+    &lt;context-param&gt;
+        &lt;param-name&gt;resteasy.guice.modules&lt;/param-name&gt;
+        &lt;param-value&gt;org.jboss.resteasy.examples.guice.hello.HelloModule&lt;/param-value&gt;
+    &lt;/context-param&gt;
+
+    &lt;listener&gt;
+        &lt;listener-class&gt;
+            org.jboss.resteasy.plugins.guice.GuiceResteasyBootstrapServletContextListener
+        &lt;/listener-class&gt;
+    &lt;/listener&gt;
+
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;Resteasy&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;
+            org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher
+        &lt;/servlet-class&gt;
+    &lt;/servlet&gt;
+
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;Resteasy&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+
+&lt;/web-app&gt;
+
+</pre>
+    <p>GuiceResteasyBootstrapServletContextListener is a subclass of ResteasyBootstrap, so you can use
+    any other RESTEasy configuration option within your web.xml file.  Also notice that there is a
+    resteasy.guice.modules context-param.  This can take a comma delimited list of class names that
+    are Guice Modules.</p>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3429"/>50.1. Request Scope</h2></div></div></div>
+      
+      <p>
+        Add the RequestScopeModule to your modules to allow objects to be scoped to the HTTP request by adding
+        the @RequestScoped annotation to your fields in resource classes. All the objects injectable via the @Context annotation are 
+        also injectable, except ServletConfig and ServletContext.
+        Note that RequestScopeModule will already be added if any of your modules extends com.google.inject.servlet.ServletModule.
+        In such cases you should not add it again to avoid injector creation errors.
+      </p>
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
+
+import org.jboss.resteasy.plugins.guice.RequestScoped;
+
+public class MyClass
+{
+    @Inject @RequestScoped @Context
+    private HttpRequest request;
+}
+
+</pre>
+    </div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3433"/>50.2. Binding JAX-RS utilities</h2></div></div></div>
+        
+        <p>
+            Add the JaxrsModule to bind javax.ws.rs.ext.RuntimeDelegate, javax.ws.rs.core.Response.ResponseBuilder, javax.ws.rs.core.UriBuilder, javax.ws.rs.core.Variant.VariantListBuilder and org.jboss.resteasy.client.ClientExecutor.
+        </p>
+    </div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3436"/>50.3. Configuring Stage</h2></div></div></div>
+        
+        <p>
+            You can configure the stage Guice uses to deploy your modules by specific a context param, resteasy.guice.stage.
+            If this value is not specified, RESTEasy uses whatever Guice's default is.
+        </p>
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+
+&lt;web-app&gt;
+    &lt;display-name&gt;Guice Hello&lt;/display-name&gt;
+
+    &lt;context-param&gt;
+        &lt;param-name&gt;resteasy.guice.modules&lt;/param-name&gt;
+        &lt;param-value&gt;org.jboss.resteasy.examples.guice.hello.HelloModule&lt;/param-value&gt;
+    &lt;/context-param&gt;
+
+    &lt;context-param&gt;
+        &lt;param-name&gt;resteasy.guice.stage&lt;/param-name&gt;
+        &lt;param-value&gt;PRODUCTION&lt;/param-value&gt;
+    &lt;/context-param&gt;
+
+    &lt;listener&gt;
+        &lt;listener-class&gt;
+            org.jboss.resteasy.plugins.guice.GuiceResteasyBootstrapServletContextListener
+        &lt;/listener-class&gt;
+    &lt;/listener&gt;
+
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;Resteasy&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;
+            org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher
+        &lt;/servlet-class&gt;
+    &lt;/servlet&gt;
+
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;Resteasy&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+
+&lt;/web-app&gt;
+
+</pre>        
+    </div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3440"/>50.4. Custom Injector creation</h2></div></div></div>
+      
+      <p>
+        GuiceResteasyBootstrapServletContextListener can be extended to allow more flexibility in the way the Injector and Modules
+        are created.  Three methods can be overridden: getModules(), withInjector() and getStage(). Register your subclass as the
+        listener in the web.xml.
+      </p>
+      <p>
+        Override getModules() when you need to pass arguments to your modules' constructor or perform more complex operations.
+      </p>
+      <p>
+        Override withInjector(Injector) when you need to interact with the Injector after it has been created.
+      </p>
+      <p>
+        Override getStage(ServletContext) to set the Stage yourself.
+      </p>
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+
+&lt;web-app&gt;
+    &lt;!-- other tags omitted --&gt;
+    &lt;listener&gt;
+      &lt;listener-class&gt;
+         org.jboss.resteasy.plugins.guice.GuiceResteasyBootstrapServletContextListener
+      &lt;/listener-class&gt;
+    &lt;/listener&gt;
+&lt;/web-app&gt;
+
+public class MyServletContextListener extends GuiceResteasyBootstrapServletContextListener
+{
+
+    @Override
+    protected List&lt;? extends Module&gt; getModules(ServletContext context)
+    {
+        return Arrays.asList(new JpaPersistModule("consulting_hours"), new MyModule());
+    }
+    
+    @Override
+    public void withInjector(Injector injector)
+    {
+        injector.getInstance(PersistService.class).start();
+    }
+}
+
+</pre>        
+    </div>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="CDI.html"><strong>上一页</strong>第 49 章 CDI Integration</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="RESTEasy_Client_Framework.html"><strong>下一页</strong>第 51 章 RESTEasy Client API</a></li></ul></body></html>

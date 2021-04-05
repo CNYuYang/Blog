@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 31 章 Configuring Individual JAX-RS Resource Beans</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="ExceptionHandling.html" title="第 30 章 Exception Handling"/><link rel="next" href="gzip.html" title="第 32 章 Content encoding"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="ExceptionHandling.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="gzip.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Configuring_Individual_JAX-RS_Resource_Beans"/>第 31 章 Configuring Individual JAX-RS Resource Beans</h2></div></div></div>
+
+
+<p>
+
+
+</p>
+<p>
+
+If you are scanning your path for JAX-RS annotated resource beans, your beans will be registered in per-request mode.  This means an instance will be created per HTTP request served.  Generally, you will need information from your environment.  If you are running within a servlet container using the WAR-file distribution, in 1.0.0.Beta-2 and lower, you can only use the JNDI lookups to obtain references to Java EE resources and configuration information.  In this case, define your EE configuration (i.e. ejb-ref, env-entry, persistence-context-ref, etc...) within web.xml of the resteasy WAR file.  Then within your code do jndi lookups in the java:comp namespace.  For example:
+</p>
+<p>
+
+web.xml
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+
+&lt;ejb-ref&gt;
+  &lt;ejb-ref-name&gt;ejb/foo&lt;/ejb-ref-name&gt;
+  ...
+&lt;/ejb-ref&gt;
+
+</pre><p>
+</p>
+<p>
+
+resource code:
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("/")
+public class MyBean {
+
+   public Object getSomethingFromJndi() {
+      new InitialContext.lookup("java:comp/ejb/foo");
+   }
+...
+}
+</pre><p>
+</p>
+<p>
+
+
+</p>
+<p>
+
+You can also manually configure and register your beans through the Registry.  To do this in a WAR-based deployment, you need to write a specific ServletContextListener to do this.  Within the listener, you can obtain a reference to the registry as follows:
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+
+public class MyManualConfig implements ServletContextListener
+{
+   public void contextInitialized(ServletContextEvent event)
+   {
+
+      Registry registry = (Registry) event.getServletContext().getAttribute(Registry.class.getName());
+
+   }
+...
+}
+
+</pre><p>
+</p>
+<p>
+
+Please also take a look at our Spring Integration as well as the Embedded Container's Spring Integration
+</p>
+<p>
+
+</p>
+<p>
+
+
+</p>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="ExceptionHandling.html"><strong>上一页</strong>第 30 章 Exception Handling</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="gzip.html"><strong>下一页</strong>第 32 章 Content encoding</a></li></ul></body></html>

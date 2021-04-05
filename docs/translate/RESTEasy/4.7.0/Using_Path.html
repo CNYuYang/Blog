@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 4 章 Using @Path and @GET, @POST, etc.</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Installation_Configuration.html" title="第 3 章 安装/配置"/><link rel="next" href="_PathParam.html" title="第 5 章 @PathParam"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Installation_Configuration.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="_PathParam.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Using_Path"/>第 4 章 Using @Path and @GET, @POST, etc.</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="Using_Path.html#_Path_and_regular_expression_mappings">4.1. @Path and regular expression mappings</a></span></dt></dl></div>
+
+
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("/library")
+public class Library {
+
+   @GET
+   @Path("/books")
+   public String getBooks() {...}
+
+   @GET
+   @Path("/book/{isbn}")
+   public String getBook(@PathParam("isbn") String id) {
+      // search my database and get a string representation and return it
+   }
+
+   @PUT
+   @Path("/book/{isbn}")
+   public void addBook(@PathParam("isbn") String id, @QueryParam("name") String name) {...}
+
+   @DELETE
+   @Path("/book/{id}")
+   public void removeBook(@PathParam("id") String id {...}
+   
+}
+</pre><p>
+</p>
+<p>
+
+Let's say you have the RESTEasy servlet configured and reachable at a root path of http://myhost.com/services.  The requests would be handled by the Library class:
+</p>
+<p>
+
+</p><div class="itemizedlist"><ul><li>
+ GET http://myhost.com/services/library/books
+</li><li>
+ GET http://myhost.com/services/library/book/333
+</li><li>
+ PUT http://myhost.com/services/library/book/333
+</li><li>
+ DELETE http://myhost.com/services/library/book/333
+</li></ul></div><p>
+
+</p>
+<p>
+
+The @javax.ws.rs.Path annotation must exist on either the class and/or a resource method.  If it exists on both the class and method, the relative path to the resource method is a concatenation of the class and method.
+</p>
+<p>
+
+In the @javax.ws.rs package there are annotations for each HTTP method.  @GET, @POST, @PUT, @DELETE, and @HEAD.  You place these on public methods that you want to map to that certain kind of HTTP method.  As long as there is a @Path annotation on the class, you do not have to have a @Path annotation on the method you are mapping.  You can have more than one HTTP method as long as they can be distinguished from other methods.
+</p>
+<p>
+
+When you have a @Path annotation on a method without an HTTP method, these are called JAXRSResourceLocators.
+</p>
+<p>
+
+
+</p>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="_Path_and_regular_expression_mappings"/>4.1. @Path and regular expression mappings</h2></div></div></div>
+
+
+<p>
+
+The @Path annotation is not limited to simple path expressions.  You also have the ability to insert regular expressions into @Path's value.  For example:
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("/resources)
+public class MyResource {
+
+   @GET
+   @Path("{var:.*}/stuff")
+   public String get() {...}
+}
+</pre><p>
+</p>
+<p>
+
+The following GETs will route to the getResource() method:
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+GET /resources/stuff
+GET /resources/foo/stuff
+GET /resources/on/and/on/stuff
+</pre><p>
+</p>
+<p>
+
+The format of the expression is:
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+"{" variable-name [ ":" regular-expression ] "}"
+</pre><p>
+</p>
+<p>
+
+The regular-expression part is optional.  When the expression is not provided, it defaults to a wildcard matching of one particular segment.  In regular-expression terms, the expression defaults to 
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+"([]*)"
+</pre><p>
+</p>
+<p>
+
+For example:
+</p>
+<p>
+
+@Path("/resources/{var}/stuff")
+</p>
+<p>
+
+will match these:
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+GET /resources/foo/stuff
+GET /resources/bar/stuff
+</pre><p>
+</p>
+<p>
+
+but will not match:
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+GET /resources/a/bunch/of/stuff
+</pre><p>
+</p>
+<p>
+
+</p>
+<p>
+
+</p>
+<p>
+
+
+</p>
+</div>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Installation_Configuration.html"><strong>上一页</strong>第 3 章 安装/配置</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="_PathParam.html"><strong>下一页</strong>第 5 章 @PathParam</a></li></ul></body></html>

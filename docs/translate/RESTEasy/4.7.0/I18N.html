@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 57 章 Internationalization and Localization</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Validation.html" title="第 56 章 Validation"/><link rel="next" href="Maven_and_RESTEasy.html" title="第 58 章 Maven and RESTEasy"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Validation.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Maven_and_RESTEasy.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="I18N"/>第 57 章 Internationalization and Localization</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="I18N.html#d4e4591">57.1. Internationalization</a></span></dt><dt><span class="section"><a href="I18N.html#d4e4693">57.2. Localization</a></span></dt></dl></div>
+   
+
+   <p>
+   With the help of the JBoss Logging project, all log and exception messages in RESTEasy are internationalized. That is, they
+   have a default value in English which can be overridden in any given locale by a file which gives translated values. For
+   more information about internationalization and localization in Java, see, for example,
+   <a class="ulink" href="http://docs.oracle.com/javase/tutorial/i18n">http://docs.oracle.com/javase/tutorial/i18n</a>. For more about
+   JBoss Logging, see
+   <a class="ulink" href="https://access.redhat.com/documentation/en-US/JBoss_Enterprise_Application_Platform/6/html/Development_Guide/">
+   https://access.redhat.com/documentation/en-US/JBoss_Enterprise_Application_Platform/6/html/Development_Guide/</a>,
+   Chapters 4 and 5.
+   </p>
+
+   <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4591"/>57.1. Internationalization</h2></div></div></div>
+   
+   <p>
+   Each module in RESTEasy that produces any text in the form of logging messages or exception messages
+   has an interface named org.jboss.resteasy...i18n.Messages which contains the default messages. Those
+   modules which do any logging also have an interface named org.jboss.resteasy...i18n.LogMessages which gives access to an
+   underlying logger. With the exception of the resteasy-jaxrs module, all messages are in the Messages class. resteasy-jaxrs
+   has exception messages in the Messages class and log messages in the LogMessages class.
+   </p>
+
+   <p>
+   Each message is prefixed by the project code "RESTEASY" followed by an ID which is unique to RESTEasy. These IDs belong to the
+   following ranges:
+   </p>
+
+   <div class="table"><a id="d4e4595"/><p class="title"><b>表 57.1. </b></p><div class="table-contents">
+   <table border="1"><colgroup><col/><col/></colgroup><thead><tr><th align="center">Range</th><th align="center">Module</th></tr></thead><tbody><tr><td align="left">2000-2999</td><td align="left">resteasy-jaxrs log messages</td></tr><tr><td align="left">3000-4499</td><td align="left">resteasy-jaxrs exception messages</td></tr><tr><td align="left">4500-4999</td><td align="left">resteasy-client</td></tr><tr><td align="left">5000-5499</td><td align="left">providers/resteasy-atom</td></tr><tr><td align="left">5500-5999</td><td align="left">providers/fastinfoset</td></tr><tr><td align="left">6000-6499</td><td align="left">providers/resteasy-html</td></tr><tr><td align="left">6500-6999</td><td align="left">providers/jaxb</td></tr><tr><td align="left">7500-7999</td><td align="left">providers/multipart</td></tr><tr><td align="left">8000-8499</td><td align="left">providers/resteasy-hibernatevalidator-provider</td></tr><tr><td align="left">8500-8999</td><td align="left">providers/resteasy-validator-provider</td></tr><tr><td align="left">9500-9999</td><td align="left">async-http-servlet-3.0</td></tr><tr><td align="left">10000-10499</td><td align="left">resteasy-cache-core</td></tr><tr><td align="left">10500-10999</td><td align="left">resteasy-cdi</td></tr><tr><td align="left">11000-11499</td><td align="left">resteasy-guice</td></tr><tr><td align="left">11500-11999</td><td align="left">resteasy-jsapi</td></tr><tr><td align="left">12000-12499</td><td align="left">resteasy-links</td></tr><tr><td align="left">12500-12999</td><td align="left">resteasy-servlet-initializer</td></tr><tr><td align="left">13000-13499</td><td align="left">resteasy-spring</td></tr><tr><td align="left">13500-13999</td><td align="left">security/resteasy-crypto</td></tr><tr><td align="left">14000-14499</td><td align="left">security/jose-jwt</td></tr><tr><td align="left">14500-14999</td><td align="left">security/keystone/keystone-as7</td></tr><tr><td align="left">15000-15499</td><td align="left">security/keystone/keystone-core</td></tr><tr><td align="left">15500-15999</td><td align="left">security/resteasy-oauth</td></tr><tr><td align="left">16000-16499</td><td align="left">security/skeleton-key-idm/skeleton-key-as7</td></tr><tr><td align="left">16500-16999</td><td align="left">security/skeleton-key-idm/skeleton-key-core</td></tr><tr><td align="left">17000-17499</td><td align="left">security/skeleton-key-idm/skeleton-key-idp</td></tr><tr><td align="left">17500-17999</td><td align="left">server-adapters/resteasy-jdk-http</td></tr><tr><td align="left">18500-18999</td><td align="left">server-adapters/resteasy-netty4</td></tr></tbody></table>
+   </div></div><br class="table-break"/>
+
+   <p>
+   For example, the jaxb provider contains the interface
+   </p>
+
+   <div class="blockquote"><blockquote class="blockquote">
+   <code class="classname">org.jboss.resteasy.plugins.providers.jaxb.i18.Messages</code>
+   </blockquote></div>
+
+   <p>
+   which looks like
+   </p>
+
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@MessageBundle(projectCode = "RESTEASY")
+public interface Messages
+{
+   Messages MESSAGES = org.jboss.logging.Messages.getBundle(Messages.class);
+   int BASE = 6500;
+
+   @Message(id = BASE + 00, value = "Collection wrapping failed, expected root element name of {0} got {1}", format=Format.MESSAGE_FORMAT)
+   String collectionWrappingFailedLocalPart(String element, String localPart);
+
+   @Message(id = BASE + 05, value = "Collection wrapping failed, expect namespace of {0} got {1}", format=Format.MESSAGE_FORMAT)
+   String collectionWrappingFailedNamespace(String namespace, String uri);
+   ...
+   </pre>
+
+   <p>
+   The value of a message is retrieved by referencing a method and passing the appropriate parameters. For example,
+   </p>
+
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+throw new JAXBUnmarshalException(Messages.MESSAGES.collectionWrappingFailedLocalPart(wrapped.element(), ele.getName().getLocalPart()));
+   </pre>
+
+   </div>
+
+   <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4693"/>57.2. Localization</h2></div></div></div>
+   
+
+   <p>
+   When RESTEasy is built with the "i18n" profile, a template properties file containing the default messages
+   is created in a subdirectory of target/generated-translation-files. In the jaxb provider, for example,
+   the
+   </p>
+
+   <div class="blockquote"><blockquote class="blockquote">
+   Messages.i18n_locale_COUNTRY_VARIANT.properties
+   </blockquote></div>
+
+   <p>
+   goes in the
+   </p>
+
+   <div class="blockquote"><blockquote class="blockquote">
+   org/jboss/resteasy/plugins/providers/jaxb/i18n
+   </blockquote></div>
+
+   <p>
+   directory, and the first few lines are
+   </p>
+
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+# Id: 6500
+# Message: Collection wrapping failed, expected root element name of {0} got {1}
+# @param 1: element -
+# @param 2: localPart -
+collectionWrappingFailedLocalPart=Collection wrapping failed, expected root element name of {0} got {1}
+# Id: 6505
+# Message: Collection wrapping failed, expect namespace of {0} got {1}
+# @param 1: namespace -
+# @param 2: uri -
+collectionWrappingFailedNamespace=Collection wrapping failed, expect namespace of {0} got {1}
+   </pre>
+
+   <p>
+   To provide the translation of the messages for a particular locale, the file should be renamed, replacing
+   "locale", "COUNTRY", and "VARIANT" as appropriate (possibly omitting the latter two), and copied to the
+   src/main/resources directory. In the jaxb provider, it would go in
+   </p>
+
+   <div class="blockquote"><blockquote class="blockquote">
+   src/main/resources/org/jboss/resteasy/plugins/providers/jaxb/i18n
+   </blockquote></div>
+
+   <p>
+   For testing purposes, each module containing a Messages interface has two sample properties files, for
+   the locale "en" and the imaginary locale "xx", in the src/test/resources directory. They are copied to
+   src/main/resources when the module is built and deleted when it is cleaned.
+   </p>
+
+   <p>
+   The Messages.i18n_xx.properties file in the jaxb provider, for example, looks like
+   </p>
+
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+# Id: 6500
+# Message: Collection wrapping failed, expected root element name of {0} got {1}
+# @param 1: element -
+# @param 2: localPart -
+collectionWrappingFailedLocalPart=Collection wrapping failed, expected root element name of {0} got {1}
+# Id: 6505
+# Message: Collection wrapping failed, expect namespace of {0} got {1}
+# @param 1: namespace -
+# @param 2: uri -
+collectionWrappingFailedNamespace=aaa {0} bbb {1} ccc
+...
+   </pre>
+
+   <p>
+   Note that the value of collectionWrappingFailedNamespace is modified.
+   </p>
+   </div>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Validation.html"><strong>上一页</strong>第 56 章 Validation</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="Maven_and_RESTEasy.html"><strong>下一页</strong>第 58 章 Maven and RESTEasy</a></li></ul></body></html>

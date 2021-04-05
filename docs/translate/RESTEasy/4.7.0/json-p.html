@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 25 章 JSON Support via Java EE 7 JSON-P API</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="json.html" title="第 24 章 JSON Support via Jackson"/><link rel="next" href="Multipart.html" title="第 26 章 Multipart Providers"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="json.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Multipart.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="json-p"/>第 25 章 JSON Support via Java EE 7 JSON-P API</h2></div></div></div>
+    
+    <p>No, this is not the JSONP you are thinking of!  JSON-P is a new Java EE 7 JSON parsing API.  Horrible name for
+        a new JSON parsing API!  What were they thinking?  Anyways, RESTEasy has
+        a provider for it.  If you are using WildFly, it is required by Java EE 7 so you will have it automatically bundled.
+        Otherwise, use this maven dependency.
+    </p>
+    <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+&lt;dependency&gt;
+   &lt;groupId&gt;org.jboss.resteasy&lt;/groupId&gt;
+   &lt;artifactId&gt;resteasy-json-p-provider&lt;/artifactId&gt;
+   &lt;version&gt;4.7.0-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
+    <p>
+        It has built in support for JsonObject, JsonArray, and JsonStructure as request or response entities.  It should
+        not conflict with Jackson if you have that in your path too.
+    </p>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="json.html"><strong>上一页</strong>第 24 章 JSON Support via Jackson</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="Multipart.html"><strong>下一页</strong>第 26 章 Multipart Providers</a></li></ul></body></html>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 39 章 Asynchronous Injection</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="async_job_service.html" title="第 38 章 Asynchronous Job Service"/><link rel="next" href="Reactive.html" title="第 40 章 Reactive programming support"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="async_job_service.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Reactive.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Async_Injection"/>第 39 章 Asynchronous Injection</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="Async_Injection.html#ContextInjector_Interface">39.1. org.jboss.resteasy.spi.ContextInjector Interface</a></span></dt><dt><span class="sect1"><a href="Async_Injection.html#Single_foo_example">39.2. Single&lt;Foo&gt; Example</a></span></dt><dt><span class="sect1"><a href="Async_Injection.html#injectory_with_annotations_example">39.3. Async Injector With Annotations Example</a></span></dt></dl></div>
+    
+    <p>
+        Pluggable Asynchronous Injection, also referred to as Asynch Injection, is a
+        feature that allows users to create custom injectable asynchronous types.
+        For example it is now possible to declare an injector for <code class="classname">Single&lt;Foo&gt;</code>
+        and inject it into an endpoint as a class variable or as a method parameter using
+        <code class="classname">@Context Foo</code>.  The response will be made asynchronous automatically and
+        the resource method will only be invoked once the <code class="classname">Single&lt;Foo&gt;</code> object is
+        resolved to <code class="classname">Foo</code>.  Resolution is done in a non-blocking manner.
+    </p>
+    <p>
+        <span class="bold"><strong>Note.</strong></span>
+        Asynch injection is only attempted at points where asynchronous injection is
+        permitted, such as on resource creation and resource method invocation. It
+        is not enabled at points where the API does not allow for suspending the
+        request, for example on <code class="classname">ResourceContext.getResource(Foo.class)</code>.
+    </p>
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="ContextInjector_Interface"/>39.1. org.jboss.resteasy.spi.ContextInjector Interface</h2></div></div></div>
+        
+        <p>
+            The <code class="classname">org.jboss.resteasy.spi.ContextInjector</code> interface must be implemented
+            on any custom asynch injector object.  The implementation class must be
+            tagged with the <code class="classname">@Provider</code> annotation.
+        </p>
+        <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+/**
+ * @param &lt;WrappedType&gt; A class that wraps a data type or data object
+ *                            (e.g. Single&lt;Foo&gt;)
+ * @param &lt;UnwrappedType&gt; The data type or data object declared in the
+ *                              WrappedType (e.g. Foo)
+*/
+public interface ContextInjector&lt;WrappedType, UnwrappedType&gt; {
+/**
+ * This interface allows users to create custom injectable asynchronous types.
+ *
+ * Asynch injection is only attempted at points where asynchronous injection is
+ * permitted, such as on resource creation and resource method invocation. It
+ * is not enabled at points where the API does not allow for suspending the
+ * request
+ *
+ * @param rawType
+ * @param genericType
+ * @param annotations The annotation list is useful to parametrize the injection.
+ * @return
+ */
+ public WrappedType resolve(
+            Class&lt;? extends WrappedType&gt; rawType,
+            Type genericType,
+            Annotation[] annotations);
+  }
+        </pre>
+   </div>
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Single_foo_example"/>39.2. Single&lt;Foo&gt; Example</h2></div></div></div>
+    
+        <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+package my.test;
+
+public class Foo {
+   private String value = "PRE-SET-VALUE";
+
+   public void setValue(String s) {
+      this.value = s;
+   }
+
+   public String getValue() {
+      return this.value;
+   }
+}
+        </pre>
+        <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+package my.test.asyc.resources;
+
+import io.reactivex.Single;
+import javax.ws.rs.ext.Provider;
+import org.jboss.resteasy.spi.ContextInjector;
+import my.test.Foo;
+
+@Provider
+public class FooAsychInjectorProvider implements
+            ContextInjector&lt;Single&lt;Foo&gt;,Foo&gt; {
+
+   public Single&lt;Foo&gt; resolve(Class&lt;? extends Single&lt;Foo&gt;&gt; rawType,
+            Type genericType,
+            Annotation[] annotations)
+   {
+      Foo value = new Foo();
+      return Single.just(value.setValue("made it"));
+   }
+}
+        </pre>
+    </div>
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="injectory_with_annotations_example"/>39.3. Async Injector With Annotations Example</h2></div></div></div>
+    
+        <p>
+            A convenience interface to provide annotation parameter designators
+        </p>
+    <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Retention(RUNTIME)
+@Target({ FIELD, METHOD, PARAMETER })
+public @interface AsyncInjectionPrimitiveInjectorSpecifier
+{
+   public enum Type {
+      VALUE, NULL, NO_RESULT;
+   }
+
+   Type value() default Type.VALUE;
+}
+    </pre>
+        <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+
+@Provider
+public class AsyncInjectionFloatInjector implements
+            ContextInjector&lt;CompletionStage&lt;Float&gt;, Float&gt;
+{
+
+   @Override
+   public CompletionStage&lt;Float&gt; resolve(
+      Class&lt;? extends CompletionStage&lt;Float&gt;&gt; rawType,
+            Type genericType,
+            Annotation[] annotations)
+    {
+       for (Annotation annotation : annotations)
+       {
+           if(annotation.annotationType() ==
+              AsyncInjectionPrimitiveInjectorSpecifier.class) {
+             AsyncInjectionPrimitiveInjectorSpecifier.Type value =
+               ((AsyncInjectionPrimitiveInjectorSpecifier)annotation).value();
+             switch(value) {
+               case NO_RESULT:
+                  return null;
+               case NULL:
+                  return CompletableFuture.completedFuture(null);
+               case VALUE:
+                  return CompletableFuture.completedFuture(4.2f);
+            }
+            break;
+          }
+       }
+       return CompletableFuture.completedFuture(4.2f);
+    }
+}
+        </pre>
+    </div>
+ </div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="async_job_service.html"><strong>上一页</strong>第 38 章 Asynchronous Job Service</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="Reactive.html"><strong>下一页</strong>第 40 章 Reactive programming support</a></li></ul></body></html>

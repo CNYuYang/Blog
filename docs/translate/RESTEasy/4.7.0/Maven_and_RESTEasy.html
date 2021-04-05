@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 58 章 Maven and RESTEasy</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="I18N.html" title="第 57 章 Internationalization and Localization"/><link rel="next" href="Migration_from_older_versions.html" title="第 59 章 Migration from older versions"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="I18N.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Migration_from_older_versions.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Maven_and_RESTEasy"/>第 58 章 Maven and RESTEasy</h2></div></div></div>
+   
+   <p>
+JBoss's Maven Repository is at:
+      https://repository.jboss.org/nexus/content/groups/public/
+   </p>
+   <p>
+
+     RESTEasy is modularized into 20 plus components.  Each component is accessible as a Maven
+     artifact.  As a convenience RESTEasy provides a BOM containing the complete set of components
+     with the appropriate versions for the "stack".
+   </p>
+   <p>
+     It is recommended to declare the BOM in your POM file, that way you will always
+     be sure to get the correct version of the artifacts.  In addition, you will not need
+     to declare the version of each RESTEasy artifact called out in the dependencies section.
+   </p>
+   <p>
+     Declare the BOM file in the dependencyManagement section of the POM file like this.
+     Note that Maven version 2.0.9 or higher is required to process BOM files.
+   </p>
+  <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+    
+    &lt;dependencyManagement&gt;
+      &lt;dependencies&gt;
+        &lt;dependency&gt;
+          &lt;groupId&gt;org.jboss.resteasy&lt;/groupId&gt;
+          &lt;artifactId&gt;resteasy-bom&lt;/artifactId&gt;
+          &lt;version&gt;${version.resteasy}&lt;/version&gt;
+          &lt;type&gt;pom&lt;/type&gt;
+          &lt;scope&gt;import&lt;/scope&gt;
+        &lt;/dependency&gt;
+      &lt;/dependencies&gt;
+    &lt;/dependencyManagement&gt;
+  
+  </pre>
+   <p>
+     Declare the specific RESTEasy artifacts you require in the dependencies section of the
+     POM file like this.
+   </p>
+  <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+    
+     &lt;dependencies&gt;
+       &lt;dependency&gt;
+          &lt;groupId&gt;org.jboss.resteasy&lt;/groupId&gt;
+          &lt;artifactId&gt;resteasy-client&lt;/artifactId&gt;
+       &lt;/dependency&gt;
+        ....
+   &lt;/dependencies&gt;
+  
+  </pre>
+   <p>
+     It is possible to reference a RESTEasy artifact version not in the current BOM
+     by specifying a version in the dependency itself.
+   </p>
+  <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+    
+     &lt;dependencies&gt;
+       &lt;dependency&gt;
+          &lt;groupId&gt;org.jboss.resteasy&lt;/groupId&gt;
+          &lt;artifactId&gt;resteasy-client&lt;/artifactId&gt;
+          &lt;version&gt;${version.some.other}&lt;version&gt;
+       &lt;/dependency&gt;
+        ....
+   &lt;/dependencies&gt;
+  
+  </pre>
+   
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="I18N.html"><strong>上一页</strong>第 57 章 Internationalization and Localization</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="Migration_from_older_versions.html"><strong>下一页</strong>第 59 章 Migration from older versions</a></li></ul></body></html>

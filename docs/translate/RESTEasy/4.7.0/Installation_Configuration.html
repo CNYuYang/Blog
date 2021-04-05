@@ -1,0 +1,1045 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 3 章 安装/配置</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="license.html" title="第 2 章 开源许可"/><link rel="next" href="Using_Path.html" title="第 4 章 Using @Path and @GET, @POST, etc."/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="license.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Using_Path.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Installation_Configuration"/>第 3 章 安装/配置</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="Installation_Configuration.html#resteasy_modules_in_wildfly">3.1.  WildFly 中的 RESTEasy 模块</a></span></dt><dd><dl><dt><span class="section"><a href="Installation_Configuration.html#other_resteasy_modules">3.1.1. 其他 RESTEasy 模块</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#upgrading-wildfly">3.1.2. 升级 WildFly 中的 RESTEasy</a></span></dt></dl></dd><dt><span class="section"><a href="Installation_Configuration.html#d4e123">3.2. 将 RESTEasy 应用程序部署到 WildFly</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#standalone_resteasy">3.3. 部署到其他 servlet 容器</a></span></dt><dd><dl><dt><span class="section"><a href="Installation_Configuration.html#d4e155">3.3.1. Servlet 3.0 容器</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#d4e161">3.3.2. 老的 servlet 容器</a></span></dt></dl></dd><dt><span class="section"><a href="Installation_Configuration.html#microprofile_config">3.4. 配置</a></span></dt><dd><dl><dt><span class="section"><a href="Installation_Configuration.html#resteasy_microprofile_config">3.4.1. RESTEasy with MicroProfile Config</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#d4e240">3.4.2. Using pure MicroProfile Config</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#d4e259">3.4.3. Using RESTEasy's extension of MicroProfile Config</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#configuring_mp_config">3.4.4. Configuring MicroProfile Config</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#classic_config">3.4.5. RESTEasy's classic configuration mechanism</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#overriding_config">3.4.6. Overriding RESTEasy's configuration mechanism</a></span></dt></dl></dd><dt><span class="section"><a href="Installation_Configuration.html#configuration_switches">3.5. Configuration switches</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#javax.ws.rs.core.Application">3.6. javax.ws.rs.core.Application</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#listener">3.7. RESTEasy as a ServletContextListener</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#filter">3.8. RESTEasy as a Servlet Filter</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#d4e445">3.9. Client side</a></span></dt></dl></div>
+    
+
+    <p>
+        RESTEasy 可以根据你的运行环境，采取不同的安装和配置方式。如果你正在使用 WildFly，RESTEasy 已经被完全集成和捆绑进去，所以你只需要做很少的事情。如果您在其他的环境中运行，则必须手动进行一些安装和配置。
+    </p>
+
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="resteasy_modules_in_wildfly"/>3.1.  WildFly 中的 RESTEasy 模块</h2></div></div></div>
+        
+        <p>
+            在 WildFly 中，只有在部署 JAX-RS 应用程序时(由 JAX-RS 注解的存在决定) ，RESTEasy 和 JAX-RS API 才会自动加载到部署的类路径中。但是，只有一些 RESTEasy 特性是自动加载的。见表3.1。如果您需要那些未自动加载的库中的任何一个，那么您必须使用 WAR 文件的 WEB-INF 目录中的 jboss-deployment-structure.xml 文件引入它们。下面是一个例子:
+        </p>
+        <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+&lt;jboss-deployment-structure&gt;
+    &lt;deployment&gt;
+        &lt;dependencies&gt;
+            &lt;module name="org.jboss.resteasy.resteasy-jackson-provider" services="import"/&gt;
+        &lt;/dependencies&gt;
+    &lt;/deployment&gt;
+&lt;/jboss-deployment-structure&gt;</pre>
+        <p>对于在 META-INF/services/javax.ws.rs.ext.Providers 文件中具有默认提供程序的模块，必须将 <code class="literal">services</code> 属性设置为"import"。 </p>
+        <p>
+            要了解在部署 JAX-RS 服务时默认加载了哪些 RESTEasy 模块，请参阅下表，该表是指使用当前RESTEasy发行版修补的最新WildFly发行版。显然，未来的 WildFly 发行版和未修补的 WildFly 发行版在默认启用的模块方面可能有所不同，因为容器实际上也控制着它们。
+        </p>
+        <p>
+            </p><div class="table"><a id="d4e30"/><p class="title"><b>表 3.1. </b></p><div class="table-contents">
+            <table border="1"><colgroup><col/><col/><col/></colgroup><thead><tr><th>
+                        模块名称
+                    </th><th>
+                        默认是否加载
+                    </th><th>
+                        模块介绍
+                    </th></tr></thead><tbody><tr><td>
+                        org.jboss.resteasy.resteasy-atom-provider
+                    </td><td>
+                        yes
+                    </td><td>
+                        RESTEasy's atom library
+                    </td></tr><tr><td>
+                        org.jboss.resteasy.resteasy-cdi
+                    </td><td>
+                        yes
+                    </td><td>
+                        RESTEasy CDI integration
+                    </td></tr><tr><td>
+                        org.jboss.resteasy.resteasy-crypto
+                    </td><td>
+                        yes
+                    </td><td>
+                        S/MIME, DKIM, and support for other security formats.
+                    </td></tr><tr><td>
+                        org.jboss.resteasy.resteasy-jackson-provider
+                    </td><td>
+                        no
+                    </td><td>
+                        Integration with the JSON parser and object mapper Jackson (deprecated)
+                    </td></tr><tr><td>
+                        org.jboss.resteasy.resteasy-jackson2-provider
+                    </td><td>
+                        yes
+                    </td><td>
+                        Integration with the JSON parser and object mapper Jackson 2
+                    </td></tr><tr><td>
+                        org.jboss.resteasy.resteasy-jaxb-provider
+                    </td><td>
+                        yes
+                    </td><td>
+                        XML JAXB integration.
+                    </td></tr><tr><td>
+                        org.jboss.resteasy.resteasy-jaxrs
+                    </td><td>
+                        yes
+                    </td><td>
+                        Core RESTEasy libraries for server and client.  You will need to include this in your deployment
+                        if you are only using JAX-RS client.
+                    </td></tr><tr><td>
+                        org.jboss.resteasy.jose-jwt
+                    </td><td>
+                        no
+                    </td><td>
+                        JSON Web Token support.
+                    </td></tr><tr><td>
+                        org.jboss.resteasy.resteasy-jsapi
+                    </td><td>
+                        yes
+                    </td><td>
+                        RESTEasy's Javascript API
+                    </td></tr><tr><td>
+                        org.jboss.resteasy.resteasy-json-p-provider
+                    </td><td>
+                        yes
+                    </td><td>
+                        JSON parsing API
+                    </td></tr><tr><td>
+                        org.jboss.resteasy.resteasy-json-binding-provider
+                    </td><td>
+                        yes
+                    </td><td>
+                        JSON binding API
+                    </td></tr><tr><td>
+                        javax.json.bind-api
+                    </td><td>
+                        yes
+                    </td><td>
+                        JSON binding API
+                    </td></tr><tr><td>
+                        org.eclipse.yasson
+                    </td><td>
+                        yes
+                    </td><td>
+                        RI implementation of JSON binding API
+                    </td></tr><tr><td>
+                        org.jboss.resteasy.resteasy-multipart-provider
+                    </td><td>
+                        yes
+                    </td><td>
+                        Support for multipart formats
+                    </td></tr><tr><td>
+                        org.jboss.resteasy.resteasy-spring
+                    </td><td>
+                        no
+                    </td><td>
+                        Spring provider
+                    </td></tr><tr><td>
+                        org.jboss.resteasy.resteasy-validator-provider
+                    </td><td>
+                        yes
+                    </td><td>
+                        RESTEasy's interface to Hibernate Bean Validation
+                    </td></tr></tbody></table>
+            </div></div><p><br class="table-break"/>
+        </p>
+
+        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="other_resteasy_modules"/>3.1.1. 其他 RESTEasy 模块</h3></div></div></div>
+        
+            <p>
+                并非所有 RESTEasy 模块都与 WildFly 绑定。例如， <code class="code">resteasy-fastinfoset-provider</code> 和 <code class="code">resteasy-wadl</code> 没有包含在 <a class="xref" href="Installation_Configuration.html#resteasy_modules_in_wildfly" title="3.1.  WildFly 中的 RESTEasy 模块">第 3.1 节 “ WildFly 中的 RESTEasy 模块”</a> 中列出的模块中。如果希望在应用程序中使用它们，可以将它们包含在 WAR 包中，就像在 WildFly 之外部署它们一样。有关更多信息，请参见 <a class="xref" href="Installation_Configuration.html#standalone_resteasy" title="3.3. 部署到其他 servlet 容器">第 3.3 节 “部署到其他 servlet 容器”</a>。
+        </p>
+        </div>
+	    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="upgrading-wildfly"/>3.1.2. 升级 WildFly 中的 RESTEasy</h3></div></div></div>
+	        
+	        <p>
+                RESTEasy 与 WildFly 捆绑在一起，但您可能希望将 WildFly 中的 RESTEasy 升级到最新版本。RESTEasy 发行版附带一个名为 <code class="code">resteasy-jboss-modules-4.7.0-SNAPSHOT.zip</code> 的压缩文件。将此文件解压缩到 WildFly 发行版的 modules/system/layers/base/ 目录中。这将配置 WildFly 使用 <a class="xref" href="Installation_Configuration.html#resteasy_modules_in_wildfly" title="3.1.  WildFly 中的 RESTEasy 模块">第 3.1 节 “ WildFly 中的 RESTEasy 模块”</a> 中列出的模块的新版本。
+	        </p>
+            <p>
+                要构建 <code class="code">resteasy-jboss-modules-4.7.0-SNAPSHOT.zip</code> ，请进入项目的 <code class="code">jboss-modules</code> 目录，并运行以下 Maven 命令:
+                </p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">$ mvn install</pre><p>
+                它将开始构建模块，最后将在 "target" 目录中生成 zip 文件:
+                </p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">$ pwd
+resteasy/jboss-modules
+$ ls target/*.zip
+target/resteasy-jboss-modules-4.7.0-SNAPSHOT-mavenized.zip
+target/resteasy-jboss-modules-4.7.0-SNAPSHOT.zip
+</pre><p>
+            </p>
+            <p>
+                要使用这个 zip 文件，你需要将它复制到 Wildfly 的 "modules" 目录中:
+                </p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">$ pwd
+wildfly
+$ ls
+LICENSE.txt       bin               domain            standalone
+README.txt        copyright.txt     jboss-modules.jar welcome-content
+appclient         docs              modules
+
+</pre><p>
+            </p>
+            <p>
+                使用以下步骤将模块的 zip 文件复制并解压缩到 Wildfly 的 modules 目录中:
+                </p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+$ cp ~/works/resteasy/jboss-modules/target/resteasy-jboss-modules-4.7.0-SNAPSHOT.zip \
+modules/system/layers/base/
+$ cd modules/system/layers/base
+$ unzip resteasy-jboss-modules-4.7.0-SNAPSHOT.zip
+...</pre><p>
+                通过上述过程，RESTEasy 模块在 Wildfly 中得到升级。
+            </p>
+	    </div>
+    </div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e123"/>3.2. 将 RESTEasy 应用程序部署到 WildFly</h2></div></div></div>
+        
+        <p>
+            RESTEasy 与 WildFly 捆绑在一起，并根据 Java EE 的要求完全集成。您可以将其与 EJB 和 CDI 一起使用，并且可以完全依赖 WildFly 来扫描和部署 JAX-RS 服务和提供者。您需要提供的只是打包在 WAR 中的 JAX-RS 服务和提供者类，它们可以是 POJOs、 CDI beans 或 EJBs。配置应用程序的一种简单方法是提供一个空的 web.xml 文件。当然，你可以在 web.xml 中部署任何你想要的定制 servlet、过滤器或者安全约束，但是这些都不是必需的:
+        </p>
+        <p>
+            </p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+&lt;web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"&gt;
+&lt;/web-app&gt;</pre><p>
+        </p>
+        <p>
+            另外，如果您想调整或打开/关闭 RESTEasy 的任何特定功能，web.xml 可以提供 init-params 和 context-params 配置选项 (参见 <a class="xref" href="Installation_Configuration.html#configuration_switches" title="3.5. Configuration switches">第 3.5 节 “Configuration switches”</a> )。
+        </p>
+        <p>
+            因为我们没有使用 &lt;servlet-mapping&gt; 元素，所以我们必须定义一个 <code class="classname">javax.ws.rs.core.Application</code> 类(见 <a class="xref" href="Installation_Configuration.html#javax.ws.rs.core.Application" title="3.6. javax.ws.rs.core.Application">第 3.6 节 “javax.ws.rs.core.Application”</a> ) 并带有 <code class="classname">javax.ws.rs.ApplicationPath</code> 注解。如果扫描返回类或单例是空集(这是从 <code class="classname">Application</code> 继承而来的行为) ，那么将根据 JAX-RS 注解的存在情况，对 WAR 进行资源和提供程序类的扫描。
+        </p>
+        <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+
+@ApplicationPath("/root-path")
+public class MyApplication extends Application
+{
+}       </pre>
+
+        <p>
+            <span class="bold"><strong>Note.</strong></span> 实际上，如果应用的 jar 包包含一个带有 <code class="classname">ApplicationPath</code> 注解的 <code class="classname">Application</code> 类(或其子类) ，则根本不需要 web.xml 文件。当然，即使在这种情况下，它也可以用于指定其他信息，如上下文参数。如果有一个 <code class="classname">Application</code> 类，但是它没有 <code class="classname">@ApplicationPath</code> 注解，那么需要一个 web.xml 文件，其中至少有一个 &lt;servlet-mapping&gt; 元素。
+        </p>
+
+        <p>
+            <span class="bold"><strong>Note.</strong></span> 正如在 <a class="xref" href="Installation_Configuration.html#other_resteasy_modules" title="3.1.1. 其他 RESTEasy 模块">第 3.1.1 节 “其他 RESTEasy 模块”</a> 中所提到的，并非所有 RESTEasy 模块都与 WildFly 捆绑在一起。例如，resteasy-fastinfoset-provider 和 resteasy-wadl 没有包含在 <a class="xref" href="Installation_Configuration.html#resteasy_modules_in_wildfly" title="3.1.  WildFly 中的 RESTEasy 模块">第 3.1 节 “ WildFly 中的 RESTEasy 模块”</a> 中列出的模块中。如果希望在应用程序中使用它们，可以将它们包含在 WAR 中，就像在 WildFly 之外部署它们一样。有关更多信息，请参见 <a class="xref" href="Installation_Configuration.html#standalone_resteasy" title="3.3. 部署到其他 servlet 容器">第 3.3 节 “部署到其他 servlet 容器”</a>。
+        </p>
+
+</div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="standalone_resteasy"/>3.3. 部署到其他 servlet 容器</h2></div></div></div>
+        
+        <p>
+            如果你在使用 WildFly 之外的独立 servlet 容器(如 Tomcat 或 Jetty )中使用 RESTEasy，则需要在 WAR 文件中包含适当的 RESTEasy 的jar包。您将需要 resteasy-jaxrs 模块中的核心类，并且可能需要 resteasy-jaxb-provider 模块之类的附加设施。我们强烈建议您使用 Maven 来构建您的 WAR 文件，因为 RESTEasy 被分成了一系列不同的模块:
+        </p>
+        <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+&lt;dependency&gt;
+    &lt;groupId&gt;org.jboss.resteasy&lt;/groupId&gt;
+    &lt;artifactId&gt;resteasy-core&lt;/artifactId&gt;
+    &lt;version&gt;4.7.0-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.jboss.resteasy&lt;/groupId&gt;
+    &lt;artifactId&gt;resteasy-jaxb-provider&lt;/artifactId&gt;
+    &lt;version&gt;4.7.0-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
+        <p>
+            你可以在  <a class="ulink" href="https://github.com/resteasy/resteasy-examples">https://github.com/resteasy/resteasy-examples</a> 中看到 Maven 项目的示例。
+        </p>
+        <p>
+            如果您没有使用 Maven 构建项目，您可以手动引入所需的jar包。如果您下载 RESTEasy (例如从 <a class="ulink" href="http://resteasy.jboss.org/downloads.html">http://resteasy.jboss.org/downloads.html</a> 下载) ，您将得到一个类似 resteasy-jaxrs-&lt;version&gt;-all.zip 的文件。如果将其解压缩，您将看到一个 lib/ 目录，其中包含 RESTEasy 所需的库。根据需要将这些文件复制到 /WEB-INF/lib 目录中。将您的 JAX-RS 注解类资源和提供程序放在/WEB-INF/lib 中的一个或多个 jar 中，或放在 /WEB-INF/classes 中的原始类文件中。
+        </p>
+
+        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e155"/>3.3.1. Servlet 3.0 容器</h3></div></div></div>
+        
+        <p>
+            RESTEasy 提供了 Servlet 3.0 <code class="literal">ServletContainerInitializer</code> 集成接口的实现，以便容器在初始化应用程序时使用。容器在应用程序的启动阶段调用这个接口。RESTEasy 实现执行对资源和提供者的自动扫描，以及 servlet 编程方式的注册。
+            
+            RESTEasy 的实现是在 maven 依赖 <code class="literal">resteasy-servlet-initializer</code> 中提供的。将这个依赖项添加到项目的 pom.xml 文件中，这样 JAR 文件就会包含在 WAR 文件中。
+        </p>
+        <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+&lt;dependency&gt;
+    &lt;groupId&gt;org.jboss.resteasy&lt;/groupId&gt;
+    &lt;artifactId&gt;resteasy-servlet-initializer&lt;/artifactId&gt;
+    &lt;version&gt;4.7.0-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
+        </div>
+
+        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e161"/>3.3.2. 老的 servlet 容器</h3></div></div></div>
+        
+        <p>
+            <code class="literal">resteasy-servlet-initializer</code> 组件不会在3.0以下的 Servlet 版本中工作。然后，您必须在 WAR 项目的 WEB-INF/web.xml 文件中手动声明 RESTEasy servlet，并且必须使用 <code class="classname">Application</code> 类(参见 <a class="xref" href="Installation_Configuration.html#javax.ws.rs.core.Application" title="3.6. javax.ws.rs.core.Application">第 3.6 节 “javax.ws.rs.core.Application”</a>) 显式列出资源和提供程序。例如:
+        </p>
+        <p>
+            </p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+&lt;web-app&gt;
+    &lt;display-name&gt;Archetype Created Web Application&lt;/display-name&gt;
+
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;Resteasy&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;
+            org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher
+        &lt;/servlet-class&gt;
+        &lt;init-param&gt;
+            &lt;param-name&gt;javax.ws.rs.Application&lt;/param-name&gt;
+            &lt;param-value&gt;com.restfully.shop.services.ShoppingApplication&lt;/param-value&gt;
+        &lt;/init-param&gt;
+    &lt;/servlet&gt;
+
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;Resteasy&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+
+&lt;/web-app&gt;</pre><p>
+        </p>
+        <p>
+            RESTEasy servlet 负责初始化 RESTEasy 的一些基本组件。
+        </p>
+        <p>
+            <span class="bold"><strong>Note.</strong></span> 
+            对3.0之前的 Servlet 规范的支持可能会被弃用，并最终被淘汰。
+        </p>
+        </div>
+    </div>
+   <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="microprofile_config"/>3.4. 配置</h2></div></div></div>
+        
+        
+        <p>
+        RESTEasy has two mutually exclusive mechanisms for retrieving configuration parameters
+        (see <a class="xref" href="Installation_Configuration.html#configuration_switches" title="3.5. Configuration switches">第 3.5 节 “Configuration switches”</a>).
+        The classic mechanism depends on context-params and init-params in a web.xml file.
+        Alternatively, the Eclipse MicroProfile Config project
+        (<a class="ulink" href="https://github.com/eclipse/microprofile-config">https://github.com/eclipse/microprofile-config</a>)
+        provides a flexible parameter retrieval mechanism that RESTEasy will use if the necessary
+        dependencies are available. See <a class="xref" href="Installation_Configuration.html#configuring_mp_config" title="3.4.4. Configuring MicroProfile Config">第 3.4.4 节 “Configuring MicroProfile Config”</a> for more about that. If 
+        they are not available, it will fall back to an extended form of the classic mechanism.
+        </p>
+        
+        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="resteasy_microprofile_config"/>3.4.1. RESTEasy with MicroProfile Config</h3></div></div></div>
+        
+        <p>
+            In the presence of the Eclipse MicroProfile Config API jar and an implementation
+            of the API (see <a class="xref" href="Installation_Configuration.html#configuring_mp_config" title="3.4.4. Configuring MicroProfile Config">第 3.4.4 节 “Configuring MicroProfile Config”</a>), RESTEasy will use the facilities
+            of MicroProfile Config for accessing configuration properties (see <a class="xref" href="Installation_Configuration.html#configuration_switches" title="3.5. Configuration switches">第 3.5 节 “Configuration switches”</a>). 
+            MicroProfile Config offers to both RESTEasy users and RESTEasy developers a great deal of
+            flexibility in controlling runtime configuration.	
+        </p>
+        
+        <p>
+            In MicroProfile Config, a <code class="classname">ConfigSource</code> represents a <code class="classname">Map&lt;String, String&gt;</code>
+            of property names to values, and a <code class="classname">Config</code> represents a sequence of <code class="classname">ConfigSource</code>s,
+            ordered by priority. The priority of a <code class="classname">ConfigSource</code> is given by an ordinal (represented by an
+            <code class="classname">int</code>), with a higher value indicating a higher priority. For a given property name, the
+            <code class="classname">ConfigSource</code>s are searched in order until a value is found.
+        </p>
+        <p>
+            MicroProfile Config mandates the presence of the following <code class="classname">ConfigSource</code>s:
+        </p>
+        <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li>a <code class="classname">ConfigSource</code> based on System.getProperties() (ordinal = 400)</li><li>a <code class="classname">ConfigSource</code> based on System.getenv() (ordinal = 300)</li><li>a <code class="classname">ConfigSource</code> for each META-INF/microprofile-config.properties file on the ClassPath,
+            separately configurable via a config_ordinal property inside each file (default ordinal = 100)</li></ol></div>
+        <p>
+            Note that a property which is found among the System properties and which is also in the System environment will be assigned
+            the System property value because of the relative priorities of the <code class="classname">ConfigSource</code>s.
+        </p>
+        <p>
+            The set of <code class="classname">ConfigSources</code> is extensible. For example, smallrye-config
+            (<a class="ulink" href="https://github.com/smallrye/smallrye-config">https://github.com/smallrye/smallrye-config</a>),
+            the implementation of the MicroProfile Config specification currently used by RESTEasy, adds the following
+            kinds of <code class="classname">ConfigSource</code>s:
+        </p>
+        <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li><code class="classname">PropertiesConfigSource</code> creates a <code class="classname">ConfigSource</code> from a
+            Java <code class="classname">Properties</code> object or a Map&lt;String, String&gt; object or a properties file
+            (referenced by its URL) (default ordinal = 100).</li><li><code class="classname">DirConfigSource</code> creates a <code class="classname">ConfigSource</code> that will look into a directory
+            where each file corresponds to a property (the file name is the property key and its textual content is the property value).
+            This <code class="classname">ConfigSource</code> can be used to read configuration from Kubernetes ConfigMap (default ordinal = 100).</li><li><code class="classname">ZkMicroProfileConfig</code> creates a <code class="classname">ConfigSource</code>ConfigSource that is backed by Apache Zookeeper
+            (ordinal = 150).</li></ol></div>
+        <p>
+            These can be registered programmatically by using an instance of <code class="classname">ConfigProviderResolver</code>:
+        </p>
+        <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+Config config = new PropertiesConfigSource("file:/// ...");
+ConfigProviderResolver.instance().registerConfig(config, getClass().getClassLoader());
+        </pre>
+        <p>where <code class="classname">ConfigProviderResolver</code> is part of the Eclipse API.</p>
+        <p>
+            If the application is running in Wildfly, then Wildfly provides another set of <code class="classname">ConfigSource</code>s,
+            as described in the "MicroProfile Config Subsystem Configuration" section of the WildFly Admin guide
+            (<a class="ulink" href="https://docs.wildfly.org/21/Admin_Guide.html#MicroProfile_Config_SmallRye">https://docs.wildfly.org/21/Admin_Guide.html#MicroProfile_Config_SmallRye</a>).
+        </p>
+        <p>
+            Finally, RESTEasy automatically provides three more <code class="classname">ConfigSource</code>s:
+        </p>
+        <div class="itemizedlist"><ul><li><code class="classname">org.jboss.resteasy.microprofile.config.ServletConfigSource</code> represents
+            a servlet's &lt;init-param&gt;s from web.xml (ordinal = 60).</li><li><code class="classname">org.jboss.resteasy.microprofile.config.FilterConfigSource</code> represents
+            a filter's &lt;init-param&gt;s from web.xml (ordinal = 50). (See <a class="xref" href="Installation_Configuration.html#filter" title="3.8. RESTEasy as a Servlet Filter">第 3.8 节 “RESTEasy as a Servlet Filter”</a> for more information.)
+            </li><li><code class="classname">org.jboss.resteasy.microprofile.config.ServletContextConfigSource</code> represents
+            &lt;context-param&gt;s from web.xml (ordinal = 40).</li></ul></div>
+        <p>
+            <span class="bold"><strong>Note. </strong></span>As stated by the MicroProfile Config specification, a special property
+            <code class="classname">config_ordinal</code> can be set within any RESTEasy built-in <code class="classname">ConfigSource</code>s.
+            The default implementation of getOrdinal() will attempt to read this value. If found and a valid integer, the value
+            will be used. Otherwise the respective default value will be used.
+        </p>
+        </div>
+
+        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e240"/>3.4.2. Using pure MicroProfile Config</h3></div></div></div>
+            
+            
+            <p>
+                The MicroProfile Config API is very simple. A <code class="classname">Config</code> may be obtained either
+                programatically:
+            </p>
+            
+            <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+Config config = ConfigProvider.getConfig();
+            </pre>
+            
+            <p>
+                or, in the presence of CDI, by way of injection:
+            </p>
+            
+            <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Inject Config config;
+            </pre>
+            
+            <p>
+                Once a <code class="classname">Config</code> has been obtained, a property can be queried. For example,
+            </p>
+            
+            <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+String s = config.getValue("prop_name", String.class);
+            </pre>
+            
+            <p>
+                or
+            </p>
+            
+            <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+String s = config.getOptionalValue("prop_name", String.class).orElse("d'oh");
+            </pre>
+            
+            <p>
+                Now, consider a situation in which "prop_name" has been set by <code class="code">System.setProperty("prop_name", "system")</code>
+                and also by
+            </p>
+            
+            <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+   &lt;context-param&gt;
+      &lt;param-name&gt;prop_name&lt;/param-name&gt;
+      &lt;param-value&gt;context&lt;/param-value&gt;
+   &lt;/context-param&gt;
+            </pre>
+               
+            <p>
+                Then, since the system parameter <code class="classname">ConfigSource</code> has precedence over (has a higher ordinal than)
+                <code class="classname">ServletContextConfigSource</code>, <code class="code">config.getValue("prop_name", String.class)</code> will
+                return "system" rather than "context".
+            </p>
+
+        </div>
+        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e259"/>3.4.3. Using RESTEasy's extension of MicroProfile Config</h3></div></div></div>
+            
+            
+            <p>
+            RESTEasy offers a general purpose parameter retrieval mechanism which incorporates MicroProfile Config if the necessary
+            dependencies are available, and which falls back to an extended version of the classic RESTEasy mechanism 
+            (see <a class="xref" href="Installation_Configuration.html#classic_config" title="3.4.5. RESTEasy's classic configuration mechanism">第 3.4.5 节 “RESTEasy's classic configuration mechanism”</a>) otherwise.
+            </p>
+            
+            <p>Calling</p>
+            
+            <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+ConfigurationFactory.getInstance().getConfiguration()
+            </pre>
+            
+            <p>
+            will return an instance of org.jboss.resteasy.spi.config.Configuration:
+            </p>
+            
+            <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public interface Configuration {
+
+    /**
+     * Returns the resolved value for the specified type of the named property.
+     *
+     * @param name the name of the parameter
+     * @param type the type to convert the value to
+     * @param &lt;T&gt;  the property type
+     *
+     * @return the resolved optional value
+     *
+     * @throws IllegalArgumentException if the type is not supported
+     */
+    &lt;T&gt; Optional&lt;T&gt; getOptionalValue(String name, Class&lt;T&gt; type);
+
+    /**
+     * Returns the resolved value for the specified type of the named property.
+     *
+     * @param name the name of the parameter
+     * @param type the type to convert the value to
+     * @param &lt;T&gt;  the property type
+     *
+     * @return the resolved value
+     *
+     * @throws IllegalArgumentException         if the type is not supported
+     * @throws java.util.NoSuchElementException if there is no property associated with the name
+     */
+    &lt;T&gt; T getValue(String name, Class&lt;T&gt; type);
+}
+            </pre>
+            
+        <p>
+        For example,
+        </p>
+        
+        <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+String value = ConfigurationFactory.getInstance().getConfiguration().getOptionalValue("prop_name", String.class).orElse("d'oh");
+        </pre>
+        
+        <p>
+        If MicroProfile Config is available, that would be equivalent to
+        </p>
+        
+        <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+String value = ConfigProvider.getConfig().getOptionalValue("prop_name", String.class).orElse("d'oh");
+        </pre>
+        
+        <p>
+        If MicroProfile Config is not available, then an attempt is made to retrieve the parameter from
+        the following sources:
+        </p>
+        
+        <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li>system variables, followed by</li><li>environment variables, followed by</li><li>web.xml parameters, as described in <a class="xref" href="Installation_Configuration.html#classic_config" title="3.4.5. RESTEasy's classic configuration mechanism">第 3.4.5 节 “RESTEasy's classic configuration mechanism”</a> </li></ol></div>
+        </div>
+                
+        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="configuring_mp_config"/>3.4.4. Configuring MicroProfile Config</h3></div></div></div>
+            
+            
+            <p>
+                If an application is running inside Wildfly, then all of the dependencies are automatically available. Outside of
+                Wildfly, an application will need the Eclipse MicroProfile API at compile time. In maven, for example, use
+            </p>
+            
+            <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.eclipse.microprofile.config&lt;/groupId&gt;
+            &lt;artifactId&gt;microprofile-config-api&lt;/artifactId&gt;
+            &lt;scope&gt;compile&lt;/scope&gt;
+        &lt;/dependency&gt;
+            </pre>
+            
+            <p>
+                It will also need the implementation, smallrye-config, at runtime:
+            </p>
+            
+            <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+        &lt;dependency&gt;
+            &lt;groupId&gt;io.smallrye&lt;/groupId&gt;
+            &lt;artifactId&gt;smallrye-config&lt;/artifactId&gt;
+            &lt;scope&gt;runtime&lt;/scope&gt;
+        &lt;/dependency&gt;
+            </pre>
+        </div>
+       
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="classic_config"/>3.4.5. RESTEasy's classic configuration mechanism</h3></div></div></div>
+    
+    
+    <p>
+    Prior to the incorporation of MicroProfile Config, nearly all of RESTEasy's parameters were retrieved from
+    servlet init-params and context-params. Which ones are available depends on how a web application invokes RESTEasy.
+    </p>
+    
+    <p>
+    If RESTEasy is invoked as a servlet, as in
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+&lt;web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"&gt;
+
+   &lt;context-param&gt;
+      &lt;param-name&gt;system&lt;/param-name&gt;
+      &lt;param-value&gt;system-context&lt;/param-value&gt;
+   &lt;/context-param&gt;
+   
+   &lt;servlet&gt;
+      &lt;servlet-name&gt;Resteasy&lt;/servlet-name&gt;
+      &lt;servlet-class&gt;org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher&lt;/servlet-class&gt;
+
+      &lt;init-param&gt;
+         &lt;param-name&gt;system&lt;/param-name&gt;
+         &lt;param-value&gt;system-init&lt;/param-value&gt;
+      &lt;/init-param&gt;
+      
+   &lt;/servlet&gt;
+
+   &lt;servlet-mapping&gt;
+      &lt;servlet-name&gt;Resteasy&lt;/servlet-name&gt;
+      &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+   &lt;/servlet-mapping&gt;
+&lt;/web-app&gt;
+</pre>
+
+   <p>
+   then the servlet specific init-params and the general context-params are available,
+   with the former taking precedence over the latter. For example, the property "system" would
+   have the value "system-init".
+   </p>
+
+   <p>
+   If RESTEasy is invoked by way of a filter (see <a class="xref" href="Installation_Configuration.html#filter" title="3.8. RESTEasy as a Servlet Filter">第 3.8 节 “RESTEasy as a Servlet Filter”</a>), as in
+   </p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+&lt;web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"&gt;
+
+   &lt;context-param&gt;
+      &lt;param-name&gt;system&lt;/param-name&gt;
+      &lt;param-value&gt;system-context&lt;/param-value&gt;
+   &lt;/context-param&gt;
+
+   &lt;filter&gt;
+      &lt;filter-name&gt;Resteasy&lt;/filter-name&gt;
+      &lt;filter-class&gt;org.jboss.resteasy.plugins.server.servlet.FilterDispatcher&lt;/filter-class&gt;
+
+      &lt;init-param&gt;
+         &lt;param-name&gt;system&lt;/param-name&gt;
+         &lt;param-value&gt;system-filter&lt;/param-value&gt;
+      &lt;/init-param&gt;
+
+    &lt;/filter&gt;
+
+    &lt;filter-mapping&gt;
+        &lt;filter-name&gt;Resteasy&lt;/filter-name&gt;
+        &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+    &lt;/filter-mapping&gt;
+
+&lt;/web-app&gt;
+   </pre>
+
+   <p>
+   then the filter specific init-params and the general context-params are available,
+   with the former taking precedence over the latter. For example, the property "system" would
+   have the value "system-filter".
+   </p>
+
+   <p>
+   Finally, if RESTEasy is invoked by way of a ServletContextListener (see <a class="xref" href="Installation_Configuration.html#listener" title="3.7. RESTEasy as a ServletContextListener">第 3.7 节 “RESTEasy as a ServletContextListener”</a>), as in
+   </p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+&lt;web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"&gt;
+
+   &lt;listener&gt;
+      &lt;listener-class&gt;
+         org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap
+      &lt;/listener-class&gt;
+   &lt;/listener&gt;
+
+   &lt;context-param&gt;
+      &lt;param-name&gt;system&lt;/param-name&gt;
+      &lt;param-value&gt;system-context&lt;/param-value&gt;
+   &lt;/context-param&gt;
+&lt;/web-app&gt;
+</pre>
+ 
+    <p>
+    where <code class="classname">ResteasyBootstrap</code> is a <code class="classname">ServletContextListener</code>,
+    then the context-params are available.
+    </p>
+    </div>
+   
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="overriding_config"/>3.4.6. Overriding RESTEasy's configuration mechanism</h3></div></div></div>
+    
+    
+    <p>
+    Before adopting the default behavior, with or without MicroProfile Config, as described in 
+    previous sections, RESTEasy will use service loading to look for one or more implementations of
+    the interface <code class="classname">org.jboss.resteasy.spi.config.ConfigurationFactory</code>, selecting one
+    with the highest priority as determined by the value returned by 
+    <code class="methodname">ConfigurationFactory.priority()</code>. Smaller numbers indicate higher priority.
+    The default <code class="classname">ConfigurationFactory</code> is
+    <code class="classname">org.jboss.resteasy.core.config.DefaultConfigurationFactory</code> with a priority of 500.
+    </p>
+    </div>
+    </div>
+     
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="configuration_switches"/>3.5. Configuration switches</h2></div></div></div>
+        
+        <p>RESTEasy can receive the following configuration options from any <code class="classname">ConfigSource</code>s
+        that are available at runtime:
+        </p>
+        <p>
+            </p><div class="table"><a id="d4e311"/><p class="title"><b>表 3.2. </b></p><div class="table-contents">
+                <table border="1"><colgroup><col/><col/><col/></colgroup><thead><tr><th>
+                                Option Name
+                            </th><th>
+                                Default Value
+                            </th><th>
+                                Description
+                            </th></tr></thead><tbody><tr><td>
+                                resteasy.servlet.mapping.prefix
+                            </td><td>
+                                no default
+                            </td><td>
+                                If the url-pattern for the RESTEasy servlet-mapping is not /*
+                            </td></tr><tr><td>
+                                resteasy.providers
+                            </td><td>
+                                no default
+                            </td><td>
+                                A comma delimited list of fully qualified @Provider class names you want to register
+                            </td></tr><tr><td>
+                                resteasy.use.builtin.providers
+                            </td><td>
+                                true
+                            </td><td>
+                                Whether or not to register default, built-in @Provider classes
+                            </td></tr><tr><td>
+                                resteasy.resources
+                            </td><td>
+                                no default
+                            </td><td>
+                                A comma delimited list of fully qualified JAX-RS resource class names you want to
+                                register
+                            </td></tr><tr><td>
+                                resteasy.jndi.resources
+                            </td><td>
+                                no default
+                            </td><td>
+                                A comma delimited list of JNDI names which reference objects you want to register as
+                                JAX-RS resources
+                            </td></tr><tr><td>
+                                javax.ws.rs.Application
+                            </td><td>
+                                no default
+                            </td><td>
+                                Fully qualified name of Application class to bootstrap in a spec portable way
+                            </td></tr><tr><td>
+                                resteasy.media.type.mappings
+                            </td><td>
+                                no default
+                            </td><td>
+                                Replaces the need for an Accept header by mapping file name extensions (like .xml or
+                                .txt) to a media type. Used when the client
+                                is unable to use an Accept header to choose a representation (i.e. a browser). See
+                                <a class="xref" href="JAX-RS_Content_Negotiation.html" title="第 20 章 JAX-RS Content Negotiation">第 20 章 <i>JAX-RS Content Negotiation</i></a> for more details.
+                            </td></tr><tr><td>
+                                resteasy.language.mappings
+                            </td><td>
+                                no default
+                            </td><td>
+                                Replaces the need for an Accept-Language header by mapping file name extensions (like
+                                .en or .fr) to a language. Used when the client
+                                is unable to use an Accept-Language header to choose a language (i.e. a browser). See
+                                <a class="xref" href="JAX-RS_Content_Negotiation.html" title="第 20 章 JAX-RS Content Negotiation">第 20 章 <i>JAX-RS Content Negotiation</i></a> for more details.
+                            </td></tr><tr><td>
+                                resteasy.media.type.param.mapping
+                            </td><td>
+                                no default
+                            </td><td>
+                                Names a query parameter that can be set to an acceptable media type,
+                                enabling content negotiation without an Accept header. See
+                                <a class="xref" href="JAX-RS_Content_Negotiation.html" title="第 20 章 JAX-RS Content Negotiation">第 20 章 <i>JAX-RS Content Negotiation</i></a> for more details.
+                            </td></tr><tr><td>
+                                resteasy.role.based.security
+                            </td><td>
+                                false
+                            </td><td>
+                                Enables role based security. See <a class="xref" href="Securing_JAX-RS_and_RESTeasy.html" title="第 43 章 Securing JAX-RS and RESTEasy">第 43 章 <i>Securing JAX-RS and RESTEasy</i></a>
+                                for more details.
+                            </td></tr><tr><td>
+                                resteasy.document.expand.entity.references
+                            </td><td>
+                                false
+                            </td><td>
+                                Expand external entities in org.w3c.dom.Document documents
+                                and JAXB object representations
+                            </td></tr><tr><td>
+                                resteasy.document.secure.processing.feature
+                            </td><td>
+                                true
+                            </td><td>
+                                Impose security constraints in processing org.w3c.dom.Document documents
+                                and JAXB object representations
+                            </td></tr><tr><td>
+                                resteasy.document.secure.disableDTDs
+                            </td><td>
+                                true
+                            </td><td>
+                                Prohibit DTDs in org.w3c.dom.Document documents
+                                and JAXB object representations
+                            </td></tr><tr><td>
+                                resteasy.wider.request.matching
+                            </td><td>
+                                false
+                            </td><td>
+                                Turns off the JAX-RS spec defined class-level expression filtering and instead
+                                tries to match version every method's full path.
+                            </td></tr><tr><td>
+                                resteasy.use.container.form.params
+                            </td><td>
+                                false
+                            </td><td>
+                                Obtain form parameters by using HttpServletRequest.getParameterMap().
+                                Use this switch if you are calling this method within a servlet filter or eating
+                                the input stream within the filter.
+                            </td></tr><tr><td>
+                                resteasy.rfc7232preconditions
+                            </td><td>
+                                false
+                            </td><td>
+                                Enables <a class="link" href="Cache_NoCache_CacheControl.html#Http_Precondition" title="35.4. HTTP preconditions">RFC7232 compliant HTTP preconditions handling</a>.
+                            </td></tr><tr><td>
+                                resteasy.gzip.max.input
+                            </td><td>
+                                10000000
+                            </td><td>
+                                Imposes maximum size on decompressed gzipped .
+                            </td></tr><tr><td>
+                                resteasy.secure.random.max.use
+                            </td><td>
+                                100
+                            </td><td>
+                                The number of times a SecureRandom can be used before reseeding.
+                            </td></tr><tr><td>
+                                resteasy.buffer.exception.entity
+                            </td><td>
+                                true
+                            </td><td>
+                                Upon receiving an exception, the client side buffers any response
+                                entity before closing the connection.
+                            </td></tr><tr><td>
+                                resteasy.add.charset
+                            </td><td>
+                                true
+                            </td><td>
+                                If a resource method returns a text/* or application/xml* media type without
+                                an explicit charset, RESTEasy will add "charset=UTF-8" to the returned
+                                Content-Type header. Note that the charset defaults to UTF-8 in this case,
+                                independent of the setting of this parameter.
+                            </td></tr><tr><td>
+                                resteasy.disable.html.sanitizer
+                            </td><td>
+                                false
+                            </td><td>
+                                Normally, a response with media type "text/html" and a status of 400 will be processed
+                                so that the characters "/", "&lt;", "&gt;", "&amp;", """ (double quote), and "'" (single quote)
+                                are escaped to prevent an XSS attack. If this parameter is set to "true", escaping
+                                will not occur.
+                            </td></tr><tr><td>
+                                resteasy.patchfilter.disabled
+                            </td><td>
+                                false
+                            </td><td>
+                                Turns off the default patch filter to handle JSON patch and JSON Merge Patch request. 
+                                A customerized patch method filter can be provided to serve the JSON patch and JSON merge
+                                patch request instead.
+                            </td></tr><tr><td>
+                                resteasy.original.webapplicationexception.behavior
+                            </td><td>
+                                false
+                            </td><td>
+                                When set to "true", this parameter will restore the original behavior in which
+                                a Client running in a resource method will throw a JAX-RS WebApplicationException
+                                instead of a Resteasy version with a sanitized <code class="classname">Response</code>. For more information,
+                                see section <a class="link" href="ExceptionHandling.html#ResteasyWebApplicationException" title="30.3. Resteasy WebApplicationExceptions">Resteasy WebApplicationExceptions</a>
+                            </td></tr></tbody></table>
+            </div></div><p><br class="table-break"/>
+        </p>
+        <p>
+            <span class="bold"><strong>Note. </strong></span>
+            The resteasy.servlet.mapping.prefix &lt;context param&gt; variable must be set if your servlet-mapping for
+            the RESTEasy servlet has a url-pattern other than /*. For example, if the url-pattern is
+        </p>
+        <p>
+            </p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+&lt;servlet-mapping&gt;
+&lt;servlet-name&gt;Resteasy&lt;/servlet-name&gt;
+&lt;url-pattern&gt;/restful-services/*&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;</pre><p>
+        </p>
+        <p>
+            Then the value of resteasy.servlet.mapping.prefix must be:
+        </p>
+        <p>
+            </p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+&lt;context-param&gt;
+&lt;param-name&gt;resteasy.servlet.mapping.prefix&lt;/param-name&gt;
+&lt;param-value&gt;/restful-services&lt;/param-value&gt;
+&lt;/context-param&gt;</pre><p>
+        </p>
+    </div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="javax.ws.rs.core.Application"/>3.6. javax.ws.rs.core.Application</h2></div></div></div>
+        
+
+        <p>
+
+            The <code class="classname">javax.ws.rs.core.Application</code> class is a standard JAX-RS class that you may implement to provide
+            information on your deployment. It is simply a class the lists all JAX-RS root resources and providers.
+        </p>
+        <p>
+
+            </p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+/**
+* Defines the components of a JAX-RS application and supplies additional
+* metadata. A JAX-RS application or implementation supplies a concrete
+* subclass of this abstract class.
+*/
+public abstract class Application
+{
+    private static final Set&lt;Object&gt; emptySet = Collections.emptySet();
+
+    /**
+    * Get a set of root resource and provider classes. The default lifecycle
+    * for resource class instances is per-request. The default lifecycle for
+    * providers is singleton.
+    * &lt;p/&gt;
+    * &lt;p&gt;Implementations should warn about and ignore classes that do not
+    * conform to the requirements of root resource or provider classes.
+    * Implementations should warn about and ignore classes for which
+    * {@link #getSingletons()} returns an instance. Implementations MUST
+    * NOT modify the returned set.&lt;/p&gt;
+    *
+    * @return a set of root resource and provider classes. Returning null
+    * is equivalent to returning an empty set.
+    */
+    public abstract Set&lt;Class&lt;?&gt;&gt; getClasses();
+
+    /**
+    * Get a set of root resource and provider instances. Fields and properties
+    * of returned instances are injected with their declared dependencies
+    * (see {@link Context}) by the runtime prior to use.
+    * &lt;p/&gt;
+    * &lt;p&gt;Implementations should warn about and ignore classes that do not
+    * conform to the requirements of root resource or provider classes.
+    * Implementations should flag an error if the returned set includes
+    * more than one instance of the same class. Implementations MUST
+    * NOT modify the returned set.&lt;/p&gt;
+    * &lt;p/&gt;
+    * &lt;p&gt;The default implementation returns an empty set.&lt;/p&gt;
+    *
+    * @return a set of root resource and provider instances. Returning null
+    * is equivalent to returning an empty set.
+    */
+    public Set&lt;Object&gt; getSingletons()
+    {
+        return emptySet;
+    }
+
+}            </pre><p>
+        </p>
+        <p>
+
+
+        </p>
+
+        <p>
+
+        </p>
+        <p>
+            <span class="bold"><strong>Note. </strong></span>If your web.xml file does not have a
+            &lt;servlet-mapping&gt; element, you must use an <code class="classname">Application</code> class
+            annotated with <code class="classname">@ApplicationPath</code>.
+
+        </p>
+    </div>
+
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="listener"/>3.7. RESTEasy as a ServletContextListener</h2></div></div></div>
+        
+
+        <p>
+            This section is pretty much deprecated if you are using a Servlet 3.0 container or higher.  Skip it if
+            you are and read the configuration section above on installing in Servlet 3.0.
+            The initialization of RESTEasy can be performed within a ServletContextListener instead of within the
+            Servlet. You may need this if you are writing custom Listeners that need to interact with RESTEasy at boot
+            time. An example of this is the RESTEasy Spring integration that requires a Spring ServletContextListener.
+            The org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap class is a ServletContextListener that
+            configures an instance of an ResteasyProviderFactory and Registry. You can obtain instances of a
+            ResteasyProviderFactory and Registry from the ServletContext attributes
+            org.jboss.resteasy.spi.ResteasyProviderFactory and org.jboss.resteasy.spi.Registry. From these instances you
+            can programmatically interact with RESTEasy registration interfaces.
+        </p>
+
+        <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+&lt;web-app&gt;
+   &lt;listener&gt;
+      &lt;listener-class&gt;
+         org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap
+      &lt;/listener-class&gt;
+   &lt;/listener&gt;
+
+  &lt;!-- ** INSERT YOUR LISTENERS HERE!!!! --&gt;
+
+   &lt;servlet&gt;
+      &lt;servlet-name&gt;Resteasy&lt;/servlet-name&gt;
+      &lt;servlet-class&gt;
+         org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher
+      &lt;/servlet-class&gt;
+   &lt;/servlet&gt;
+
+   &lt;servlet-mapping&gt;
+      &lt;servlet-name&gt;Resteasy&lt;/servlet-name&gt;
+      &lt;url-pattern&gt;/Resteasy/*&lt;/url-pattern&gt;
+   &lt;/servlet-mapping&gt;
+
+&lt;/web-app&gt;</pre>
+    </div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="filter"/>3.8. RESTEasy as a Servlet Filter</h2></div></div></div>
+        
+
+        <p>
+            This section is pretty much deprecated if you are using a Servlet 3.0 container or higher.  Skip it if
+            you are and read the configuration section above on installing in Servlet 3.0.
+            The downside of running RESTEasy as a Servlet is that you cannot have static resources like .html and .jpeg
+            files in the
+            same path as your JAX-RS services. RESTEasy allows you to run as a Filter instead. If a JAX-RS resource is
+            not
+            found under the URL requested, RESTEasy will delegate back to the base servlet container to resolve URLs.
+        </p>
+
+        <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+&lt;web-app&gt;
+    &lt;filter&gt;
+        &lt;filter-name&gt;Resteasy&lt;/filter-name&gt;
+        &lt;filter-class&gt;
+            org.jboss.resteasy.plugins.server.servlet.FilterDispatcher
+        &lt;/filter-class&gt;
+        &lt;init-param&gt;
+            &lt;param-name&gt;javax.ws.rs.Application&lt;/param-name&gt;
+            &lt;param-value&gt;com.restfully.shop.services.ShoppingApplication&lt;/param-value&gt;
+        &lt;/init-param&gt;
+    &lt;/filter&gt;
+
+    &lt;filter-mapping&gt;
+        &lt;filter-name&gt;Resteasy&lt;/filter-name&gt;
+        &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+    &lt;/filter-mapping&gt;
+
+&lt;/web-app&gt;</pre>
+    </div>
+
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e445"/>3.9. Client side</h2></div></div></div>
+    
+
+    <p>
+        JAX-RS 2.0 conforming implementations such as RESTEasy support a client side framework which simplifies
+        communicating with restful applications. In RESTEasy, the minimal set of modules needed for the client framework
+        consists of resteasy-core and resteasy-client. You can access them by way of maven:
+    </p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+&lt;dependency&gt;
+    &lt;groupId&gt;org.jboss.resteasy&lt;/groupId&gt;
+    &lt;artifactId&gt;resteasy-core&lt;/artifactId&gt;
+    &lt;version&gt;4.7.0-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.jboss.resteasy&lt;/groupId&gt;
+    &lt;artifactId&gt;resteasy-client&lt;/artifactId&gt;
+    &lt;version&gt;4.7.0-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
+
+    <p>
+        Other modules, such as resteasy-jaxb-provider, may be brought in as needed.
+    </p>
+
+    </div>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="license.html"><strong>上一页</strong>第 2 章 开源许可</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="Using_Path.html"><strong>下一页</strong>第 4 章 Using @Path and @GET, @POST, etc.</a></li></ul></body></html>

@@ -1,0 +1,808 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 52 章 MicroProfile Rest Client</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="RESTEasy_Client_Framework.html" title="第 51 章 RESTEasy Client API"/><link rel="next" href="AJAX_Client.html" title="第 53 章 AJAX Client"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="RESTEasy_Client_Framework.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="AJAX_Client.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="MicroProfile_Rest_Client"/>第 52 章 MicroProfile Rest Client</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="MicroProfile_Rest_Client.html#d4e3814">52.1. Client proxies</a></span></dt><dt><span class="sect1"><a href="MicroProfile_Rest_Client.html#d4e3857">52.2. Concepts imported from JAX-RS</a></span></dt><dt><span class="sect1"><a href="MicroProfile_Rest_Client.html#d4e3890">52.3. Beyond JAX-RS and RESTEasy</a></span></dt></dl></div>
+
+
+<p>
+As the microservices style of system architecture (see, for example,
+<a class="ulink" href="https://martinfowler.com/articles/microservices.html">Microservices</a> by Martin Fowler)
+gains increasing traction, new API standards are coming along to support it. One set of such standards comes from
+the <a class="ulink" href="https://microprofile.io/">Microprofile Project</a> supported by the Eclipse Foundation, and among 
+those is one, <a class="ulink" href="https://microprofile.io/project/eclipse/microprofile-rest-client">MicroProfile Rest Client</a>,
+of particular interest to RESTEasy and JAX-RS. In fact, it is intended to be based on, and consistent with, JAX-RS,
+and it includes ideas already implemented in RESTEasy. For a more detailed description of MicroProfile Rest Client,
+see <a class="ulink" href="https://github.com/eclipse/microprofile-rest-client">https://github.com/eclipse/microprofile-rest-client</a>.
+In particular, the API code is in 
+<a class="ulink" href="https://github.com/eclipse/microprofile-rest-client/tree/master/api">https://github.com/eclipse/microprofile-rest-client/tree/master/api</a>.
+and the specification is in
+<a class="ulink" href="https://github.com/eclipse/microprofile-rest-client/tree/master/spec">https://github.com/eclipse/microprofile-rest-client/tree/master/spec</a>.
+</p>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3814"/>52.1. Client proxies</h2></div></div></div>
+
+
+<p>
+One of the central ideas in MicroProfile Rest Client is a version of <span class="emphasis"><em>distributed object communication</em></span>, a concept
+implemented in, among other places, <a class="ulink" href="http://www.corba.org/orb_basics.htm">CORBA</a>, Java RMI, the JBoss
+Remoting project, and RESTEasy. Consider the resource
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("resource")
+public class TestResource {
+
+   @Path("test")
+   @GET
+   String test() {
+      return "test";
+   }
+}
+</pre>
+
+<p>
+The JAX-RS native way of accessing <code class="classname">TestResource</code> looks like
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+Client client = ClientBuilder.newClient();
+String response = client.target("http://localhost:8081/test").request().get(String.class);
+</pre>
+
+<p>
+The call to <code class="methodname">TestResource.test()</code> is not particularly onerous, but calling 
+<code class="methodname">test()</code> directly allows a more natural syntax. That is exactly what Microprofile
+Rest Client supports:
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("resource")
+public interface TestResourceIntf {
+
+   @Path("test")
+   @GET
+   public String test();
+}
+   
+TestResourceIntf service = RestClientBuilder.newBuilder()
+                              .baseUrl("http://localhost:8081/")
+                              .build(TestResourceIntf.class);
+String s = service.test();
+</pre>
+
+<p>
+The first four lines of executable code are spent creating a proxy, <code class="code">service</code>, that implements
+<code class="classname">TestResourceIntf</code>, but once that is done, calls on <code class="classname">TestResource</code>
+can be made very naturally in terms of <code class="classname">TestResourceIntf</code>, as illustrated by the call
+<code class="code">service.test()</code>. 
+</p>
+
+<p>
+Beyond the natural syntax, another advantage of proxies is the way the proxy construction process quietly
+gathers useful information from the implemented interface and makes it available for remote invocations.
+Consider a more elaborate version of <code class="classname">TestResourceIntf</code>:
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("resource")
+public interface TestResourceIntf2 {
+
+   @Path("test/{path}")
+   @Consumes("text/plain")
+   @Produces("text/html")
+   @POST
+   public String test(@PathParam("path") String path, @QueryParam("query") String query, String entity);
+}
+</pre>
+
+<p>
+Calling <code class="methodname">service.test("p", "q", "e")</code> results in an HTTP message that looks like
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+POST /resource/test/p/?query=q HTTP/1.1
+Accept: text/html
+Content-Type: text/plain
+Content-Length: 1
+
+e
+</pre>
+
+<p>
+The HTTP verb is derived from the <code class="code">@POST</code> annotation, the request URI is derived from the
+two instances of the <code class="classname">@Path</code> annotation (one on the class, one on the method) plus the
+first and second parameters of <code class="methodname">test()</code>, the Accept header is derived from the
+<code class="classname">@Produces</code> annotation, and the Content-Type header is derived from the
+<code class="classname">@Consumes</code> annotation, 
+</p>
+
+<p>
+Using the JAX-RS API, <code class="code">service.test("p", "q", "e")</code> would look like the more verbose
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+Client client = ClientBuilder.newClient();
+String response = client.target("http://localhost:8081/resource/test/p")
+                     .queryParam("query", "q")
+                     .request()
+                     .accept("text/html")
+                     .post(Entity.entity("e", "text/plain"), String.class);
+</pre>
+
+<p>
+One other basic facility offered by MicroProfile Rest Client is the ability to configure the client environment
+by registering providers:
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+TestResourceIntf service = RestClientBuilder.newBuilder()
+                              .baseUrl("http://localhost:8081/")
+                              .register(MyClientResponseFilter.class)
+                              .register(MyMessageBodyReader.class)
+                              .build(TestResourceIntf.class);
+</pre>
+
+<p>
+Naturally, the registered providers should be relevant to the client environment, rather than, say, a
+<code class="classname">ContainerResponseFilter</code>.
+</p>
+
+<div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="note"><h2>注意</h2>
+<p>
+So far, the MicroProfile Rest Client should look familiar to anyone who has used the RESTEasy client proxy facility
+(<a class="link" href="RESTEasy_Client_Framework.html#proxies" title="51.2. RESTEasy Proxy Framework">Section ""RESTEasy Proxy Framework"</a>). The construction in 
+the previous listing would look like
+</p>
+
+<pre xmlns="" class="">
+ResteasyClient client = (ResteasyClient) ResteasyClientBuilder.newClient();
+TestResourceIntf service = client.target("http://localhost:8081/")
+                              .register(MyClientResponseFilter.class)
+                              .register(MyMessageBodyReader.class)
+                              .proxy(TestResourceIntf.class);
+</pre>
+
+<p>
+in RESTEasy.
+</p>
+</div>
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3857"/>52.2. Concepts imported from JAX-RS</h2></div></div></div>
+
+
+<p>
+Beyond the central concept of the client proxy, some basic concepts in MicroProfile Client originate
+in JAX-RS. Some of these have already been introduced in the previous section, since the interface
+implemented by a client proxy represents the facilities provided by a JAX-RS server. For example, the
+HTTP verb annotations and the <code class="code">@Consumes</code> and <code class="code">@Produces</code> annotations originate on the
+JAX-RS server side. Injectable parameters annotated with <code class="code">@PathParameter</code>, <code class="code">@QueryParameter</code>,
+etc., also come from JAX-RS.
+</p>
+
+<p>
+Nearly all of the provider concepts supported by MicroProfile Client also originate in JAX-RS. These are:
+</p>
+
+<div class="itemizedlist"><ul><li>javax.ws.rs.client.ClientRequestFilter</li><li>javax.ws.rs.client.ClientResponseFilter</li><li>javax.ws.rs.ext.MessageBodyReader</li><li>javax.ws.rs.ext.MessageBodyWriter</li><li>javax.ws.rs.ext.ParamConverter</li><li>javax.ws.rs.ext.ReaderInterceptor</li><li>javax.ws.rs.ext.WriterInterceptor</li></ul></div>
+
+<p>
+Like JAX-RS, MicroProfile Client also has the concept of mandated providers. These are
+</p>
+
+<div class="itemizedlist"><ul><li>JSON-P <code class="classname">MessageBodyReader</code> and <code class="classname">MessageBodyWriter</code>
+   must be provided.</li><li>JSON-B <code class="classname">MessageBodyReader</code> and <code class="classname">MessageBodyWriter</code>
+   must be provided if the implementation supports JSON-B.</li><li><code class="classname">MessageBodyReader</code>s and <code class="classname">MessageBodyWriter</code>s
+   must be provided for the following types:
+   <div class="itemizedlist"><ul><li>byte[]</li><li>String</li><li>InputStream</li><li>Reader</li><li>File</li></ul></div>
+   </li></ul></div>
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3890"/>52.3. Beyond JAX-RS and RESTEasy</h2></div></div></div>
+
+
+<p>
+Some concepts in MicroProfile Rest Client do not appear in either JAX-RS or RESTEasy.
+</p>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3893"/>1. Default media type</h2></div></div></div>
+
+
+<p>
+Whenever no media type is specified by, for example, <code class="code">@Consumes</code> or <code class="code">@Produces</code> annotations,
+the media type of a request entity or response entity is "application/json". This is different than JAX-RS, where
+the media type defaults to "application/octet-stream".
+</p>
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3898"/>2. Declarative registration of providers</h2></div></div></div>
+
+
+<p>
+In addition to programmatic registration of providers as illustrated above, it is also possible to
+register providers declaratively with annotations introduced in MicroProfile Rest Client. In particular,
+providers can be registered by adding the <code class="classname">org.eclipse.microprofile.rest.client.annotation.RegisterProvider</code>
+annotation to the target interface:
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("resource")
+@RegisterProvider(MyClientResponseFilter.class)
+@RegisterProvider(MyMessageBodyReader.class)
+public interface TestResourceIntf2 {
+
+   @Path("test/{path}")
+   @Consumes("text/plain")
+   @Produces("text/html")
+   @POST
+   public String test(@PathParam("path") String path, @QueryParam("query") String query, String entity);
+}
+</pre>
+
+<p>
+Declaring <code class="classname">MyClientResponseFilter</code> and <code class="classname">MyMessageBodyReader</code>  with
+annotations eliminates the need to call <code class="methodname">RestClientBuilder.register()</code>.
+</p>
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3907"/>3. Global registration of providers</h2></div></div></div>
+
+
+<p>
+One more way to register providers is by implementing one or both of the listeners in package
+<code class="code">org.eclipse.microprofile.rest.client.spi</code>:
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public interface RestClientBuilderListener {
+
+    void onNewBuilder(RestClientBuilder builder);
+}
+
+public interface RestClientListener {
+
+    void onNewClient(Class&lt;?&gt; serviceInterface, RestClientBuilder builder);
+}
+</pre>
+
+<p>
+which can access a <code class="classname">RestClientBuilder</code> upon creation of a new <code class="classname">RestClientBuilder</code> or
+upon the execution of <code class="methodname">RestClientBuilder.build()</code>, respectively. Implementations must
+be declared in 
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+META-INF/services/org.eclipse.microprofile.rest.client.spi.RestClientBuilderListener
+</pre>
+
+<p>or</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+META-INF/services/org.eclipse.microprofile.rest.client.spi.RestClientListener
+</pre>
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3919"/>4. Declarative specification of headers</h2></div></div></div>
+
+
+<p>
+One way of declaring a header to be included in a request is by annotating one of the resource method
+parameters with <code class="code">@HeaderValue</code>:
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@POST
+@Produces(MediaType.TEXT_PLAIN)
+@Consumes(MediaType.TEXT_PLAIN)
+String contentLang(@HeaderParam(HttpHeaders.CONTENT_LANGUAGE) String contentLanguage, String subject);
+</pre>
+
+<p>
+That option is available with RESTEasy client proxies as well,
+but in case it is inconvenient or otherwise inappropriate to include the necessary parameter,
+MicroProfile Client makes a declarative alternative available through the use of the
+<code class="classname">org.eclipse.microprofile.rest.client.annotation.ClientHeaderParam</code> annotation: 
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@POST
+@Produces(MediaType.TEXT_PLAIN)
+@Consumes(MediaType.TEXT_PLAIN)
+@ClientHeaderParam(name=HttpHeaders.CONTENT_LANGUAGE, value="en")
+String contentLang(String subject);
+</pre>
+
+<p>
+In this example, the header value is hardcoded, but it is also possible to compute a value:
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@POST
+@Produces(MediaType.TEXT_PLAIN)
+@Consumes(MediaType.TEXT_PLAIN)
+@ClientHeaderParam(name=HttpHeaders.CONTENT_LANGUAGE, value="{getLanguage}")
+String contentLang(String subject);
+
+default String getLanguage() {
+   return ...;
+}
+</pre>
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3929"/>5. Propagating headers on the server</h2></div></div></div>
+
+
+<p>
+An instance of <code class="classname">org.eclipse.microprofile.rest.client.ext.ClientHeadersFactory</code>,
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public interface ClientHeadersFactory {
+
+/**
+ * Updates the HTTP headers to send to the remote service. Note that providers
+ * on the outbound processing chain could further update the headers.
+ *
+ * @param incomingHeaders - the map of headers from the inbound JAX-RS request. This will
+ * be an empty map if the associated client interface is not part of a JAX-RS request.
+ * @param clientOutgoingHeaders - the read-only map of header parameters specified on the
+ * client interface.
+ * @return a map of HTTP headers to merge with the clientOutgoingHeaders to be sent to
+ * the remote service.
+ */
+MultivaluedMap&lt;String, String&gt; update(MultivaluedMap&lt;String, String&gt; incomingHeaders,
+                                      MultivaluedMap&lt;String, String&gt; clientOutgoingHeaders);
+}
+</pre>
+<p>
+if activated, can do a bulk transfer of incoming headers to an outgoing request. The default instance
+<code class="classname">org.eclipse.microprofile.rest.client.ext.DefaultClientHeadersFactoryImpl</code>
+will return a map consisting of those incoming headers listed in the comma separated configuration property
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+org.eclipse.microprofile.rest.client.propagateHeaders
+</pre>
+
+<p>
+In order for an instance of <code class="classname">ClientHeadersFactory</code> to be activated,
+the interface must be annotated with 
+<code class="classname">org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders</code>. Optionally,
+the annotation may include a value field set to an implementation class; without an explicit value, the
+default instance will be used.
+</p>
+
+<p>
+Although a <code class="classname">ClientHeadersFactory</code> is not officially designated as a provider, it is
+now (as of MicroProfile REST Client specification 1.4) subject to injection. In particular, when an instance of <code class="classname">ClientHeadersFactory</code>
+is managed by CDI, then CDI injection is mandatory. When a REST Client is executing in the context
+of a JAX-RS implementation, then @Context injection into a <code class="classname">ClientHeadersFactory</code> is
+currently optional. RESTEasy supports CDI injection and does not currently support @Context injection.
+</p>
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3944"/>6. ResponseExceptionMapper</h2></div></div></div>
+
+
+<p>
+The <code class="classname">org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper</code> is the
+client side inverse of the <code class="classname">javax.ws.rs.ext.ExceptionMapper</code> defined in JAX-RS. That is,
+where <code class="methodname">ExceptionMapper.toResponse()</code> turns an <code class="classname">Exception</code> thrown
+during server side processing into a <code class="classname">Response</code>,
+<code class="methodname">ResponseExceptionMapper.toThrowable()</code> turns a 
+<code class="classname">Response</code> received on the client side with an HTTP error status into
+an <code class="classname">Exception</code>. <code class="classname">ResponseExceptionMapper</code>s can be registered
+in the same manner as other providers, that is, either programmatically or declaratively. In the absence
+of a registered <code class="classname">ResponseExceptionMapper</code>, a default <code class="classname">ResponseExceptionMapper</code>
+will map any response with status &gt;= 400 to a <code class="classname">WebApplicationException</code>.
+</p>
+
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3959"/>7. Proxy injection by CDI</h2></div></div></div>
+
+
+<p>
+MicroProfile Rest Client mandates that implementations must support CDI injection of proxies. At first, the
+concept might seem odd in that CDI is more commonly available on the server side. However, the idea is very
+consistent with the microservices philosophy. If an application is composed of a number of small services,
+then it is to be expected that services will often act as clients to other services.
+</p>
+
+<p>
+CDI (Contexts and Dependency Injection) is a fairly rich subject and beyond the scope of this Guide. For more information, see 
+<a class="ulink" href="https://www.jcp.org/en/jsr/detail?id=365">JSR 365: Contexts and Dependency Injection for JavaTM 2.0</a> 
+(the specification), 
+<a class="ulink" href="https://javaee.github.io/tutorial/toc.html">Java EE 8 Tutorial</a>, or
+<a class="ulink" href="https://docs.jboss.org/weld/reference/latest-master/en-US/html/">WELD - CDI Reference Implementation</a>.
+</p>
+
+<p>
+The fundamental thing to know about CDI injection is that annotating a variable with 
+<code class="classname">javax.inject.Inject</code> will lead the CDI runtime (if it is present and enabled) to
+create an object of the appropriate type and assign it to the variable. For example, in
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+   public interface Book {
+      public String getTitle();
+      public void setTitle(String title);
+   }
+
+   public class BookImpl implements Book {
+      
+      private String title;
+
+      @Override
+      public String getTitle() {
+         return title;
+      }
+      
+      @Override
+      public void setTitle(String title) {
+         this.title = title;
+      }
+   }
+   
+   public class Author {
+      
+      @Inject private Book book; 
+      
+      public Book getBook() {
+         return book;
+      }
+   }
+</pre>
+
+<p>
+The CDI runtime will create an instance of <code class="classname">BookImpl</code> and assign it to the private field
+<code class="code">book</code> when an instance of <code class="classname">Author</code> is created;
+</p>
+
+<p>
+In this example, the injection is done because <code class="classname">BookImpl</code> is assignable to <code class="code">book</code>, but
+greater discrimination can be imposed by annotating the interface and the field with <span class="bold"><strong>qualifier</strong></span>
+annotations. For the injection to be legal, every qualifier on the field must be present on the injected interface.
+For example:</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+   @Qualifier
+   @Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
+   @Retention(RetentionPolicy.RUNTIME)
+   public @interface Text {}
+   
+   @Qualifier
+   @Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
+   @Retention(RetentionPolicy.RUNTIME)
+   public @interface Graphic {}
+   
+   @Text
+   public class TextBookImpl extends BookImpl { }
+   
+   @Graphic
+   public class GraphicNovelImpl extends BookImpl { }
+   
+   public class Genius {
+      
+      @Inject @Graphic Book book;
+   }
+
+</pre>
+
+<p>
+Here, the class <code class="classname">TextBookImpl</code> is annotated with the <code class="classname">@Text</code> qualifier and
+<code class="classname">GraphicNovelImpl</code> is annotated with <code class="classname">@Graphic</code>. It follows that an instance
+of <code class="classname">GraphicNovelImpl</code> is eligible for assignment to the field <code class="code">book</code> in the 
+<code class="classname">Genius</code> class, but an instance of <code class="classname">TextBookImpl</code> is not.
+</p>
+
+<p>
+Now, in MicroProfile Rest Client, any interface that is to be managed as a CDI bean must be annotated with
+<code class="classname">@RegisterRestClient</code>:
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+   @Path("resource")
+   @RegisterProvider(MyClientResponseFilter.class)
+   public static class TestResourceImpl {
+
+      @Inject TestDataBase db;
+      
+      @Path("test/{path}")
+      @Consumes("text/plain")
+      @Produces("text/html")
+      @POST
+      public String test(@PathParam("path") String path, @QueryParam("query") String query, String entity) {
+         return db.getByName(query);
+      }
+   }
+
+   @Path("database")
+   @RegisterRestClient
+   public interface TestDataBase {
+      
+      @Path("")
+      @POST
+      public String getByName(String name);
+   }
+</pre>
+
+<p>
+Here, the MicroProfile Rest Client implementation creates a proxy for a <code class="classname">TestDataBase</code> service,
+allowing easy access by <code class="classname">TestResourceImpl</code>. Notice, though, that there's no indication of
+where the <code class="classname">TestDataBase</code> implementation lives. That information can be supplied by the optional
+<code class="classname">@RegisterProvider</code> parameter <code class="code">baseUri</code>:</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+   @Path("database")
+   @RegisterRestClient(baseUri="https://localhost:8080/webapp")
+   public interface TestDataBase {
+      
+      @Path("")
+      @POST
+      public String getByName(String name);
+   }
+</pre>
+
+<p>
+which indicates that an implementation of <code class="classname">TestDatabase</code> can be
+accessed at https://localhost:8080/webapp. The same information can be supplied externally with the system variable
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+&lt;fqn of TestDataBase&gt;/mp-rest/uri=&lt;URL&gt;
+</pre>
+
+<p>or</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+&lt;fqn of TestDataBase&gt;/mp-rest/url=&lt;URL&gt;
+</pre>
+
+<p>
+which will override the value hardcoded in <code class="classname">@RegisterRestClient</code>. For example,
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+com.bluemonkeydiamond.TestDatabase/mp-rest/url=https://localhost:8080/webapp
+</pre>
+
+<p>
+A number of other properties will be examined in the course of creating the proxy, including, for example
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+com.bluemonkeydiamond.TestDatabase/mp-rest/providers
+</pre>
+
+<p>
+a comma separated list of provider classes to be registered with the proxy. See the MicroProfile Client
+documentation for more such properties.
+</p>
+
+<p>
+These properties can be simplified through the use of the <code class="code">configKey</code> field in 
+<code class="classname">@RegisterRestClient</code>. For example, setting the <code class="code">configKey</code> as in
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("database")
+@RegisterRestClient(configKey="bmd")
+public interface TestDataBase { ... }
+</pre>
+
+<p>
+allows the use of properties like
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+bmd/mp-rest/url=https://localhost:8080/webapp
+</pre>
+
+<p>
+Note that, since the configKey is not tied to a particular interface name, multiple proxies can be
+configured with the same properties.
+</p>
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4016"/>8. Proxy lifecycle</h2></div></div></div>
+
+
+<p>
+Proxies should be closed so that any resources they hold can be released. Every proxy created by
+<code class="classname">RestClientBuilder</code> implements the <code class="classname">java.io.Closeable</code>
+interface, so it is always possible to cast a proxy to <code class="classname">Closeable</code> and call
+<code class="methodname">close()</code>. A nice trick to have the proxy interface explicitly extend
+<code class="classname">Closeable</code>, which not only avoids the need for a cast but also makes the proxy
+eligible to use in a try-with-resources block:
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("resource")
+public interface TestResourceIntf extends Closeable {
+
+   @Path("test")
+   @GET
+   public String test();
+}
+   
+TestResourceIntf service = RestClientBuilder.newBuilder()
+                              .baseUrl("http://localhost:8081/")
+                              .build(TestResourceIntf.class);
+try (TestResourceIntf tr = service) {
+   String s = service.test();
+}
+</pre>
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4025"/>9. Asynchronous support</h2></div></div></div>
+
+
+<p>An interface method can be designated as asynchronous by having it return a
+<code class="classname">java.util.concurrent.CompletionStage</code>. For example, in
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public interface TestResourceIntf extends Closeable {
+
+   @Path("test")
+   @GET
+   public String test();
+   
+   @Path("testasync")
+   @GET
+   public CompletionStage&lt;String&gt; testAsync();
+}
+</pre>
+
+<p>
+the <code class="code">test()</code> method can be turned into the asynchronous method <code class="code">testAsync()</code> by having it return
+a <code class="classname">CompletionStage&lt;String&gt;</code> instead of a <code class="classname">String</code>.
+</p>
+
+<p>
+Asynchronous methods are made to be asynchronous by scheduling their execution on a thread distinct from
+the calling thread. The MicroProfile Client implementation will have a default means of doing that, but
+<code class="methodname">RestClientBuilder.executorService(ExecutorService)</code> provides a way of substituting
+an application specific <code class="classname">ExecutorService</code>.
+</p>
+
+<p>
+The classes <code class="classname">AsyncInvocationInterceptorFactory</code> and
+<code class="classname">AsyncInvocationInterceptor</code> in package
+<code class="code">org.eclipse.microprofile.rest.client.ext</code> provides a means of communication
+between the calling thread and the asynchronous thread:
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public interface AsyncInvocationInterceptorFactory {
+
+    /**
+     * Implementations of this method should return an implementation of the
+     * <code xmlns="http://www.w3.org/1999/xhtml" class="code">AsyncInvocationInterceptor</code> interface.  The MP Rest Client
+     * implementation runtime will invoke this method, and then invoke the
+     * <code xmlns="http://www.w3.org/1999/xhtml" class="code">prepareContext</code> and <code xmlns="http://www.w3.org/1999/xhtml" class="code">applyContext</code> methods of the
+     * returned interceptor when performing an asynchronous method invocation.
+     * Null return values will be ignored.
+     *
+     * @return Non-null instance of <code xmlns="http://www.w3.org/1999/xhtml" class="code">AsyncInvocationInterceptor</code>
+     */
+    AsyncInvocationInterceptor newInterceptor();
+}
+
+public interface AsyncInvocationInterceptor {
+
+    /**
+     * This method will be invoked by the MP Rest Client runtime on the "main"
+     * thread (i.e. the thread calling the async Rest Client interface method)
+     * prior to returning control to the calling method.
+     */
+    void prepareContext();
+
+    /**
+     * This method will be invoked by the MP Rest Client runtime on the "async"
+     * thread (i.e. the thread used to actually invoke the remote service and
+     * wait for the response) prior to sending the request.
+     */
+    void applyContext();
+
+    /**
+     * This method will be invoked by the MP Rest Client runtime on the "async"
+     * thread (i.e. the thread used to actually invoke the remote service and
+     * wait for the response) after all providers on the inbound response flow
+     * have been invoked.
+     *
+     * @since 1.2
+     */
+     void removeContext();
+}
+</pre>
+
+<p>
+The following sequence of events occurs:
+</p>
+
+<div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li>
+      <p>
+      <code class="methodname">AsyncInvocationInterceptorFactory.newInterceptor()</code> is called
+      on the calling thread to get an instance of the <code class="classname">AsyncInvocationInterceptor</code>.
+      </p>
+   </li><li>
+      <p>
+      <code class="methodname">AsyncInvocationInterceptor.prepareContext()</code> is executed on the calling
+      thread to store information to be used by the request execution.
+      </p>
+   </li><li>
+      <p>
+      <code class="methodname">AsyncInvocationInterceptor.applyContext()</code> is executed on the 
+      asynchronous thread.
+      </p>
+   </li><li>
+      <p>
+      All relevant outbound providers such as interceptors and filters are executed on the asynchronous thread,
+      followed by the request invocation.
+      </p>
+   </li><li>
+      <p>
+      All relevant inbound providers are executed on the asynchronous thread, followed by executing
+      <code class="methodname">AsyncInvocationInterceptor.removeContext()</code>
+      </p>
+   </li><li>
+      <p>
+      The asynchronous thread returns.
+      </p>
+   </li></ol></div>
+
+<p>
+An <code class="classname">AsyncInvocationInterceptorFactory</code> class is enabled by registering it on the
+client interface with <code class="classname">@RegisterProvider</code>. 
+</p>
+
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4069"/>10. SSL</h2></div></div></div>
+
+
+<p>
+The MicroProfile Client <code class="classname">RestClientBuilder</code> interface includes a number
+of methods that support the use of SSL:
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+RestClientBuilder hostnameVerifier(HostnameVerifier hostnameVerifier);
+RestClientBuilder keyStore(KeyStore keyStore, String keystorePassword);
+RestClientBuilder sslContext(SSLContext sslContext);
+RestClientBuilder trustStore(KeyStore trustStore);
+</pre>
+
+<p>
+For example:
+</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+KeyStore trustStore = ... ;
+HostnameVerifier verifier ... ;
+TestResourceIntf service = RestClientBuilder.newBuilder()
+                              .baseUrl("http://localhost:8081/")
+                              .trustStore(trustStore)
+                              .hostnameVerifier(verifier)
+                              .build(TestResourceIntf.class);
+</pre>
+
+<p>
+It is also possible to configure <code class="classname">HostnameVerifier</code>s, 
+<code class="classname">KeyStore</code>s, and <code class="classname">TrustStore</code>s using configuration
+properties:
+</p>
+
+<div class="itemizedlist"><ul><li><p>com.bluemonkeydiamond.TestResourceIntf/mp-rest/hostnameVerifier</p></li><li><p>com.bluemonkeydiamond.TestResourceIntf/mp-rest/keyStore</p></li><li><p>com.bluemonkeydiamond.TestResourceIntf/mp-rest/keyStorePassword</p></li><li><p>com.bluemonkeydiamond.TestResourceIntf/mp-rest/keyStoreType</p></li><li><p>com.bluemonkeydiamond.TestResourceIntf/mp-rest/trustStore</p></li><li><p>com.bluemonkeydiamond.TestResourceIntf/mp-rest/trustStorePassword</p></li><li><p>com.bluemonkeydiamond.TestResourceIntf/mp-rest/trustStoreType</p></li></ul></div>
+
+<p>
+The values of the ".../mp-rest/keyStore" and "../mp-rest/trustStore" parameters can be either
+classpath resources (e.g., "classpath:/client-keystore.jks") or files (e.g., "file:/home/user/client-keystore.jks").
+</p>
+
+</div>
+</div>
+
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="RESTEasy_Client_Framework.html"><strong>上一页</strong>第 51 章 RESTEasy Client API</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="AJAX_Client.html"><strong>下一页</strong>第 53 章 AJAX Client</a></li></ul></body></html>

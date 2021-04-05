@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 43 章 Securing JAX-RS and RESTEasy</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="RESTEasy_Server-side_Mock_Framework.html" title="第 42 章 Server-side Mock Framework"/><link rel="next" href="ch44.html" title="第 44 章 JSON Web Signature and Encryption (JOSE-JWT)"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="RESTEasy_Server-side_Mock_Framework.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="ch44.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Securing_JAX-RS_and_RESTeasy"/>第 43 章 Securing JAX-RS and RESTEasy</h2></div></div></div>
+
+
+<p>
+
+Because RESTEasy is deployed as a servlet, you must use standard web.xml constraints to enable authentication and authorization.  
+</p>
+<p>
+
+Unfortunately, web.xml constraints do not mesh very well with JAX-RS in some situations.  The problem is that web.xml URL pattern matching is very very limited.  URL patterns in web.xml only support simple wildcards, so JAX-RS resources like:
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">/{pathparam1}/foo/bar/{pathparam2} </pre><p>
+</p>
+<p>
+
+Cannot be mapped as a web.xml URL pattern like:
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">/*/foo/bar/*</pre><p>
+</p>
+<p>
+
+To get around this problem you will need to use the security annotations defined below on your JAX-RS methods.  You will still need to set up some general security constraint elements in web.xml to turn on authentication.
+</p>
+<p>
+
+
+</p>
+<p>
+
+RESTEasy JAX-RS supports the @RolesAllowed, @PermitAll and @DenyAll annotations on JAX-RS methods.   By default though, RESTEasy does not recognize these annotations.  You have to 
+configure RESTEasy to turn on role-based security by setting the appropriate parameter.  NOTE!!!  Do not turn on this switch if you are using EJBs.  The EJB container will provide this
+functionality instead of RESTEasy. To configure this switch as a context-param, do this:
+
+</p>
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+
+&lt;web-app&gt;
+...
+   &lt;context-param&gt;
+      &lt;param-name&gt;resteasy.role.based.security&lt;/param-name&gt;
+      &lt;param-value&gt;true&lt;/param-value&gt;
+   &lt;/context-param&gt;
+&lt;/web-app&gt;
+</pre>
+
+<p>See <a class="xref" href="Installation_Configuration.html#microprofile_config" title="3.4. 配置">第 3.4 节 “配置”</a> for more information about application configuration. </p>
+
+<p>There is a bit of quirkiness with this approach.   You will have to declare all roles used within the RESTEasy JAX-RS war file that you are using in your JAX-RS classes and set up a security constraint that permits all of these roles access to every URL handled by the JAX-RS runtime.  You'll just have to trust that RESTEasy JAX-RS authorizes properly.
+</p>
+<p>
+
+How does RESTEasy do authorization?  Well, its really simple.  It just sees if a method is annotated with @RolesAllowed and then just does HttpServletRequest.isUserInRole.  If one of the @RolesAllowed passes, then allow the request, otherwise, a response is sent back with a 401 (Unauthorized) response code.
+</p>
+<p>
+
+So, here's an example of a modified RESTEasy WAR file.  You'll notice that every role declared is allowed access to every URL controlled by the RESTEasy servlet.
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+
+&lt;web-app&gt;
+
+   &lt;context-param&gt;
+      &lt;param-name&gt;resteasy.role.based.security&lt;/param-name&gt;
+      &lt;param-value&gt;true&lt;/param-value&gt;
+   &lt;/context-param&gt;
+
+   &lt;security-constraint&gt;
+      &lt;web-resource-collection&gt;
+         &lt;web-resource-name&gt;Resteasy&lt;/web-resource-name&gt;
+         &lt;url-pattern&gt;/security&lt;/url-pattern&gt;
+      &lt;/web-resource-collection&gt;
+       &lt;auth-constraint&gt;
+         &lt;role-name&gt;admin&lt;/role-name&gt;
+         &lt;role-name&gt;user&lt;/role-name&gt;
+      &lt;/auth-constraint&gt;
+  &lt;/security-constraint&gt;
+
+   &lt;login-config&gt;
+      &lt;auth-method&gt;BASIC&lt;/auth-method&gt;
+      &lt;realm-name&gt;Test&lt;/realm-name&gt;
+   &lt;/login-config&gt;
+
+   &lt;security-role&gt;
+      &lt;role-name&gt;admin&lt;/role-name&gt;
+   &lt;/security-role&gt;
+   &lt;security-role&gt;
+      &lt;role-name&gt;user&lt;/role-name&gt;
+   &lt;/security-role&gt;
+
+   ...
+&lt;/web-app&gt;
+
+
+</pre><p>
+</p>
+<p>
+
+
+</p>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="RESTEasy_Server-side_Mock_Framework.html"><strong>上一页</strong>第 42 章 Server-side Mock Framework</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="ch44.html"><strong>下一页</strong>第 44 章 JSON Web Signature and Encryption (JOSE-JW...</a></li></ul></body></html>

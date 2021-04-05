@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 9 章 @MatrixParam</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="LinkHeader.html" title="第 8 章 Linking resources"/><link rel="next" href="_CookieParam.html" title="第 10 章 @CookieParam"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="LinkHeader.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="_CookieParam.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="_MatrixParam"/>第 9 章 @MatrixParam</h2></div></div></div>
+
+
+<div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="note"><h2>注意</h2>
+   <p>
+      RESTEasy <a class="link" href="_NewParam.html" title="第 13 章 Improved @…Param annotations">supports <code class="code">@MatrixParam</code> annotations with no parameter name.</a>.
+   </p>
+</div>
+
+<p>
+
+The idea of matrix parameters is that they are an arbitrary set of name-value pairs embedded in a uri path segment.  
+A matrix parameter example is:
+</p>
+<p>
+
+GET http://host.com/library/book;name=EJB 3.0;author=Bill Burke
+</p>
+<p>
+
+The basic idea of matrix parameters is that it represents resources that are addressable by their attributes as well as their raw id.  The @MatrixParam annotation allows you to inject URI matrix parameters into your method invocation
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@GET
+public String getBook(@MatrixParam("name") String name, @MatrixParam("author") String author) {...}
+</pre><p>
+</p>
+<p>
+
+There is one big problem with @MatrixParam that the current version of the specification does not resolve.  What if the same MatrixParam exists twice in different path segments?  In this case, right now, its probably better to use PathParam combined with PathSegment.
+</p>
+<p>
+
+</p>
+<p>
+
+</p>
+<p>
+
+
+</p>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="LinkHeader.html"><strong>上一页</strong>第 8 章 Linking resources</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="_CookieParam.html"><strong>下一页</strong>第 10 章 @CookieParam</a></li></ul></body></html>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 30 章 Exception Handling</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Responses_using_javax.ws.rs.core.Response.html" title="第 29 章 Responses using javax.ws.rs.core.Response"/><link rel="next" href="Configuring_Individual_JAX-RS_Resource_Beans.html" title="第 31 章 Configuring Individual JAX-RS Resource Beans"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Responses_using_javax.ws.rs.core.Response.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Configuring_Individual_JAX-RS_Resource_Beans.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="ExceptionHandling"/>第 30 章 Exception Handling</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="ExceptionHandling.html#ExceptionMappers">30.1. Exception Mappers</a></span></dt><dt><span class="sect1"><a href="ExceptionHandling.html#builtinException">30.2. RESTEasy Built-in Internally-Thrown Exceptions</a></span></dt><dt><span class="sect1"><a href="ExceptionHandling.html#ResteasyWebApplicationException">30.3. Resteasy WebApplicationExceptions</a></span></dt><dt><span class="sect1"><a href="ExceptionHandling.html#overring_resteasy_exceptions">30.4. Overriding RESTEasy Builtin Exceptions</a></span></dt></dl></div>
+   
+
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="ExceptionMappers"/>30.1. Exception Mappers</h2></div></div></div>
+   
+   <p>
+
+      ExceptionMappers are custom, application provided, components that can catch thrown application exceptions and
+      write specific HTTP responses. They are classes annotated with @Provider and that implement this interface
+   </p>
+   <p>
+
+      </p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+         package javax.ws.rs.ext;
+
+         import javax.ws.rs.core.Response;
+
+         /**
+         * Contract for a provider that maps Java exceptions to
+         * {@link javax.ws.rs.core.Response}. An implementation of this interface must
+         * be annotated with {@link Provider}.
+         *
+         * @see Provider
+         * @see javax.ws.rs.core.Response
+         */
+         public interface ExceptionMapper&lt;E&gt;
+         {
+            /**
+            * Map an exception to a {@link javax.ws.rs.core.Response}.
+            *
+            * @param exception the exception to map to a response
+            * @return a response mapped from the supplied exception
+            */
+            Response toResponse(E exception);
+         }
+      </pre><p>
+   </p>
+   <p>
+
+      When an application exception is thrown it will be caught by the JAX-RS runtime. JAX-RS will then scan registered
+      ExceptionMappers to see which one support marshalling the exception type thrown. Here is an example of
+      ExceptionMapper
+   </p>
+   <p>
+
+      </p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+
+         @Provider
+         public class EJBExceptionMapper implements ExceptionMapper&lt;javax.ejb.EJBException&gt;
+         {
+            public Response toResponse(EJBException exception) {
+               return Response.status(500).build();
+            }
+         }
+      </pre><p>
+   </p>
+   <p>
+
+      You register ExceptionMappers the same way you do MessageBodyReader/Writers. By scanning for @Provider
+      annotated classes, or programmatically through the
+      ResteasyProviderFactory class.
+   </p>
+   <p>
+
+
+   </p>
+   </div>
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="builtinException"/>30.2. RESTEasy Built-in Internally-Thrown Exceptions</h2></div></div></div>
+     
+     <p>RESTEasy has a set of built-in exceptions that are thrown by it when it encounters errors during dispatching or marshalling.  They all
+           revolve around specific HTTP error codes.  You can find them in RESTEasy's javadoc under the package org.jboss.resteasy.spi.  Here's
+           a list of them:</p>
+<div class="table"><a id="d4e2066"/><p class="title"><b>表 30.1. </b></p><div class="table-contents">
+<table border="1"><colgroup><col/><col/><col/></colgroup><thead><tr><th>Exception</th><th>HTTP Code</th><th>Description</th></tr></thead><tbody><tr><td>ReaderException</td><td>400</td><td>All exceptions thrown from MessageBodyReaders are wrapped within this exception.  If there is no ExceptionMapper for the
+wrapped exception or if the exception isn't a WebApplicationException, then resteasy will return a 400 code by default.</td></tr><tr><td>WriterException</td><td>500</td><td>All exceptions thrown from MessageBodyWriters are wrapped within this exception.  If there is no ExceptionMapper for the
+wrapped exception or if the exception isn't a WebApplicationException, then resteasy will return a 400 code by default.</td></tr><tr><td>o.j.r.plugins.providers.jaxb.JAXBUnmarshalException</td><td>400</td><td>The JAXB providers throw this exception on reads.  They may be wrapping JAXBExceptions.  This class extends ReaderException</td></tr><tr><td>o.j.r.plugins.providers.jaxb.JAXBMarshalException</td><td>500</td><td>The JAXB providers throw this exception on writes.  They may be wrapping JAXBExceptions.  This class extends WriterException</td></tr><tr><td>ApplicationException</td><td>N/A</td><td>This exception wraps all exceptions thrown from application code.  It functions much in the same way as InvocationTargetException.
+If there is an ExceptionMapper for wrapped exception, then that is used to handle the request.</td></tr><tr><td>Failure</td><td>N/A</td><td>Internal RESTEasy.  Not logged</td></tr><tr><td>LoggableFailure</td><td>N/A</td><td>Internal RESTEasy error.  Logged</td></tr><tr><td>DefaultOptionsMethodException</td><td>N/A</td><td>If the user invokes HTTP OPTIONS and no JAX-RS method for it, RESTEasy provides a default behavior by throwing this exception</td></tr><tr><td>UnrecognizedPropertyExceptionHandler</td><td>400</td><td>A Jackson provider throws this exception when JSON data is determine to be invalid.</td></tr></tbody></table>
+</div></div><br class="table-break"/>
+</div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="ResteasyWebApplicationException"/>30.3. Resteasy WebApplicationExceptions</h2></div></div></div>
+   
+   <p>Suppose a client at local.com calls the following resource method:</p>
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+   @GET
+   @Path("remote")
+   public String remote() throws Exception {
+      Client client = ClientBuilder.newClient();
+      return client.target("http://third.party.com/exception").request().get(String.class);
+   }
+   </pre>
+   <p>If the call to http://third.party.com returns a status code 3xx, 4xx, or 5xx, then the 
+   <code class="classname">Client</code> is obliged by the JAX-RS
+   specification to throw a <code class="classname">WebApplicationException</code>. Moreover, if the
+   <code class="classname">WebApplicationException</code> contains a <code class="classname">Response</code>, which
+   it normally would in RESTEasy, the server runtime is obliged by the JAX-RS specification to return that
+   <code class="classname">Response</code>.
+   As a result, information from the server at third.party.com, e.g., headers and body, will get sent back to
+   local.com. The problem is that that information could be, at best, meaningless to the client
+   and, at worst, a security breach.</p>
+
+   <p>RESTEasy has a solution that works around the problem and still conforms to the JAX-RS specification.
+   In particular, for each <code class="classname">WebApplicationException</code> it defines a new subclass:</p>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+WebApplicationException
++-ResteasyWebApplicationException
++-ClientErrorException
+| +-ResteasyClientErrorException
+| +-BadRequestException
+| | +-ResteasyBadRequestException
+| +-ForbiddenException
+| | +-ResteasyForbiddenException
+| +-NotAcceptableException
+| | +-ResteasyNotAcceptableException
+| +-NotAllowedException
+| | +-ResteasyNotAllowedException
+| +-NotAuthorizedException
+| | +-ResteasyNotAuthorizedException
+| +-NotFoundException
+| | +-ResteasyNotFoundException
+| +-NotSupportedException
+| | +-ResteasyNotSupportedException
++-RedirectionException
+| +-ResteasyRedirectionException
++-ServerErrorException
+| +-ResteasyServerErrorException
+| +-InternalServerErrorException
+| | +-ResteasyInternalServerErrorException
+| +-ServiceUnavailableException
+| | +-ResteasyServiceUnavailableException
+</pre>
+
+    <p>The new <code class="classname">Exception</code>s play the same role as the original ones,
+   but RESTEasy treats them slightly differently. When a <code class="classname">Client</code> detects
+   that it is running in the context of a resource method, it will throw one of the new
+   <code class="classname">Exception</code>s. However, instead of storing the original <code class="classname">Response</code>,
+   it stores a "sanitized" version of the <code class="classname">Response</code>, in which only the status and
+   the Allow and Content-Type headers are preserved. The original <code class="classname">WebApplicationException</code>,
+   and therefore the original <code class="classname">Response</code>, can be accessed in one of two ways:</p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+// Create a NotAcceptableException.
+NotAcceptableException nae = new NotAcceptableException(Response.status(406).entity("ooops").build());
+
+// Wrap the NotAcceptableException in a ResteasyNotAcceptableException.
+ResteasyNotAcceptableException rnae = (ResteasyNotAcceptableException) WebApplicationExceptionWrapper.wrap(nae);
+
+// Extract the original NotAcceptableException using instance method.
+NotAcceptableException nae2 = rnae.unwrap();
+Assert.assertEquals(nae, nae2);
+
+// Extract the original NotAcceptableException using class method.
+NotAcceptableException nae3 = (NotAcceptableException) WebApplicationExceptionWrapper.unwrap(nae); // second way
+Assert.assertEquals(nae, nae3);
+   </pre>
+   
+   <p>Note that this change is intended to introduce a safe default behavior in the case that
+   the <code class="classname">Exception</code> generated by the remote call is allowed to make its way up
+   to the server runtime. It is considered a good practice, though, to catch the 
+   <code class="classname">Exception</code> and treat it in some appropriate manner:</p>
+   
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+   @GET
+   @Path("remote/{i}")
+   public String remote(@PathParam("i") String i) throws Exception {
+      Client client = ClientBuilder.newClient();
+      try {
+         return client.target("http://remote.com/exception/" + i).request().get(String.class);
+      } catch (WebApplicationException wae) {
+         ...
+      }
+   }
+</pre>
+
+   <p><span class="bold"><strong>Note.</strong></span> While RESTEasy will default to the new, safer behavior, the original behavior can
+   be restored by setting the configuration parameter "resteasy.original.webapplicationexception.behavior"
+   to "true".</p>
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="overring_resteasy_exceptions"/>30.4. Overriding RESTEasy Builtin Exceptions</h2></div></div></div>
+   
+   <p>You may override RESTEasy built-in exceptions by writing an ExceptionMapper for the exception.  For that matter, you can write an ExceptionMapper
+   for any thrown exception including WebApplicationException</p>
+</div>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Responses_using_javax.ws.rs.core.Response.html"><strong>上一页</strong>第 29 章 Responses using javax.ws.rs.core.Response</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="Configuring_Individual_JAX-RS_Resource_Beans.html"><strong>下一页</strong>第 31 章 Configuring Individual JAX-RS Resource Bea...</a></li></ul></body></html>

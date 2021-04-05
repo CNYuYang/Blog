@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 32 章 Content encoding</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Configuring_Individual_JAX-RS_Resource_Beans.html" title="第 31 章 Configuring Individual JAX-RS Resource Beans"/><link rel="next" href="ch33.html" title="第 33 章 CORS"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Configuring_Individual_JAX-RS_Resource_Beans.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="ch33.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="gzip"/>第 32 章 Content encoding</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="gzip.html#d4e2158">32.1. GZIP Compression/Decompression</a></span></dt><dd><dl><dt><span class="sect2"><a href="gzip.html#configuring">32.1.1. Configuring GZIP compression / decompression</a></span></dt></dl></dd><dt><span class="sect1"><a href="gzip.html#d4e2202">32.2. General content encoding</a></span></dt></dl></div>
+   
+   
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2158"/>32.1. GZIP Compression/Decompression</h2></div></div></div>
+   
+   <p>
+    RESTEasy supports (though not by default - see below)
+    GZIP decompression.  If properly configured,
+    the client framework or a JAX-RS service, upon receiving
+    a message body with a Content-Encoding of "gzip",
+    will automatically decompress it.  The client framework can
+    (though not by default - see below) automatically
+    set the Accept-Encoding header to be "gzip, deflate" so you do not
+    have to set this header yourself.
+    </p>
+    <p>RESTEasy also supports (though not by default - see below) automatic
+    compression.  If the client framework is sending a request
+    or the server is sending a response with the Content-Encoding header
+    set to "gzip", RESTEasy will (if properly configured)
+    do the compression. So that you do not
+    have to set the Content-Encoding header directly, you can use the
+    @org.jboss.resteasy.annotation.GZIP annotation.
+   </p>
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("/")
+public interface MyProxy {
+
+   @Consumes("application/xml")
+   @PUT
+   public void put(@GZIP Order order);
+}
+</pre>
+   <p>In the above example, we tag the outgoing message body, order, to
+   be gzip compressed.  You can use the same annotation to tag server responses
+   </p>
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("/")
+public class MyService {
+
+   @GET
+   @Produces("application/xml")
+   @GZIP
+   public String getData() {...}
+}
+</pre>
+
+<div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="configuring"/>32.1.1. Configuring GZIP compression / decompression</h3></div></div></div>
+   
+   
+   <p><span class="bold"><strong>Note.</strong></span> Decompression carries a risk of attack
+   from a bad actor that can package an entity that will expand greatly. Consequently,
+   RESTEasy disables GZIP compression / decompression by default.
+   </p>
+   
+   <p>
+   There are three interceptors that are relevant to GZIP compression / decompression:
+   </p>
+   
+   <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li>org.jboss.resteasy.plugins.interceptors.GZIPDecodingInterceptor:
+      If the Content-Encoding header is present and has the value "gzip",
+      <code class="classname">GZIPDecodingInterceptor</code> will install an <code class="classname">InputStream</code>
+      that decompresses the message body.
+      </li><li>org.jboss.resteasy.plugins.interceptors.GZIPEncodingInterceptor:
+      If the Content-Encoding header is present and has the value "gzip",
+      <code class="classname">GZIPEncodingInterceptor</code> will install an <code class="classname">OutputStream</code>
+      that compresses the message body.
+      </li><li>org.jboss.resteasy.plugins.interceptors.AcceptEncodingGZIPFilter: 
+      If the Accept-Encoding header does not exist, <code class="classname">AcceptEncodingGZIPFilter</code>
+      will add Accept-Encoding with the value "gzip, deflate". If the Accept-Encoding header exists but
+      does not contain "gzip", <code class="classname">AcceptEncodingGZIPFilter</code> will append ", gzip".
+      Note that enabling GZIP compression / decompression does not depend on the presence of this
+      interceptor.
+      </li></ol></div>
+   
+   <p>
+   If GZIP decompression is enabled, an upper limit is imposed on the number of bytes
+   <code class="classname">GZIPDecodingInterceptor</code> will extract from a compressed message body.
+   The default limit is 10,000,000, but a different value can be configured. See below.
+   </p>
+   
+   <div class="sect3" lang="zh-CN"><div class="titlepage"><div><div><h4 class="title"><a id="d4e2182"/>32.1.1.1. Server side configuration</h4></div></div></div>
+   
+   
+   <p>
+   The interceptors may be enabled by including their classnames in a
+   META-INF/services/javax.ws.rs.ext.Providers file on the classpath. The upper limit on deflated files may
+   be configured by setting the parameter "resteasy.gzip.max.input".
+   [See <a class="xref" href="Installation_Configuration.html#microprofile_config" title="3.4. 配置">第 3.4 节 “配置”</a> for more information about application configuration.]
+   If the limit is exceeded on the server side, GZIPDecodingInterceptor will return a 
+   <code class="classname">Response</code> with status 413 ("Request Entity Too Large") and
+   a message specifying the upper limit.
+   </p>
+   
+   <p>
+   <span class="bold"><strong>Note.</strong></span>
+   As of release 3.1.0.Final, the GZIP interceptors have moved from package 
+   <code class="classname">org.jboss.resteasy.plugins.interceptors.encoding</code> to
+   <code class="classname">org.jboss.resteasy.plugins.interceptors</code>. and they should be
+   named accordingly in javax.ws.rs.ext.Providers.
+   </p>
+
+   </div>
+   
+   <div class="sect3" lang="zh-CN"><div class="titlepage"><div><div><h4 class="title"><a id="d4e2191"/>32.1.1.2. Client side configuration</h4></div></div></div>
+   
+   
+   <p>
+   The interceptors may be enabled by registering them with, for example, a
+   <code class="classname">Client</code> or <code class="classname">WebTarget</code>. For example,
+   </p>
+   
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+Client client = ClientBuilder.newBuilder() // Activate gzip compression on client:
+                    .register(AcceptEncodingGZIPFilter.class)
+                    .register(GZIPDecodingInterceptor.class)
+                    .register(GZIPEncodingInterceptor.class)
+                    .build();
+</pre>
+
+   <p>
+   The upper limit on deflated files may configured by creating an instance of
+   <code class="classname">GZIPDecodingInterceptor</code> with a specific value:
+   </p>
+   
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+Client client = ClientBuilder.newBuilder() // Activate gzip compression on client:
+                    .register(AcceptEncodingGZIPFilter.class)
+                    .register(new GZIPDecodingInterceptor(256))
+                    .register(GZIPEncodingInterceptor.class)
+                    .build();
+</pre>
+   <p>
+   If the limit is exceeded on the client side, GZIPDecodingInterceptor will throw a
+   <code class="classname">ProcessingException</code> with a message specifying the upper limit.
+   </p>
+   
+   </div>
+</div>
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2202"/>32.2. General content encoding</h2></div></div></div>
+   
+   
+   <p>
+   The designation of a compressible entity by the use of the <code class="classname">@GZIP</code> annotation is a
+   built in, specific instance of a more general facility supported by RESTEasy.  There are three components
+   to this facility.
+   </p>
+   
+   <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li>
+      The annotation <code class="classname">org.jboss.resteasy.annotations.ContentEncoding</code> is a "meta-annotation"
+      used on other annotations to indicate that they represent a Content-Encoding. For example, <code class="classname">@GZIP</code>
+      is defined
+      
+      <pre xmlns="" class="">
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER})
+@Retention(RetentionPolicy.RUNTIME)
+@ContentEncoding("gzip")
+public @interface GZIP
+{
+}
+      </pre>
+      The value of <code class="classname">@ContentEncoding</code> indicates the represented Content-Encoding. For <code class="classname">@GZIP</code>
+      it is "gzip".
+      </li><li>
+      <code class="classname">ClientContentEncodingAnnotationFeature</code> and
+      <code class="classname">ServerContentEncodingAnnotationFeature</code>,
+      two <code class="classname">DynamicFeature</code>s 
+      in package <code class="classname">org.jboss.resteasy.plugins.interceptors</code>,
+      examine resource methods for annotations decorated with <code class="classname">@ContentEncoding</code>.
+      </li><li>
+      For each value found in a <code class="classname">@ContentEncoding</code> decorated annotation on a resource method, an instance of
+      <code class="classname">ClientContentEncodingAnnotationFilter</code> or
+      <code class="classname">ServerContentEncodingAnnotationFilter</code>,
+      <code class="classname">javax.ws.rs.ext.WriterInterceptor</code>s in package
+      <code class="classname">org.jboss.resteasy.plugins.interceptors</code>, is registered.
+      They are responsible for adding an appropriate Content-Encoding header. For example,
+      <code class="classname">ClientContentEncodingAnnotationFilter</code> is defined
+      <pre xmlns="" class="">
+@ConstrainedTo(RuntimeType.CLIENT)
+@Priority(Priorities.HEADER_DECORATOR)
+public class ClientContentEncodingAnnotationFilter implements WriterInterceptor
+{
+   protected String encoding;
+
+   public ClientContentEncodingAnnotationFilter(String encoding)
+   {
+      this.encoding = encoding;
+   }
+
+   @Override
+   public void aroundWriteTo(WriterInterceptorContext context) throws IOException, WebApplicationException
+   {
+      context.getHeaders().putSingle(HttpHeaders.CONTENT_ENCODING, encoding);
+      context.proceed();
+   }
+}
+      </pre>
+      When it is created, <code class="classname">ClientContentEncodingAnnotationFeature</code> passes in the value
+      to be used for Content-Encoding headers.
+      </li></ol></div>
+   
+   <p>
+      The annotation <code class="classname">@GZIP</code> is built into RESTEasy, but 
+      <code class="classname">ClientContentEncodingAnnotationFeature</code> and <code class="classname">ServerContentEncodingAnnotationFeature</code>
+      will also recognize application defined annotations. For example,
+   </p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+   @Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER})
+   @Retention(RetentionPolicy.RUNTIME)
+   @ContentEncoding("compress")
+   public @interface Compress
+   {
+   }
+   
+   @Path("")
+   public static class TestResource {
+      
+      @GET
+      @Path("a")
+      @Compress
+      public String a() {
+         return "a";
+      }
+   }
+   </pre>
+   
+   <p>
+      If <code class="methodname">TestResource.a()</code> is invoked as follows
+   </p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+   @Test
+   public void testCompress() throws Exception
+   {
+      Client client = ClientBuilder.newClient();
+      Invocation.Builder request = client.target("http://localhost:8081/a").request();
+      request.acceptEncoding("gzip,compress");
+      Response response = request.get();
+      System.out.println("content-encoding: "+ response.getHeaderString("Content-Encoding"));
+      client.close();
+   }
+   </pre>
+   
+   <p>
+      the output will be
+   </p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+content-encoding: compress
+   </pre>
+</div>
+   
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Configuring_Individual_JAX-RS_Resource_Beans.html"><strong>上一页</strong>第 31 章 Configuring Individual JAX-RS Resource Bea...</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="ch33.html"><strong>下一页</strong>第 33 章 CORS</a></li></ul></body></html>

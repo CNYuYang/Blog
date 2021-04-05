@@ -1,0 +1,1372 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 40 章 Reactive programming support</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Async_Injection.html" title="第 39 章 Asynchronous Injection"/><link rel="next" href="RESTEasy_Embedded_Container.html" title="第 41 章 Embedded Containers"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Async_Injection.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="RESTEasy_Embedded_Container.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Reactive"/>第 40 章 Reactive programming support</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="Reactive.html#d4e2495">40.1. CompletionStage</a></span></dt><dt><span class="sect1"><a href="Reactive.html#d4e2535">40.2. CompletionStage in JAX-RS</a></span></dt><dt><span class="sect1"><a href="Reactive.html#d4e2583">40.3. Beyond CompletionStage</a></span></dt><dt><span class="sect1"><a href="Reactive.html#d4e2614">40.4. Pluggable reactive types: RxJava 2 in RESTEasy</a></span></dt><dt><span class="sect1"><a href="Reactive.html#d4e2813">40.5. Proxies</a></span></dt><dt><span class="sect1"><a href="Reactive.html#d4e2827">40.6. Adding extensions</a></span></dt></dl></div>
+
+ 
+    <p>
+       With version 2.1, the JAX-RS specification 
+       (<a class="ulink" href="https://jcp.org/en/jsr/detail?id=370">https://jcp.org/en/jsr/detail?id=370</a>)
+       takes its first steps into the world of <span class="bold"><strong>Reactive Programming</strong></span>. There are many discussions
+       of reactive programming on the internet, and a general introduction is beyond the scope of this document,
+       but there are a few things worth discussing. Some primary aspects of reactive programming are the following: 
+    </p>
+    
+    <div class="itemizedlist"><ul><li>
+           Reactive programming supports the declarative creation of rich computational structures. The 
+           representations of these structures can be passed around as first class objects such as method parameters
+           and return values.
+        </li><li>
+           Reactive programming supports both synchronous and asynchronous computation, but it is particularly helpful
+           in facilitating, at a relatively high level of expression, asynchronous computation. Conceptually,
+           asynchronous computation in reactive program typically involves pushing data from one entity to another, rather
+           than polling for data.
+        </li></ul></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2495"/>40.1. CompletionStage</h2></div></div></div>
+
+    <p>
+       In java 1.8 and JAX-RS 2.1, the support for reactive programming is fairly limited. Java 1.8 introduces the interface
+       <code class="classname">java.util.concurrent.CompletionStage</code>, and JAX-RS 2.1 mandates support for the
+       <code class="classname">javax.ws.rs.client.CompletionStageRxInvoker</code>, which allows a client to obtain a 
+       response in the form of a <code class="classname">CompletionStage</code>. 
+    </p>
+    
+    <p>
+       One implementation of <code class="classname">CompletionStage</code> is the <code class="classname">java.util.concurrent.CompleteableFuture</code>.
+       For example:
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Test
+public void testCompletionStage() throws Exception {
+   CompletionStage&lt;String&gt; stage = getCompletionStage();
+   log.info("result: " + stage.toCompletableFuture().get());
+}
+
+private CompletionStage&lt;String&gt; getCompletionStage() {
+   CompletableFuture&lt;String&gt; future = new CompletableFuture&lt;String&gt;();
+   future.complete("foo");
+   return future;
+}
+</pre>
+
+    <p>
+       Here, a <code class="classname">CompleteableFuture</code> is created with the value "foo", and its value is 
+       extracted by the method <code class="methodname">CompletableFuture.get()</code>. That's fine, but consider the
+       altered version:
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Test
+public void testCompletionStageAsync() throws Exception {
+   log.info("start");
+   CompletionStage&lt;String&gt; stage = getCompletionStageAsync();
+   String result = stage.toCompletableFuture().get();
+   log.info("do some work");
+   log.info("result: " + result);
+}
+
+private CompletionStage&lt;String&gt; getCompletionStageAsync() {
+   CompletableFuture&lt;String&gt; future = new CompletableFuture&lt;String&gt;();
+   Executors.newCachedThreadPool().submit(() -&gt; {sleep(2000); future.complete("foo");});
+   return future;
+}
+
+private void sleep(long l) {
+   try {
+      Thread.sleep(l);
+   } catch (InterruptedException e) {
+      e.printStackTrace();
+   }
+}
+</pre>
+
+   <p>
+      with output something like:
+   </p>
+   
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+3:10:51 PM INFO: start
+3:10:53 PM INFO: do some work
+3:10:53 PM INFO: result: foo
+</pre>
+
+    <p>
+       It also works, but it illustrates the fact that <code class="methodname">CompletableFuture.get()</code> is a blocking
+       call. The <code class="classname">CompletionStage</code> is constructed and returned immediately,
+       but the value isn't returned for two seconds. A version that is more in the spirit of the reactive style is:
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Test
+public void testCompletionStageAsyncAccept() throws Exception {
+   log.info("start");
+   CompletionStage&lt;String&gt; stage = getCompletionStageAsync();
+   stage.thenAccept((String s) -&gt; log.info("s: " + s));
+   log.info("do some work");
+   ...
+}
+</pre>
+
+    <p>
+       In this case, the lambda (String s) -&gt; log.info("s: " + s) is registered with the 
+       <code class="classname">CompletionStage</code> as a "subscriber", and, when the <code class="classname">CompletionStage</code>
+       eventually has a value, that value is passed to the lambda. Note that the output is something like
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+3:23:05 INFO: start
+3:23:05 INFO: do some work
+3:23:07 INFO: s: foo
+</pre>
+    
+    <p>
+       Executing <code class="classname">CompletionStage</code>s asynchronously is so common that there are 
+       several supporting convenience methods. For example:
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Test
+public void testCompletionStageSupplyAsync() throws Exception {
+   CompletionStage&lt;String&gt; stage = getCompletionStageSupplyAsync();;
+   stage.thenAccept((String s) -&gt; log.info("s: " + s));
+}
+
+private CompletionStage&lt;String&gt; getCompletionStageSupplyAsync() {
+   return CompletableFuture.supplyAsync(() -&gt; "foo");
+}
+</pre>
+    
+    <p>
+       The static method <code class="classname">ComputableFuture.supplyAsync()</code> creates a
+       <code class="classname">ComputableFuture</code>, the value of which is supplied asynchronously
+       by the lambda () -&gt; "foo", running, by default, in the default pool of
+       <code class="methodname">java.util.concurrent.ForkJoinPool</code>.
+    </p>
+    
+    <p>
+       One final example illustrates a more complex computational structure:
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Test
+public void testCompletionStageComplex() throws Exception {
+   ExecutorService executor = Executors.newCachedThreadPool();
+   CompletionStage&lt;String&gt; stage1 = getCompletionStageSupplyAsync1("foo", executor);
+   CompletionStage&lt;String&gt; stage2 = getCompletionStageSupplyAsync1("bar", executor);
+   CompletionStage&lt;String&gt; stage3 = stage1.thenCombineAsync(stage2, (String s, String t) -&gt; s + t, executor);
+   stage3.thenAccept((String s) -&gt; log.info("s: " + s));
+}
+
+private CompletionStage&lt;String&gt; getCompletionStageSupplyAsync1(String s, ExecutorService executor) {
+   return CompletableFuture.supplyAsync(() -&gt; s, executor);
+}
+</pre>
+
+    <p>
+       <code class="classname">stage1</code> returns "foo", <code class="classname">stage2</code> returns "bar", and
+       <code class="classname">stage3</code>, which runs when both <code class="classname">stage1</code> and <code class="classname">stage2</code>
+       have completed, returns the concatenation of "foo" and "bar". Note that, in this example, an explict
+       <code class="classname">ExecutorService</code> is provided for asynchronous processing.
+    </p>
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2535"/>40.2. CompletionStage in JAX-RS</h2></div></div></div>
+
+
+    <p>
+       On the client side, the JAX-RS 2.1 specification mandates an implementation of the interface
+       <code class="classname">javax.ws.rs.client.CompletionStageRxInvoker</code>:
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public interface CompletionStageRxInvoker extends RxInvoker&lt;CompletionStage&gt; {
+
+    @Override
+    public CompletionStage&lt;Response&gt; get();
+
+    @Override
+    public &lt;T&gt; CompletionStage&lt;T&gt; get(Class&lt;T&gt; responseType);
+
+    @Override
+    public &lt;T&gt; CompletionStage&lt;T&gt; get(GenericType&lt;T&gt; responseType);
+    ...
+</pre>
+
+    <p>
+       That is, there are invocation methods for the standard HTTP verbs, just as in the standard 
+       <code class="classname">javax.ws.rs.client.SyncInvoker</code>. A <code class="classname">CompletionStageRxInvoker</code>
+       is obtained by calling <code class="methodname">rx()</code> on a
+       <code class="classname">javax.ws.rs.client.Invocation.Builder</code>, which extends <code class="classname">SyncInvoker</code>.
+       For example,
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+Invocation.Builder builder = client.target(generateURL("/get/string")).request();
+CompletionStageRxInvoker invoker = builder.rx(CompletionStageRxInvoker.class);
+CompletionStage&lt;Response&gt; stage = invoker.get();
+Response response = stage.toCompletableFuture().get();
+log.info("result: " + response.readEntity(String.class));
+</pre>
+
+    <p>
+       or
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+CompletionStageRxInvoker invoker = client.target(generateURL("/get/string")).request().rx(CompletionStageRxInvoker.class);
+CompletionStage&lt;String&gt; stage = invoker.get(String.class);
+String s = stage.toCompletableFuture().get();
+log.info("result: " + s);
+</pre>
+
+    <p>
+       On the server side, the JAX-RS 2.1 specification requires support for resource methods with return type
+       <code class="classname">CompletionStage&lt;T&gt;</code>. For example,
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@GET
+@Path("get/async")
+public CompletionStage&lt;String&gt; longRunningOpAsync() {
+   CompletableFuture&lt;String&gt; cs = new CompletableFuture&lt;&gt;();
+   executor.submit(
+      new Runnable() {
+         public void run() {
+            executeLongRunningOp();
+            cs.complete("Hello async world!");
+         }
+      });
+   return cs;
+}
+</pre>
+
+    <p>
+       The way to think about <code class="methodname">longRunningOpAsync()</code> is that it is asynchronously
+       creating and returning a <code class="classname">String</code>. After <code class="classname">cs.complete()</code> is called,
+       the server will return the <code class="classname">String</code> "Hello async world!" to the client.
+    </p>
+    
+    <p>
+       An important thing to understand is that the decision to produce a result asynchronously on the server and the
+       decision to retrieve the result asynchronously on the client are independent. Suppose that there is also a
+       resource method
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@GET
+@Path("get/sync")
+public String longRunningOpSync() {
+   return "Hello async world!";
+}
+</pre>
+
+    <p>
+       Then all three of the following invocations are valid:
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public void testGetStringAsyncAsync() throws Exception {
+   CompletionStageRxInvoker invoker = client.target(generateURL("/get/async")).request().rx();
+   CompletionStage&lt;String&gt; stage = invoker.get(String.class);
+   log.info("s: " + stage.toCompletableFuture().get());
+}
+</pre>
+
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public void testGetStringSyncAsync() throws Exception {
+   Builder request = client.target(generateURL("/get/async")).request();
+   String s = request.get(String.class);
+   log.info("s: " + s);
+}
+</pre>
+
+    <p>
+       and
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public void testGetStringAsyncSync() throws Exception {
+   CompletionStageRxInvoker invoker = client.target(generateURL("/get/sync")).request().rx();
+   CompletionStage&lt;String&gt; stage = invoker.get(String.class);
+   log.info("s: " + stage.toCompletableFuture().get());
+}
+</pre>
+
+   <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="note"><h2>注意</h2>
+       <p>
+          <code class="classname">CompletionStage</code> in JAX-RS is also discussed in the chapter
+          <a class="link" href="Asynchronous_HTTP_Request_Processing.html" title="第 37 章 Asynchronous HTTP Request Processing">Asynchronous HTTP Request Processing</a>.
+       </p>
+   </div>
+   
+   <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="note"><a id="asyncContextNote"/><h2>注意</h2>
+       <p>
+          Since running code asynchronously is so common in this context, it is worth pointing out
+          that objects obtained by way of the annotation <code class="code">@Context</code> or by way of calling
+          <code class="code">ResteasyContext.getContextData()</code> are sensitive to the
+          executing thread. For example, given resource method
+       </p>
+   
+<pre xmlns="" class="">
+@GET
+@Path("test")
+@Produces("text/plain")
+public CompletionStage&lt;String&gt; text(@Context HttpRequest request) {
+   System.out.println("request (inline): " + request);
+   System.out.println("application (inline): " + ResteasyContext.getContextData(Application.class));
+   CompletableFuture&lt;String&gt; cs = new CompletableFuture&lt;&gt;();
+   ExecutorService executor = Executors.newSingleThreadExecutor();
+   executor.submit(
+         new Runnable() {
+            public void run() {
+               try {
+                  System.out.println("request (async): " + request); 
+                  System.out.println("application (async): " + ResteasyContext.getContextData(Application.class));
+                  cs.complete("hello");
+               } catch (Exception e) {
+                  e.printStackTrace();
+               }
+            }
+         });
+   return cs;
+}
+</pre>
+
+       <p>
+          the output will look something like
+       </p>
+       
+<pre xmlns="" class="">
+application (inline): org.jboss.resteasy.experiment.Test1798CompletionStage$TestApp@23c57474
+request (inline): org.jboss.resteasy.plugins.server.servlet.Servlet3AsyncHttpRequest@2ce23138
+application (async): null
+org.jboss.resteasy.spi.LoggableFailure: RESTEASY003880: Unable to find contextual data of type: org.jboss.resteasy.spi.HttpRequest
+</pre>
+
+       <p>
+          The point is that it is the developer's responsibility to extract information from these context objects
+          in advance. For example:
+       </p>
+       
+<pre xmlns="" class="">
+@GET
+@Path("test")
+@Produces("text/plain")
+public CompletionStage&lt;String&gt; text(@Context HttpRequest req) {
+   System.out.println("request (inline): " + request);
+   System.out.println("application (inline): " + ResteasyContext.getContextData(Application.class));
+   CompletableFuture&lt;String&gt; cs = new CompletableFuture&lt;&gt;();
+   ExecutorService executor = Executors.newSingleThreadExecutor();
+   final String httpMethodFinal = request.getHttpMethod();
+   final Map&lt;String, Object&gt; mapFinal = ResteasyContext.getContextData(Application.class).getProperties();
+   executor.submit(
+         new Runnable() {
+            public void run() {
+               System.out.println("httpMethod (async): " + httpMethodFinal); 
+               System.out.println("map (async): " + mapFinal); 
+               cs.complete("hello");
+            }
+         });
+   return cs;
+}
+</pre>
+
+       <p>
+          Alternatively, you can use RESTEasy's support of 
+          <a class="ulink" href="https://github.com/eclipse/microprofile-context-propagation">MicroProfile Context Propagation</a> by using <code class="code">ThreadContext.contextualRunnable</code>
+          around your <code class="code">Runnable</code>, which will take care of capturing and restoring all 
+          registered contexts (you will need to import the <code class="code">resteasy-context-propagation</code> module):
+       </p>
+       
+<pre xmlns="" class="">
+@GET
+@Path("test")
+@Produces("text/plain")
+public CompletionStage&lt;String&gt; text(@Context HttpRequest req) {
+   System.out.println("request (inline): " + request);
+   System.out.println("application (inline): " + ResteasyContext.getContextData(Application.class));
+   CompletableFuture&lt;String&gt; cs = new CompletableFuture&lt;&gt;();
+   ThreadContext threadContext = ThreadContext.builder()
+                                                   .propagated(ThreadContext.ALL_REMAINING)
+                                                   .unchanged()
+                                                   .cleared()
+                                                   .build();
+   ExecutorService executor = Executors.newSingleThreadExecutor();
+   executor.submit(
+         threadContext.contextualRunnable(new Runnable() {
+            public void run() {
+               try {
+                  System.out.println("request (async): " + request); 
+                  System.out.println("application (async): " + ResteasyContext.getContextData(Application.class));
+                  cs.complete("hello");
+               } catch (Exception e) {
+                  e.printStackTrace();
+               }
+            }
+         }));
+   return cs;
+}
+</pre>
+   </div>
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2583"/>40.3. Beyond CompletionStage</h2></div></div></div>
+
+
+    <p>
+       The picture becomes more complex and interesting when sequences are added. A <code class="classname">CompletionStage</code>
+       holds no more than one potential value, but other reactive objects can hold multiple, even unlimited, values.
+       Currently, most Java implementations of reactive programming are based on the project Reactive Streams
+       (<a class="ulink" href="http://www.reactive-streams.org/">http://www.reactive-streams.org/</a>), which defines a set of
+       four interfaces and a specification, in the form of a set of rules, describing how they interact:
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public interface Publisher&lt;T&gt; {
+    public void subscribe(Subscriber&lt;? super T&gt; s);
+}
+
+public interface Subscriber&lt;T&gt; {
+    public void onSubscribe(Subscription s);
+    public void onNext(T t);
+    public void onError(Throwable t);
+    public void onComplete();
+}
+
+public interface Subscription {
+    public void request(long n);
+    public void cancel();
+}
+
+public interface Processor&lt;T, R&gt; extends Subscriber&lt;T&gt;, Publisher&lt;R&gt; {
+}
+</pre>
+
+    <p>
+       A <code class="classname">Producer</code> pushes objects to a <code class="classname">Subscriber</code>, a
+       <code class="classname">Subscription</code> mediates the relationship between the two, and a
+       <code class="classname">Processor</code> which is derived from both, helps to construct pipelines
+       through which objects pass.
+    </p>
+    
+    <p>
+       One important aspect of the specification is flow control, the ability of a <code class="classname">Suscriber</code>
+       to control the load it receives from a <code class="classname">Producer</code> by calling
+       <code class="methodname">Suscription.request()</code>. The general term in this context for flow control is
+       <span class="bold"><strong>backpressure</strong></span>.
+    </p>
+    
+    <p>
+       There are a number of implementations of Reactive Streams, including 
+    </p>
+    
+    <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li><span class="bold"><strong>RxJava</strong></span>: 
+          <a class="ulink" href="https://github.com/ReactiveX/RxJava">https://github.com/ReactiveX/RxJava</a> (end of life, superceded by RxJava 2)
+       </li><li><span class="bold"><strong>RxJava 2</strong></span>: 
+          <a class="ulink" href="https://github.com/ReactiveX/RxJava">https://github.com/ReactiveX/RxJava</a>
+       </li><li><span class="bold"><strong>Reactor</strong></span>: 
+          <a class="ulink" href="http://projectreactor.io/">http://projectreactor.io/</a>
+       </li><li><span class="bold"><strong>Flow</strong></span>: 
+          <a class="ulink" href="https://community.oracle.com/docs/DOC-1006738">https://community.oracle.com/docs/DOC-1006738/</a>:
+          (Java JDK 9+)
+          </li></ol></div>
+    
+    <p>
+       RESTEasy currently supports RxJava (deprecated) and RxJava2.
+    </p>
+    
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2614"/>40.4. Pluggable reactive types: RxJava 2 in RESTEasy</h2></div></div></div>
+
+
+    <p>
+       JAX-RS 2.1 doesn't require support for any Reactive Streams implementations, but it does allow
+       for extensibility to support various reactive libraries.
+       RESTEasy's optional module <code class="code">resteasy-rxjava2</code> 
+       adds support for <a class="ulink" href="https://github.com/ReactiveX/RxJava">RxJava 2</a>.
+    </p>
+    
+    <p>
+       More in details, <code class="code">resteasy-rxjava2</code>
+       contributes support for reactive types <code class="classname">io.reactivex.Single</code>,
+       <code class="classname">io.reactivex.Flowable</code>, and <code class="classname">io.reactivex.Observable</code>.
+       Of these, <code class="classname">Single</code> is similar to <code class="classname">CompletionStage</code> in that
+       it holds at most one potential value. <code class="classname">Flowable</code> implements 
+       <code class="classname">io.reactivex.Publisher</code>, and <code class="classname">Observable</code> is very
+       similar to <code class="classname">Flowable</code> except that it doesn't support backpressure.
+       So, if you import <code class="code">resteasy-rxjava2</code>, you can just start returning these reactive types from your
+       resource methods on the server side and receiving them on the client side.
+    </p>
+    
+    <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="note"><h2>注意</h2>
+       <p>
+          When you use RESTEasy's modules for RxJava, the reactive contexts are automatically propagated
+          to all supported RxJava types, which means you don't need to worry about <code class="code">@Context</code>
+          injection not working within RxJava lambdas, contrary to <code class="code">CompletionStage</code> (as previously
+          noted).
+       </p>
+    </div>
+    
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2635"/>1. Server side</h2></div></div></div>
+
+    <p>
+       Given the class <code class="classname">Thing</code>, which can be represented in JSON:
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public class Thing {
+
+   private String name;
+
+   public Thing() {
+   }
+
+   public Thing(String name) {
+      this.name = name;
+   }
+   ...
+}
+</pre>
+
+    <p>the method <code class="methodname">postThingList()</code> in the following is a valid resource method:
+    </p>
+...
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@POST
+@Path("post/thing/list")
+@Produces(MediaType.APPLICATION_JSON)
+@Stream
+public Flowable&lt;List&lt;Thing&gt;&gt; postThingList(String s) {
+   return buildFlowableThingList(s, 2, 3);
+}
+
+static Flowable&lt;List&lt;Thing&gt;&gt; buildFlowableThingList(String s, int listSize, int elementSize) {
+   return Flowable.create(
+      new FlowableOnSubscribe&lt;List&lt;Thing&gt;&gt;() {
+
+         @Override
+         public void subscribe(FlowableEmitter&lt;List&lt;Thing&gt;&gt; emitter) throws Exception {
+            for (int i = 0; i &lt; listSize; i++) {
+               List&lt;Thing&gt; list = new ArrayList&lt;Thing&gt;();
+               for (int j = 0; j &lt; elementSize; j++) {
+                  list.add(new Thing(s));
+               }
+               emitter.onNext(list);
+            }
+            emitter.onComplete();
+         }
+      },
+      BackpressureStrategy.BUFFER);
+}
+</pre>
+
+    <p>
+       The somewhat imposing method <code class="methodname">buildFlowableThingList()</code> probably deserves
+       some explanation. First,
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+Flowable&lt;List&lt;Thing&gt;&gt; Flowable.create(FlowableOnSubscribe&lt;List&lt;Thing&gt;&gt; source, BackpressureStrategy mode);
+</pre>
+    
+    <p>
+    creates a <code class="classname">Flowable&lt;List&lt;Thing&gt;&gt;</code> by describing what should happen when
+    the <code class="classname">Flowable&lt;List&lt;Thing&gt;&gt;</code> is subscribed to. 
+    <code class="classname">FlowableEmitter&lt;List&lt;Thing&gt;&gt;</code>
+    extends <code class="classname"> io.reactivex.Emitter&lt;List&lt;Thing&gt;&gt;</code>:
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+/**
+ * Base interface for emitting signals in a push-fashion in various generator-like source
+ * operators (create, generate).
+ *
+ * @param &lt;T&gt; the value type emitted
+ */
+public interface Emitter&lt;T&gt; {
+
+    /**
+     * Signal a normal value.
+     * @param value the value to signal, not null
+     */
+    void onNext(@NonNull T value);
+
+    /**
+     * Signal a Throwable exception.
+     * @param error the Throwable to signal, not null
+     */
+    void onError(@NonNull Throwable error);
+
+    /**
+     * Signal a completion.
+     */
+    void onComplete();
+}
+</pre>
+
+    <p>
+       and <code class="classname">FlowableOnSubscribe</code> uses a <code class="classname">FlowableEmitter</code>
+       to send out values from the <code class="classname">Flowable&lt;List&lt;Thing&gt;&gt;</code>:
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+/**
+ * A functional interface that has a {@code subscribe()} method that receives
+ * an instance of a {@link FlowableEmitter} instance that allows pushing
+ * events in a backpressure-safe and cancellation-safe manner.
+ *
+ * @param &lt;T&gt; the value type pushed
+ */
+public interface FlowableOnSubscribe&lt;T&gt; {
+
+    /**
+     * Called for each Subscriber that subscribes.
+     * @param e the safe emitter instance, never null
+     * @throws Exception on error
+     */
+    void subscribe(@NonNull FlowableEmitter&lt;T&gt; e) throws Exception;
+}
+</pre>
+    
+    <p>
+       So, what will happen
+       when a subscription to the <code class="classname">Flowable&lt;List&lt;Thing&gt;&gt;</code> is created is,
+       the <code class="methodname">FlowableEmitter.onNext()</code> will be called, once for each
+       <code class="classname">&lt;List&lt;Thing&gt;&gt;</code> created, followed by a call to
+       <code class="methodname">FlowableEmitter.onComplete()</code> to indicate that the sequence has ended. Under the covers,
+       RESTEasy subscribes to the <code class="classname">Flowable&lt;List&lt;Thing&gt;&gt;</code> and handles each element passed in
+       by way of <code class="methodname">onNext()</code>.
+    </p>
+</div>
+    
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2664"/>2. Client side</h2></div></div></div>
+
+   
+    <p>
+       On the client side, JAX-RS 2.1 supports extensions for reactive classes by adding the method
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+/**
+ * Access a reactive invoker based on a {@link RxInvoker} subclass provider. Note
+ * that corresponding {@link RxInvokerProvider} must be registered in the client runtime.
+ * 
+ * This method is an extension point for JAX-RS implementations to support other types
+ * representing asynchronous computations.
+ *
+ * @param clazz {@link RxInvoker} subclass.
+ * @return reactive invoker instance.
+ * @throws IllegalStateException when provider for given class is not registered.
+ * @see javax.ws.rs.client.Client#register(Class)
+ * @since 2.1
+ */
+public &lt;T extends RxInvoker&gt; T rx(Class&lt;T&gt; clazz);
+</pre>
+
+    <p>
+       to interface <code class="classname"> javax.ws.rs.client.Invocation.Builder</code>. Resteasy
+       module <code class="code">resteasy-rxjava2</code> adds support for classes:
+    </p>
+    
+   <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li><code class="classname">org.jboss.resteasy.rxjava2.SingleRxInvoker</code>,</li><li><code class="classname">org.jboss.resteasy.rxjava2.FlowableRxInvoker</code></li><li><code class="classname">org.jbosss.resteasy.rxjava2.ObservableRxInvoker</code></li></ol></div>
+   
+   <p>
+      which allow accessing <code class="classname">Single</code>s, <code class="classname">Observable</code>s, and
+      <code class="classname">Flowable</code>s on the client side.
+   </p>
+   
+   <p>
+      For example, given the resource method <code class="methodname">postThingList()</code> above, a
+      <code class="classname">Flowable&lt;List&lt;Thing&gt;&gt;</code> can be retrieved from the server
+      by calling
+   </p>
+   
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@SuppressWarnings("unchecked")
+@Test
+public void testPostThingList() throws Exception {
+   CountDownLatch latch = new CountdownLatch(1);
+   FlowableRxInvoker invoker = client.target(generateURL("/post/thing/list")).request().rx(FlowableRxInvoker.class);
+   Flowable&lt;List&lt;Thing&gt;&gt; flowable = (Flowable&lt;List&lt;Thing&gt;&gt;) invoker.post(Entity.entity("a", MediaType.TEXT_PLAIN_TYPE), new GenericType&lt;List&lt;Thing&gt;&gt;() {});
+   flowable.subscribe(
+         (List&lt;?&gt; l) -&gt; thingListList.add(l),
+         (Throwable t) -&gt; latch.countDown(),
+         () -&gt; latch.countDown());
+   latch.await();
+   Assert.assertEquals(aThingListList, thingListList);
+}
+</pre>
+ 
+   <p>
+      where <code class="code">aThingListList</code> is
+   </p>  
+   
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+[[Thing[a], Thing[a], Thing[a]], [Thing[a], Thing[a], Thing[a]]]
+</pre>
+
+   <p>
+      Note the call to <code class="methodname">Flowable.suscribe()</code>. On the server side, RESTEasy subscribes to a 
+      returning <code class="classname">Flowable</code> in order to receive its elements and send them over the wire. On the client side,
+      the user subscribes to the <code class="classname">Flowable</code> in order to receive its elements and do whatever it wants to
+      with them. In this case, three lambdas determine what should happen 1) for each element, 2) if a <code class="classname">Throwable</code>
+      is thrown, and 3) when the <code class="classname">Flowable</code> is done passing elements.
+   </p>
+   
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2695"/>3. Representation on the wire</h2></div></div></div>
+
+
+    <p>
+       Neither Reactive Streams nor JAX-RS have anything to say about representing reactive types on the network.
+       RESTEasy offers a number of representations, each suitable for different circumstances. The wire protocol
+       is determined by 1) the presence or absence of the <code class="code">@Stream</code> annotation on the resource method, 
+       and 2) the value of the <code class="code">value</code> field in the <code class="code">@Stream</code> annotation:
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Stream
+{
+   public enum MODE {RAW, GENERAL};
+   public String INCLUDE_STREAMING_PARAMETER = "streaming";
+   public MODE value() default MODE.GENERAL;
+   public boolean includeStreaming() default false;
+}
+</pre>
+
+    <p>
+       Note that <code class="code">MODE.GENERAL</code> is the default value, so <code class="code">@Stream</code> is equivalent
+       to <code class="code">@Stream(Stream.MODE.GENERAL)</code>.
+    </p>
+    
+    <div class="variablelist"><dl><dt><span class="term">No <code class="code">@Stream</code> annotation on the resource method</span></dt><dd>
+                Resteasy will collect every value until the stream is complete, then wrap them into a
+                <code class="code">java.util.List</code> entity  and send to the client.
+            </dd><dt><span class="term"><code class="code">@Stream(Stream.MODE.GENERAL)</code></span></dt><dd>
+                This case uses a variant of the SSE format, modified to eliminate some restrictions inherent in SSE.
+                (See the specification at
+                <a class="ulink" href="https://html.spec.whatwg.org/multipage/server-sent-events.html">
+                https://html.spec.whatwg.org/multipage/server-sent-events.html</a> for details.)
+                In particular, 1) SSE events are meant to hold text data, represented in character set UTF-8. In the general streaming mode,
+                certain delimiting characters in the data ('\r', '\n', and '\') are escaped so that arbitrary binary data can be
+                transmitted. Also, 2) the SSE specification requires the client to reconnect if it gets disconnected. If the stream
+                is finite, reconnecting will induce a repeat of the stream, so SSE is really meant for unlimited streams.
+                In general streaming mode, the client will close, rather than automatically reconnect, at the end of the stream. It follows
+                that this mode is suitable for finite streams.
+                
+                <p>
+                   <span class="bold"><strong>Note. </strong></span> The Content-Type header in general streaming mode is set to
+                </p>
+                
+                <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+          applicaton/x-stream-general;"element-type=&lt;element-type&gt;"
+                </pre>
+                <p>
+                   where &lt;element-type&gt;
+                   is the media type of the data elements in the stream. The element media type is derived
+                   from the @Produces annotation. For example, 
+                </p>
+      
+                <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+      @GET
+      @Path("flowable/thing")
+      @Stream
+      @Produces("application/json")
+      public Flowable&lt;Thing&gt; getFlowable() { ... }
+                </pre>
+                
+                <p>
+                   induces the media type
+                </p>
+                
+                <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+          application/x-stream-general;"element-type=application/json"
+                </pre>
+                
+                <p>
+                   which describes a stream of JSON elements.
+                </p>
+            </dd><dt><span class="term"><code class="code">@Stream(Stream.MODE.RAW)</code></span></dt><dd>
+                In this case each value is written directly to the wire, without any formatting, as it becomes available. 
+                This is most useful for values that can be cut in pieces, such as strings, bytes, buffers, etc., and then
+                re-concatenated on the client side. Note that without delimiters as in
+                general mode, it isn't possible to reconstruct something like <code class="classname">List&lt;List&lt;String&gt;&gt;</code>.
+
+                <p>
+                   <span class="bold"><strong>Note. </strong></span> The Content-Type header in raw streaming mode is derived from
+                   the <code class="code">@Produces</code> annotation. The <code class="code">@Stream</code> annotation offers the possibility of an
+                   optional <code class="classname">MediaType</code> parameter called "streaming". The point is to be able to suggest
+                   that the stream of data emanating from the server is unbounded, i.e., that the client shouldn't try to
+                   read it all as a single byte array, for example. The parameter is set by explicitly setting the
+                   <code class="code">@Stream</code> parameter <code class="code">includeStreaming()</code> to <code class="code">true</code>. For example,
+                </p>
+                
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+   @GET
+   @Path("byte/default")
+   @Produces("application/octet-stream;x=y")
+   @Stream(Stream.MODE.RAW)
+   public Flowable&lt;Byte&gt; aByteDefault() {
+      return Flowable.fromArray((byte) 0, (byte) 1, (byte) 2);
+   }
+</pre>
+
+    <p>
+       induces the <code class="classname">MediaType</code> "application/octet-stream;x=y", and
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+   @GET
+   @Path("byte/true")
+   @Produces("application/octet-stream;x=y")
+   @Stream(value=Stream.MODE.RAW, includeStreaming=true)
+   public Flowable&lt;Byte&gt; aByteTrue() {
+      return Flowable.fromArray((byte) 0, (byte) 1, (byte) 2);
+   }
+</pre>
+
+    <p>
+       induces the <code class="classname">MediaType</code> "application/octet-stream;x=y;streaming=true".
+    </p>
+    
+    <p>
+       Note that browsers such as Firefox and Chrome seem to be comfortable with reading unlimited streams
+       without any additional hints.
+    </p>
+           </dd></dl></div>
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2745"/>4. Examples.</h2></div></div></div>
+
+    
+    <p>
+       <span class="bold"><strong>Example 1.</strong></span>
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@POST
+@Path("post/thing/list")
+@Produces(MediaType.APPLICATION_JSON)
+@Stream(Stream.MODE.GENERAL)
+public Flowable&lt;List&lt;Thing&gt;&gt; postThingList(String s) {
+   return buildFlowableThingList(s, 2, 3);
+}
+...
+@SuppressWarnings("unchecked")
+@Test
+public void testPostThingList() throws Exception {
+   CountDownLatch latch = new CountdownLatch(1);
+   FlowableRxInvoker invoker = client.target(generateURL("/post/thing/list")).request().rx(FlowableRxInvoker.class);
+   Flowable&lt;List&lt;Thing&gt;&gt; flowable = (Flowable&lt;List&lt;Thing&gt;&gt;) invoker.post(Entity.entity("a", MediaType.TEXT_PLAIN_TYPE), new GenericType&lt;List&lt;Thing&gt;&gt;() {});
+   flowable.subscribe(
+         (List&lt;?&gt; l) -&gt; thingListList.add(l),
+         (Throwable t) -&gt; latch.countDown(),
+         () -&gt; latch.countDown());
+   latch.await();
+   Assert.assertEquals(aThingListList, thingListList);
+}
+</pre>
+
+    <p>
+       This is the example given previously, except that the mode in the <code class="code">@Stream</code> annotation (which defaults
+       to MODE.GENERAL) is given explicitly. In this scenario, the <code class="classname">Flowable</code> emits
+       <code class="classname">&lt;List&lt;Thing&gt;&gt;</code> elements on the server, they are transmitted over the wire as
+       SSE events:
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+data: [{"name":"a"},{"name":"a"},{"name":"a"}]
+data: [{"name":"a"},{"name":"a"},{"name":"a"}]
+</pre>
+       
+    <p>
+       and the <code class="classname">FlowableRxInvoker</code> reconstitutes a <code class="classname">Flowable</code> on the
+       client side.
+    </p>
+    
+    <p><span class="bold"><strong>Example 2.</strong></span></p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@POST
+@Path("post/thing/list")
+@Produces(MediaType.APPLICATION_JSON)
+public Flowable&lt;List&lt;Thing&gt;&gt; postThingList(String s) {
+   return buildFlowableThingList(s, 2, 3);
+}
+...
+@Test
+public void testPostThingList() throws Exception {
+   Builder request = client.target(generateURL("/post/thing/list")).request();
+   List&lt;List&lt;Thing&gt;&gt; list = request.post(Entity.entity("a", MediaType.TEXT_PLAIN_TYPE), new GenericType&lt;List&lt;List&lt;Thing&gt;&gt;&gt;() {});
+   Assert.assertEquals(aThingListList, list);
+}  
+</pre>
+
+    <p>
+       In this scenario, in which the resource method has no <code class="code">@Stream</code> annotation, the 
+       <code class="classname">Flowable</code> emits stream elements which are accumulated by the server until
+       the <code class="classname">Flowable</code> is done, at which point the entire JSON list is transmitted over the wire:
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+[[{"name":"a"},{"name":"a"},{"name":"a"}],[{"name":"a"},{"name":"a"},{"name":"a"}]]
+</pre>
+
+    <p>
+       and the list is reconstituted on the client side by an ordinary invoker.
+    </p>
+    
+    <p><span class="bold"><strong>Example 3.</strong></span></p>
+     
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@GET
+@Path("get/bytes")
+@Produces(MediaType.APPLICATION_OCTET_STREAM)
+@Stream(Stream.MODE.RAW)
+public Flowable&lt;byte[]&gt; getBytes() {
+   return Flowable.create(
+      new FlowableOnSubscribe&lt;byte[]&gt;() {
+
+         @Override
+         public void subscribe(FlowableEmitter&lt;byte[]&gt; emitter) throws Exception {
+            for (int i = 0; i &lt; 3; i++) {
+               byte[] b = new byte[10];
+               for (int j = 0; j &lt; 10; j++) {
+                  b[j] = (byte) (i + j);
+               }
+               emitter.onNext(b);
+            }
+            emitter.onComplete();
+         }
+      },
+      BackpressureStrategy.BUFFER);
+}
+...
+@Test
+public void testGetBytes() throws Exception {
+   Builder request = client.target(generateURL("/get/bytes")).request();
+   InputStream is = request.get(InputStream.class);
+   int n = is.read();
+   while (n &gt; -1) {
+      System.out.print(n);
+      n = is.read();
+   }
+}
+</pre>
+
+    <p>
+       Here, the byte arrays are written to the network as they are created by the <code class="classname">Flowable</code>.
+       On the network, they are concatenated, so the client sees one stream of bytes.
+    </p>
+    
+    <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="note"><h2>注意</h2>
+        <p>
+           Given that asynchronous code is common in this context, it is worth looking at the earlier 
+           <a class="link" href="Reactive.html#asyncContextNote" title="注意">Note</a>.
+       </p>
+   </div>
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2775"/>5. Rx and SSE</h2></div></div></div>
+
+
+    <p>
+       Since general streaming mode and SSE share minor variants of the same wire protocol, they are, modulo the SSE
+       restriction to character data, interchangeable. That is, an SSE client can connect to a resource method that returns
+       a <code class="classname">Flowable</code> or an <code class="classname">Observable</code>, and a <code class="classname">FlowableRxInvoker</code>,
+       for example, can connect to an SSE resource method.
+    </p>
+    
+    <p>
+        <span class="bold"><strong>Note.</strong></span> SSE requires a <code class="code">@Produces("text/event-stream")</code>
+        annotation, so, unlike the cases of raw and general streaming, the element media type cannot
+        be derived from the <code class="code">@Produces</code> annotation. To solve this problem, Resteasy introduces the
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface SseElementType
+{
+   public String value();
+}
+</pre>
+
+    <p>
+        annotation, from which the element media type is derived.
+    </p>
+    
+    <p><span class="bold"><strong>Example 1.</strong></span></p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@GET
+@Path("eventStream/thing")
+@Produces("text/event-stream")
+@SseElementType("application/json")
+public void eventStreamThing(@Context SseEventSink eventSink, @Context Sse sse) {
+   new ScheduledThreadPoolExecutor(5).execute(() -&gt; {
+      try (SseEventSink sink = eventSink) {
+         OutboundSseEvent.Builder  builder = sse.newEventBuilder();
+         eventSink.send(builder.data(new Thing("e1")).build());
+         eventSink.send(builder.data(new Thing("e2")).build());
+         eventSink.send(builder.data(new Thing("e3")).build());
+      }
+   });
+}
+...
+@SuppressWarnings("unchecked")
+@Test
+public void testFlowableToSse() throws Exception {
+   CountDownLatch latch = new CountDownLatch(1);
+   final AtomicInteger errors = new AtomicInteger(0);
+   FlowableRxInvoker invoker = client.target(generateURL("/eventStream/thing")).request().rx(FlowableRxInvoker.class);
+   Flowable&lt;Thing&gt; flowable = (Flowable&lt;Thing&gt;) invoker.get(Thing.class);
+   flowable.subscribe(
+      (Thing t) -&gt; thingList.add(t),
+      (Throwable t) -&gt; errors.incrementAndGet(),
+      () -&gt; latch.countDown());
+   boolean waitResult = latch.await(30, TimeUnit.SECONDS);
+   Assert.assertTrue("Waiting for event to be delivered has timed out.", waitResult);
+   Assert.assertEquals(0, errors.get());
+   Assert.assertEquals(eThingList, thingList);
+}  
+</pre>
+
+    <p>
+       Here, a <code class="classname">FlowableRxInvoker</code> is connecting to an SSE resource method. On the network,
+       the data looks like
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+data: {"name":"e1"}
+data: {"name":"e2"}
+data: {"name":"e3"}
+</pre>
+
+    <p>
+       Note that the character data is suitable for an SSE resource method.
+    </p>
+
+    <p>
+       Also, note that the <code class="methodname">eventStreamThing()</code> method in this example induces the media type
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+    text/event-stream;element-type="application/json"
+</pre>
+    
+    <p><span class="bold"><strong>Example 2.</strong></span></p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@GET
+@Path("flowable/thing")
+@Produces("text/event-stream")
+@SseElementType("application/json")
+public Flowable&lt;Thing&gt; flowableSSE() {
+   return Flowable.create(
+      new FlowableOnSubscribe&lt;Thing&gt;() {
+
+         @Override
+         public void subscribe(FlowableEmitter&lt;Thing&gt; emitter) throws Exception {
+            emitter.onNext(new Thing("e1"));
+            emitter.onNext(new Thing("e2"));
+            emitter.onNext(new Thing("e3"));
+            emitter.onComplete();
+         }
+      },
+      BackpressureStrategy.BUFFER);
+}
+...
+@Test
+public void testSseToFlowable() throws Exception {
+   final CountDownLatch latch = new CountDownLatch(3);
+   final AtomicInteger errors = new AtomicInteger(0);
+   WebTarget target = client.target(generateURL("/flowable/thing"));
+   SseEventSource msgEventSource = SseEventSource.target(target).build();
+   try (SseEventSource eventSource = msgEventSource)
+   {
+      eventSource.register(
+         event -&gt; {thingList.add(event.readData(Thing.class, MediaType.APPLICATION_JSON_TYPE)); latch.countDown();},
+         ex -&gt; errors.incrementAndGet());
+      eventSource.open();
+
+      boolean waitResult = latch.await(30, TimeUnit.SECONDS);
+      Assert.assertTrue("Waiting for event to be delivered has timed out.", waitResult);
+      Assert.assertEquals(0, errors.get());
+      Assert.assertEquals(eThingList, thingList);
+   }
+}
+</pre>
+
+    <p>
+       Here, an SSE client is connecting to a resource method that returns a <code class="classname">Flowable</code>.
+       Again, the server is sending character data, which is suitable for the SSE client, and the data looks
+       the same on the network.
+    </p>
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2802"/>6. To stream or not to stream</h2></div></div></div>
+
+
+    <p>
+       Whether or not it is appropriate to stream a list of values is a judgment call. Certainly, if the
+       list is unbounded, then it isn't practical, or even possible, perhaps, to collect the entire list
+       and send it at once. In other cases, the decision is less obvious. 
+    </p>
+    
+    <p>
+       <span class="bold"><strong>Case 1.</strong></span> Suppose that all of the elements are producible quickly.
+       Then the overhead of sending them independently is probably not worth it.
+    </p>
+    
+    <p>
+       <span class="bold"><strong>Case 2.</strong></span> Suppose that the list is bounded but the elements will
+       be produced over an extended period of time. Then returning the initial elements when they become
+       available might lead to a better user experience.
+    </p>
+    
+    <p>
+       <span class="bold"><strong>Case 3.</strong></span> Suppose that the list is bounded and the elements can be
+       produced in a relatively short span of time but only after some delay. Here is a situation that
+       illustrates the fact that asynchronous reactive processing and streaming over the network are
+       independent concepts. In this case it's worth considering having the resource method return
+       something like <code class="classname">CompletionStage&lt;List&lt;Thing&gt;&gt;</code> rather than
+       <code class="classname">Flowable&lt;List&lt;Thing&gt;&gt;</code>. This has the 
+       benefit of creating the list asynchronously but, once it is available, sending it to the client
+       in one piece.
+    </p>
+</div>
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2813"/>40.5. Proxies</h2></div></div></div>
+
+
+    <p>
+       Proxies, discussed in <a class="link" href="RESTEasy_Client_Framework.html#proxies" title="51.2. RESTEasy Proxy Framework">RESTEasy Proxy Framework</a>, are a RESTEasy extension
+       that supports a natural programming style in which generic JAX-RS invoker calls are replaced by application
+       specific interface calls. The proxy framework is extended to include both
+       <code class="classname">CompletionStage</code> and the RxJava2 types <code class="classname">Single</code>,
+       <code class="classname">Observable</code>, and <code class="classname">Flowable</code>.
+    </p>
+    
+    <p><span class="bold"><strong>Example 1.</strong></span></p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("")
+public interface RxCompletionStageResource {
+
+   @GET
+   @Path("get/string")
+   @Produces(MediaType.TEXT_PLAIN)
+   public CompletionStage&lt;String&gt; getString();
+}
+
+@Path("")
+public class RxCompletionStageResourceImpl {
+
+   @GET
+   @Path("get/string")
+   @Produces(MediaType.TEXT_PLAIN)
+   public CompletionStage&lt;String&gt; getString() { .... }
+}
+
+public class RxCompletionStageProxyTest {
+
+   private static ResteasyClient client;
+   private static RxCompletionStageResource proxy;
+   
+   static {
+      client = (ResteasyClient)ClientBuilder.newClient();
+      proxy = client.target(generateURL("/")).proxy(RxCompletionStageResource.class);
+   }
+   
+   @Test
+   public void testGet() throws Exception {
+      CompletionStage&lt;String&gt; completionStage = proxy.getString();
+      Assert.assertEquals("x", completionStage.toCompletableFuture().get());
+   }
+}
+</pre>
+
+    <p>
+       <span class="bold"><strong>Example 2.</strong></span>
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public interface Rx2FlowableResource {
+
+   @GET
+   @Path("get/string")
+   @Produces(MediaType.TEXT_PLAIN)
+   @Stream
+   public Flowable&lt;String&gt; getFlowable();
+}
+
+@Path("")
+public class Rx2FlowableResourceImpl {
+
+   @GET
+   @Path("get/string")
+   @Produces(MediaType.TEXT_PLAIN)
+   @Stream
+   public Flowable&lt;String&gt; getFlowable() { ... }
+}
+
+public class Rx2FlowableProxyTest {
+
+   private static ResteasyClient client;
+   private static Rx2FlowableResource proxy;
+   
+   static {
+      client = (ResteasyClient)ClientBuilder.newClient();
+      proxy = client.target(generateURL("/")).proxy(Rx2FlowableResource.class);
+   }
+   
+   @Test
+   public void testGet() throws Exception {
+      Flowable&lt;String&gt; flowable = proxy.getFlowable();
+      flowable.subscribe(
+         (String o) -&gt; stringList.add(o),
+         (Throwable t) -&gt; errors.incrementAndGet(),
+         () -&gt; latch.countDown());
+      boolean waitResult = latch.await(30, TimeUnit.SECONDS);
+      Assert.assertTrue("Waiting for event to be delivered has timed out.", waitResult);
+      Assert.assertEquals(0, errors.get());
+      Assert.assertEquals(xStringList, stringList);
+   }
+}
+</pre>
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2827"/>40.6. Adding extensions</h2></div></div></div>
+
+
+    <p>
+       RESTEasy implements a framework that supports extensions for additional reactive classes. To understand
+       the framework, it is necessary to understand the existing support for <code class="classname">CompletionStage</code>
+       and other reactive classes.
+    </p>
+    
+    <p>
+       <span class="bold"><strong>Server side.</strong></span> When a resource method returns a
+       <code class="classname">CompletionStage</code>, RESTEasy subscribes to it using the class
+       <code class="classname">org.jboss.resteasy.core.AsyncResponseConsumer.CompletionStageResponseConsumer</code>.
+       When the <code class="classname">CompletionStage</code> completes, it calls 
+       <code class="methodname">CompletionStageResponseConsumer.accept()</code>, which sends the result back to
+       the client.
+    </p>
+    
+    <p>
+       Support for <code class="classname">CompletionStage</code> is built in to RESTEasy, but it's not hard to extend
+       that support to a class like <code class="classname">Single</code> by providing a mechanism for transforming a
+       <code class="classname">Single</code> into a <code class="classname">CompletionStage</code>. In module resteasy-rxjava2,
+       that mechanism is supplied by <code class="classname">org.jboss.resteasy.rxjava2.SingleProvider</code>, which
+       implements interface <code class="classname">org.jboss.resteasy.spi.AsyncResponseProvider&lt;Single&lt;?&gt;&gt;</code>:
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public interface AsyncResponseProvider&lt;T&gt; {
+   public CompletionStage toCompletionStage(T asyncResponse);
+}
+</pre>
+
+    <p>
+       Given <code class="classname">SingleProvider</code>, RESTEasy can take a <code class="classname">Single</code>,
+       transform it into a <code class="classname">CompletionStage</code>, and then use 
+       <code class="classname">CompletionStageResponseConsumer</code> to handle the eventual value of
+       the <code class="classname">Single</code>.
+    </p>
+    
+    <p>
+       Similarly, when a resource method returns a streaming reactive class like <code class="classname">Flowable</code>,
+       RESTEasy subscribes to it, receives a stream of data elements, and sends them to the client.
+       <code class="classname">AsyncResponseConsumer</code> has several supporting classes, each of which implements a 
+       different mode of streaming. For example, <code class="classname">AsyncResponseConsumer.AsyncGeneralStreamingSseResponseConsumer</code>
+       handles general streaming and SSE streaming. Subscribing is done by calling 
+       <code class="methodname">org.reactivestreams.Publisher.subscribe()</code>, so a mechanism is needed
+       for turning, say, a <code class="classname">Flowable</code> into a <code class="classname">Publisher</code>.
+       That is, an implementation of <code class="classname">org.jboss.resteasy.spi.AsyncStreamProvider&lt;Flowable&gt;</code>
+       is called for, where <code class="classname">AsyncStreamProvider</code> is defined:
+    </p>
+       
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public interface AsyncStreamProvider&lt;T&gt; {
+   public Publisher toAsyncStream(T asyncResponse);
+}
+</pre>
+       
+    <p>
+       In module resteasy-rxjava2, <code class="classname">org.jboss.resteasy.FlowableProvider</code> provides
+       that mechanism for <code class="classname">Flowable</code>. [Actually, that's not too hard since, in
+       rxjava2, a <code class="classname">Flowable</code> <span class="emphasis"><em>is</em></span> a <code class="classname">Provider</code>.]
+    </p>
+    
+    <p>
+        So, on the server side, adding support for other reactive types can be done by declaring a <code class="code">@Provider</code> for the interface
+        <code class="code">AsyncStreamProvider</code> (for streams) or <code class="code">AsyncResponseProvider</code> (for single values), which
+        both have a single method to convert the new reactive type into (respectively) a <code class="code">Publisher</code> (for streams)
+        or a <code class="code">CompletionStage</code> (for single values).
+    </p>
+    
+    <p>
+       <span class="bold"><strong>Client side.</strong></span> The JAX-RS specification version 2.1 imposes two
+       requirements for support of reactive classes on the client side:   
+    </p> 
+    
+    <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li>support for <code class="classname">CompletionStage</code> in the form of
+          an implementation of the interface <code class="classname">javax.ws.rs.client.CompletionStageRxInvoker</code>, and
+       </li><li>
+          extensibility in the form of support for registering providers that implement
+<pre xmlns="" class="">
+public interface RxInvokerProvider&lt;T extends RxInvoker&gt; {
+    public boolean isProviderFor(Class&lt;T&gt; clazz);
+    public T getRxInvoker(SyncInvoker syncInvoker, ExecutorService executorService);
+}
+</pre>
+          Once an <code class="classname">RxInvokerProvider</code> is registered, an <code class="classname">RxInvoker</code>
+          can be requested by calling the <code class="classname">javax.ws.rs.client.Invocation.Builder</code> method
+<pre xmlns="" class="">
+public &lt;T extends RxInvoker&gt; T rx(Class&lt;T&gt; clazz);
+</pre>
+          That <code class="classname">RxInvoker</code> can then be used for making an invocation that returns
+          the appropriate reactive class. For example,
+<pre xmlns="" class="">
+FlowableRxInvoker invoker = client.target(generateURL("/get/string")).request().rx(FlowableRxInvoker.class);
+Flowable&lt;String&gt; flowable = (Flowable&lt;String&gt;) invoker.get();
+</pre>
+       </li></ol></div>
+    
+    <p>
+       RESTEasy provides partial support for implementing <code class="classname">RxInvoker</code>s. For example,
+       <code class="classname">SingleProvider</code>, mentioned above, also implements
+       <code class="classname">org.jboss.resteasy.spi.AsyncClientResponseProvider&lt;Single&lt;?&gt;&gt;</code>,
+       where <code class="classname">AsyncClientResponseProvider</code> is defined
+    </p>
+    
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public interface AsyncClientResponseProvider&lt;T&gt; {
+   public T fromCompletionStage(CompletionStage&lt;?&gt; completionStage);
+}
+</pre>
+
+    <p>
+       <code class="classname">SingleProvider</code>'s ability to turn a <code class="classname">CompletionStage</code>
+       into a <code class="classname">Single</code> is used in the implementation of 
+       <code class="classname">org.jboss.resteasy.rxjava2.SingleRxInvokerImpl</code>.
+    </p>
+    
+    <p>
+       The same concept might be useful in implementing other <code class="classname">RxInvoker</code>s. Note, 
+       though, that <code class="classname">ObservableRxInvokerImpl</code> and 
+       <code class="classname">FlowableRxInvokerImpl</code> in module resteasy-rxjava2 are each derived
+       directly from the SSE implementation.
+    </p>
+
+</div>
+
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Async_Injection.html"><strong>上一页</strong>第 39 章 Asynchronous Injection</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="RESTEasy_Embedded_Container.html"><strong>下一页</strong>第 41 章 Embedded Containers</a></li></ul></body></html>

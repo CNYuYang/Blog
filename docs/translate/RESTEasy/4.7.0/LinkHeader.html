@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 8 章 Linking resources</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="_HeaderParam.html" title="第 7 章 @HeaderParam"/><link rel="next" href="_MatrixParam.html" title="第 9 章 @MatrixParam"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_HeaderParam.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="_MatrixParam.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="LinkHeader"/>第 8 章 Linking resources</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="LinkHeader.html#d4e615">8.1. Link Headers</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e620">8.2. Atom links in the resource representations</a></span></dt><dd><dl><dt><span class="section"><a href="LinkHeader.html#d4e627">8.2.1. Configuration</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e642">8.2.2. Your first links injected</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e663">8.2.3. Customising how the Atom links are serialised</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e669">8.2.4. Specifying which JAX-RS methods are tied to which resources</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e734">8.2.5. Specifying path parameter values for URI templates</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e808">8.2.6. Securing entities</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e833">8.2.7. Extending the UEL context</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e849">8.2.8. Resource facades</a></span></dt></dl></dd></dl></div>
+	
+	<p>
+		There are two mechanisms available in RESTEasy to link a resource to another, and to link resources to
+		operations: the Link HTTP header, and Atom links inside the resource representations.
+	</p>
+	<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e615"/>8.1. Link Headers</h2></div></div></div>
+		
+		<p>
+		RESTEasy has both client and server side support for the <a class="ulink" href="http://tools.ietf.org/html/draft-nottingham-http-link-header-06">Link header specification</a>.
+		See the javadocs for org.jboss.resteasy.spi.LinkHeader, org.jboss.resteasy.spi.Link, and org.jboss.resteasy.client.ClientResponse.
+		</p>
+		<p>
+		The main advantage of Link headers over Atom links in the resource is that those links are available
+		without parsing the entity body.
+		</p>
+	</div>
+	<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e620"/>8.2. Atom links in the resource representations</h2></div></div></div>
+		
+		<p>
+		RESTEasy allows you to inject <a class="ulink" href="http://tools.ietf.org/html/rfc4287#section-4.2.7">Atom links</a> directly inside the entity objects you are sending to the
+		client, via auto-discovery.
+		</p>
+		<div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="warning"><h2>警告</h2>
+			<p>This is only available when using the Jackson2 or JAXB providers (for JSON and XML).</p>
+		</div>
+		<p>
+		The main advantage over Link headers is that you can have any number of Atom links directly over the
+		concerned resources, for any number of resources in the response. For example, you can have Atom links
+		for the root response entity, and also for each of its children entities.
+		</p>
+		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e627"/>8.2.1. Configuration</h3></div></div></div>
+			
+			<p>
+				There is no configuration required to be able to inject Atom links in your resource
+				representation, you just have to have this maven artifact in your path:
+			</p>
+			<table id="d4e630">
+				<caption>表 8.1. Maven artifact for Atom link injection</caption>
+				<thead>
+					<tr>
+						<th rowspan="1" colspan="1">Group</th>
+						<th rowspan="1" colspan="1">Artifact</th>
+						<th rowspan="1" colspan="1">Version</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td rowspan="1" colspan="1">org.jboss.resteasy</td>
+						<td rowspan="1" colspan="1">resteasy-links</td>
+						<td rowspan="1" colspan="1">4.7.0-SNAPSHOT</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e642"/>8.2.2. Your first links injected</h3></div></div></div>
+			
+			<p>
+			You need three things in order to tell RESTEasy to inject Atom links in your entities:
+			</p>
+			<div class="itemizedlist"><ul><li>
+					<p>
+					Annotate the JAX-RS method with <code class="classname">@AddLinks</code> to indicate that you want
+					Atom links injected in your response entity.
+					</p>
+				</li><li>
+					<p>
+					Add <code class="classname">RESTServiceDiscovery</code> fields to the resource classes where you
+					want Atom links injected.
+					</p>
+				</li><li>
+					<p>
+					Annotate the JAX-RS methods you want Atom links for with <code class="classname">@LinkResource</code>,
+					so that RESTEasy knows which links to create for which resources.
+					</p>
+				</li></ul></div>
+			<p>
+			The following example illustrates how you would declare everything in order to get the Atom links
+			injected in your book store:
+			</p>
+			<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="JAVA"><!-- <br/> --><span class="java_plain">@</span><!-- <br/> --><span class="java_type">Path</span><!-- <br/> --><span class="java_separator">(</span><!-- <br/> --><span class="java_literal">&quot;/&quot;</span><!-- <br/> --><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">@</span><span class="java_type">Consumes</span><span class="java_separator">({</span><span class="java_literal">&quot;application/xml&quot;</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;application/json&quot;</span><span class="java_separator">})</span>
+<!--  --><br/><span class="java_plain">@</span><span class="java_type">Produces</span><span class="java_separator">({</span><span class="java_literal">&quot;application/xml&quot;</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;application/json&quot;</span><span class="java_separator">})</span>
+<!--  --><br/><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_keyword">interface</span><span class="java_plain">&nbsp;</span><span class="java_type">BookStore</span><span class="java_plain">&nbsp;</span><span class="java_separator">{</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">AddLinks</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span><span class="java_separator">(</span><span class="java_plain">value&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_type">Book</span><span class="java_separator">.</span><span class="java_keyword">class</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@GET</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Path</span><span class="java_separator">(</span><span class="java_literal">&quot;books&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">Collection</span><span class="java_operator">&lt;</span><span class="java_type">Book</span><span class="java_operator">&gt;</span><span class="java_plain">&nbsp;getBooks</span><span class="java_separator">();</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@POST</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Path</span><span class="java_separator">(</span><span class="java_literal">&quot;books&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">void</span><span class="java_plain">&nbsp;addBook</span><span class="java_separator">(</span><span class="java_type">Book</span><span class="java_plain">&nbsp;book</span><span class="java_separator">);</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">AddLinks</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@GET</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Path</span><span class="java_separator">(</span><span class="java_literal">&quot;book/{id}&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">Book</span><span class="java_plain">&nbsp;getBook</span><span class="java_separator">(</span><span class="java_plain">@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;id&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;id</span><span class="java_separator">);</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@PUT</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Path</span><span class="java_separator">(</span><span class="java_literal">&quot;book/{id}&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">void</span><span class="java_plain">&nbsp;updateBook</span><span class="java_separator">(</span><span class="java_plain">@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;id&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;id</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_type">Book</span><span class="java_plain">&nbsp;book</span><span class="java_separator">);</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span><span class="java_separator">(</span><span class="java_plain">value&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_type">Book</span><span class="java_separator">.</span><span class="java_keyword">class</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@DELETE</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Path</span><span class="java_separator">(</span><span class="java_literal">&quot;book/{id}&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">void</span><span class="java_plain">&nbsp;deleteBook</span><span class="java_separator">(</span><span class="java_plain">@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;id&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;id</span><span class="java_separator">);</span>
+<!--  --><br/><span class="java_separator">}</span></pre>
+			<p>
+			And this is the definition of the Book resource:
+			</p>
+			<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="JAVA"><!-- <br/> --><span class="java_plain">@</span><!-- <br/> --><span class="java_type">Mapped</span><!-- <br/> --><span class="java_separator">(</span><!-- <br/> --><span class="java_plain">namespaceMap&nbsp;</span><!-- <br/> --><span class="java_operator">=</span><!-- <br/> --><span class="java_plain">&nbsp;@</span><!-- <br/> --><span class="java_type">XmlNsMap</span><!-- <br/> --><span class="java_separator">(</span><!-- <br/> --><span class="java_plain">jsonName&nbsp;</span><!-- <br/> --><span class="java_operator">=</span><!-- <br/> --><span class="java_plain">&nbsp;</span><!-- <br/> --><span class="java_literal">&quot;atom&quot;</span><!-- <br/> --><span class="java_separator">,</span><!-- <br/> --><span class="java_plain">&nbsp;namespace&nbsp;</span><!-- <br/> --><span class="java_operator">=</span><!-- <br/> --><span class="java_plain">&nbsp;</span><!-- <br/> --><span class="java_literal">&quot;http://www.w3.org/2005/Atom&quot;</span><!-- <br/> --><span class="java_separator">))</span>
+<!--  --><br/><span class="java_plain">@</span><span class="java_type">XmlRootElement</span>
+<!--  --><br/><span class="java_plain">@</span><span class="java_type">XmlAccessorType</span><span class="java_separator">(</span><span class="java_type">XmlAccessType</span><span class="java_separator">.</span><span class="java_plain">NONE</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_keyword">class</span><span class="java_plain">&nbsp;</span><span class="java_type">Book</span><span class="java_plain">&nbsp;</span><span class="java_separator">{</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">XmlAttribute</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">private</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;author</span><span class="java_separator">;</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">XmlID</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">XmlAttribute</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">private</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;title</span><span class="java_separator">;</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">XmlElementRef</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">private</span><span class="java_plain">&nbsp;</span><span class="java_type">RESTServiceDiscovery</span><span class="java_plain">&nbsp;rest</span><span class="java_separator">;</span>
+<!--  --><br/><span class="java_separator">}</span></pre>
+			<p>
+			If you do a GET /order/foo you will then get this XML representation:
+			</p>
+			<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="XML"><!-- XML : generated by JHighlight v1.0 (http://jhighlight.dev.java.net) -->
+<span class="xml_processing_instruction">&lt;?xml&nbsp;version=&quot;1.0&quot;&nbsp;encoding=&quot;UTF-8&quot;&nbsp;standalone=&quot;yes&quot;?&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">book</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">xmlns:atom</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;http://www.w3.org/2005/Atom&quot;</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">title</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;foo&quot;</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">author</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;bar&quot;</span><span class="xml_tag_symbols">&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;</span><span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">atom:link</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">href</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;http://localhost:8081/books&quot;</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">rel</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;list&quot;</span><span class="xml_tag_symbols">/&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;</span><span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">atom:link</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">href</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;http://localhost:8081/books&quot;</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">rel</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;add&quot;</span><span class="xml_tag_symbols">/&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;</span><span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">atom:link</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">href</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;http://localhost:8081/book/foo&quot;</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">rel</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;self&quot;</span><span class="xml_tag_symbols">/&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;</span><span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">atom:link</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">href</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;http://localhost:8081/book/foo&quot;</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">rel</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;update&quot;</span><span class="xml_tag_symbols">/&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;</span><span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">atom:link</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">href</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;http://localhost:8081/book/foo&quot;</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">rel</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;remove&quot;</span><span class="xml_tag_symbols">/&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_tag_symbols">&lt;/</span><span class="xml_tag_name">book</span><span class="xml_tag_symbols">&gt;</span><span class="xml_plain"></span><br />
+</pre>
+			<p>
+			And in JSON format:
+			</p>
+			<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="JAVASCRIPT">{
+ "book":
+ {
+  "@title":"foo",
+  "@author":"bar",
+  "atom.link":
+   [
+    {"@href":"http://localhost:8081/books","@rel":"list"},
+    {"@href":"http://localhost:8081/books","@rel":"add"},
+    {"@href":"http://localhost:8081/book/foo","@rel":"self"},
+    {"@href":"http://localhost:8081/book/foo","@rel":"update"},
+    {"@href":"http://localhost:8081/book/foo","@rel":"remove"}
+   ]
+ }
+}</pre>
+		</div>
+		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e663"/>8.2.3. Customising how the Atom links are serialised</h3></div></div></div>
+			
+			<p>
+			Because the <code class="classname">RESTServiceDiscovery</code> is in fact a JAXB type which inherits from
+			<code class="classname">List</code> you are free to annotate it as you want to customise the JAXB serialisation,
+			or just rely on the default with <code class="classname">@XmlElementRef</code>.
+			</p>
+		</div>
+		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e669"/>8.2.4. Specifying which JAX-RS methods are tied to which resources</h3></div></div></div>
+			
+			<p>
+			This is all done by annotating the methods with the <code class="classname">@LinkResource</code> annotation.
+			It supports the following optional parameters:
+			</p>
+			<table id="d4e673">
+				<caption>表 8.2. <p><code class="classname">@LinkResource</code> parameters</p></caption>
+				<thead>
+					<tr>
+						<th rowspan="1" colspan="1">Parameter</th>
+						<th rowspan="1" colspan="1">Type</th>
+						<th rowspan="1" colspan="1">Function</th>
+						<th rowspan="1" colspan="1">Default</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td rowspan="1" colspan="1">value</td>
+						<td rowspan="1" colspan="1"><code class="classname">Class</code></td>
+						<td rowspan="1" colspan="1">Declares an Atom link for the given type of resources.</td>
+						<td rowspan="1" colspan="1">Defaults to the entity body type (non-annotated parameter), or the method's return type.
+						This default does not work with <code class="classname">Response</code> or <code class="classname">Collection</code>
+						types, they need to be explicitly specified.</td>
+					</tr>
+					<tr>
+						<td rowspan="1" colspan="1">rel</td>
+						<td rowspan="1" colspan="1"><code class="classname">String</code></td>
+						<td rowspan="1" colspan="1">The Atom link relation</td>
+						<td rowspan="1" colspan="1">
+							<div class="variablelist"><dl><dt><span class="term">list</span></dt><dd><p>For <code class="classname">GET</code> methods returning a <code class="classname">Collection</code></p></dd><dt><span class="term">self</span></dt><dd><p>For <code class="classname">GET</code> methods returning a non-<code class="classname">Collection</code></p></dd><dt><span class="term">remove</span></dt><dd><p>For <code class="classname">DELETE</code> methods</p></dd><dt><span class="term">update</span></dt><dd><p>For <code class="classname">PUT</code> methods</p></dd><dt><span class="term">add</span></dt><dd><p>For <code class="classname">POST</code> methods</p></dd></dl></div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<p>
+			You can add several <code class="classname">@LinkResource</code> annotations on a single method by enclosing
+			them in	a <code class="classname">@LinkResources</code> annotation. This way you can add links to the same
+			method on several resource types. For example the <code class="constant">/order/foo/comments</code> operation
+			can belongs on the <code class="classname">Order</code> resource with the <code class="constant">comments</code>
+			relation, and on the <code class="classname">Comment</code> resource with the <code class="constant">list</code>
+			relation.
+			</p>
+		</div>
+		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e734"/>8.2.5. Specifying path parameter values for URI templates</h3></div></div></div>
+			
+			<p>
+			When RESTEasy adds links to your resources it needs to insert the right values in the URI template.
+			This is done either automatically by guessing the list of values from the entity, or by specifying
+			the values in the <code class="classname">@LinkResource</code> <code class="varname">pathParameters</code> parameter.
+			</p>
+			<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h4 class="title"><a id="d4e739"/>8.2.5.1. Loading URI template values from the entity</h4></div></div></div>
+				
+				<p>
+					URI template values are extracted from the entity from fields or Java Bean properties
+					annotated with <code class="classname">@ResourceID</code>, JAXB's <code class="classname">@XmlID</code> or
+					JPA's <code class="classname">@Id</code>. If there are more than one URI template
+					value to find in a given entity, you can annotate your entity with <code class="classname">@ResourceIDs</code>
+					to list the names of fields or properties that make up this entity's Id. If there are other
+					URI template values required from a parent entity, we try to find that parent in a field or
+					Java Bean property
+					annotated with <code class="classname">@ParentResource</code>. The list of URI template
+					values extracted up every <code class="classname">@ParentResource</code> is then reversed and used
+					as the list of values for the URI template.
+				</p>
+				<p>For example, let's consider the previous Book example, and a list of comments:</p>
+			<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="JAVA"><!-- <br/> --><span class="java_plain">@</span><!-- <br/> --><span class="java_type">XmlRootElement</span>
+<!--  --><br/><span class="java_plain">@</span><span class="java_type">XmlAccessorType</span><span class="java_separator">(</span><span class="java_type">XmlAccessType</span><span class="java_separator">.</span><span class="java_plain">NONE</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_keyword">class</span><span class="java_plain">&nbsp;</span><span class="java_type">Comment</span><span class="java_plain">&nbsp;</span><span class="java_separator">{</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">ParentResource</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">private</span><span class="java_plain">&nbsp;</span><span class="java_type">Book</span><span class="java_plain">&nbsp;book</span><span class="java_separator">;</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">XmlElement</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">private</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;author</span><span class="java_separator">;</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">XmlID</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">XmlAttribute</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">private</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;id</span><span class="java_separator">;</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">XmlElementRef</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">private</span><span class="java_plain">&nbsp;</span><span class="java_type">RESTServiceDiscovery</span><span class="java_plain">&nbsp;rest</span><span class="java_separator">;</span>
+<!--  --><br/><span class="java_separator">}</span></pre>
+				<p>
+				Given the previous book store service augmented with comments:
+				</p>
+			<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="JAVA"><!-- <br/> --><span class="java_plain">@</span><!-- <br/> --><span class="java_type">Path</span><!-- <br/> --><span class="java_separator">(</span><!-- <br/> --><span class="java_literal">&quot;/&quot;</span><!-- <br/> --><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">@</span><span class="java_type">Consumes</span><span class="java_separator">({</span><span class="java_literal">&quot;application/xml&quot;</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;application/json&quot;</span><span class="java_separator">})</span>
+<!--  --><br/><span class="java_plain">@</span><span class="java_type">Produces</span><span class="java_separator">({</span><span class="java_literal">&quot;application/xml&quot;</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;application/json&quot;</span><span class="java_separator">})</span>
+<!--  --><br/><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_keyword">interface</span><span class="java_plain">&nbsp;</span><span class="java_type">BookStore</span><span class="java_plain">&nbsp;</span><span class="java_separator">{</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">AddLinks</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResources</span><span class="java_separator">({</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span><span class="java_separator">(</span><span class="java_plain">value&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_type">Book</span><span class="java_separator">.</span><span class="java_keyword">class</span><span class="java_separator">,</span><span class="java_plain">&nbsp;rel&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;comments&quot;</span><span class="java_separator">),</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span><span class="java_separator">(</span><span class="java_plain">value&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_type">Comment</span><span class="java_separator">.</span><span class="java_keyword">class</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_separator">})</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@GET</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Path</span><span class="java_separator">(</span><span class="java_literal">&quot;book/{id}/comments&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">Collection</span><span class="java_operator">&lt;</span><span class="java_type">Comment</span><span class="java_operator">&gt;</span><span class="java_plain">&nbsp;getComments</span><span class="java_separator">(</span><span class="java_plain">@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;id&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;bookId</span><span class="java_separator">);</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">AddLinks</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@GET</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Path</span><span class="java_separator">(</span><span class="java_literal">&quot;book/{id}/comment/{cid}&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">Comment</span><span class="java_plain">&nbsp;getComment</span><span class="java_separator">(</span><span class="java_plain">@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;id&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;bookId</span><span class="java_separator">,</span><span class="java_plain">&nbsp;@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;cid&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;commentId</span><span class="java_separator">);</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@POST</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Path</span><span class="java_separator">(</span><span class="java_literal">&quot;book/{id}/comments&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">void</span><span class="java_plain">&nbsp;addComment</span><span class="java_separator">(</span><span class="java_plain">@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;id&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;bookId</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_type">Comment</span><span class="java_plain">&nbsp;comment</span><span class="java_separator">);</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@PUT</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Path</span><span class="java_separator">(</span><span class="java_literal">&quot;book/{id}/comment/{cid}&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">void</span><span class="java_plain">&nbsp;updateComment</span><span class="java_separator">(</span><span class="java_plain">@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;id&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;bookId</span><span class="java_separator">,</span><span class="java_plain">&nbsp;@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;cid&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;commentId</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_type">Comment</span><span class="java_plain">&nbsp;comment</span><span class="java_separator">);</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span><span class="java_separator">(</span><span class="java_type">Comment</span><span class="java_separator">.</span><span class="java_keyword">class</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@DELETE</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Path</span><span class="java_separator">(</span><span class="java_literal">&quot;book/{id}/comment/{cid}&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">void</span><span class="java_plain">&nbsp;deleteComment</span><span class="java_separator">(</span><span class="java_plain">@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;id&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;bookId</span><span class="java_separator">,</span><span class="java_plain">&nbsp;@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;cid&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;commentId</span><span class="java_separator">);</span>
+</span>
+<!--  --><br/><span class="java_separator">}</span></pre>
+				<p>
+				Whenever we need to make links for a <code class="classname">Book</code> entity, we look up the ID
+				in the <code class="classname">Book</code>'s <code class="classname">@XmlID</code> property. Whenever we make links
+				for <code class="classname">Comment</code> entities, we have a list of values taken from the <code class="classname">Comment</code>'s
+				<code class="classname">@XmlID</code> and its <code class="classname">@ParentResource</code>: the <code class="classname">Book</code> and
+				its <code class="classname">@XmlID</code>.
+				</p>
+				<p>
+				For a <code class="classname">Comment</code> with <code class="varname">id</code> <code class="constant">"1"</code> on a <code class="classname">Book</code>
+				with <code class="varname">title</code> <code class="constant">"foo"</code> we will therefore get a list of URI
+				template values of <code class="constant">{"foo", "1"}</code>, to be replaced in the URI template, thus
+				obtaining either <code class="constant">"/book/foo/comments"</code> or <code class="constant">"/book/foo/comment/1"</code>.
+				</p>
+			</div>
+			<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h4 class="title"><a id="d4e772"/>8.2.5.2. Specifying path parameters manually</h4></div></div></div>
+				
+				<p>
+				If you do not want to annotate your entities with resource ID annotations (<code class="classname">@ResourceID</code>,
+				<code class="classname">@ResourceIDs</code>, <code class="classname">@XmlID</code> or <code class="classname">@Id</code>) and
+				<code class="classname">@ParentResource</code>, you can also specify the URI template values inside the
+				<code class="classname">@LinkResource</code> annotation, using Unified Expression Language expressions:
+				</p>
+				<table id="d4e781">
+					<caption>表 8.3. <p><code class="classname">@LinkResource</code> URI template parameter</p></caption>
+					<thead>
+						<tr>
+							<th rowspan="1" colspan="1">Parameter</th>
+							<th rowspan="1" colspan="1">Type</th>
+							<th rowspan="1" colspan="1">Function</th>
+							<th rowspan="1" colspan="1">Default</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td rowspan="1" colspan="1">pathParameters</td>
+							<td rowspan="1" colspan="1"><code class="classname">String[]</code></td>
+							<td rowspan="1" colspan="1">Declares a list of UEL expressions to obtain the URI template values.</td>
+							<td rowspan="1" colspan="1">Defaults to using <code class="classname">@ResourceID</code>, <code class="classname">@ResourceIDs</code>,
+							<code class="classname">@XmlID</code> or <code class="classname">@Id</code> and <code class="classname">@ParentResource</code>
+							annotations to extract the values from the model.</td>
+						</tr>
+					</tbody>
+				</table>
+				<p>
+				The UEL expressions are evaluated in the context of the entity, which means that any unqualified
+				variable will be taken as a property for the entity itself, with the special variable
+				<code class="varname">this</code> bound to the entity we're generating links for.
+				</p>
+				<p>
+				The previous example of <code class="classname">Comment</code> service could be declared as such:
+				</p>
+				<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="JAVA"><!-- <br/> --><span class="java_plain">@</span><!-- <br/> --><span class="java_type">Path</span><!-- <br/> --><span class="java_separator">(</span><!-- <br/> --><span class="java_literal">&quot;/&quot;</span><!-- <br/> --><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">@</span><span class="java_type">Consumes</span><span class="java_separator">({</span><span class="java_literal">&quot;application/xml&quot;</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;application/json&quot;</span><span class="java_separator">})</span>
+<!--  --><br/><span class="java_plain">@</span><span class="java_type">Produces</span><span class="java_separator">({</span><span class="java_literal">&quot;application/xml&quot;</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;application/json&quot;</span><span class="java_separator">})</span>
+<!--  --><br/><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_keyword">interface</span><span class="java_plain">&nbsp;</span><span class="java_type">BookStore</span><span class="java_plain">&nbsp;</span><span class="java_separator">{</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">AddLinks</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResources</span><span class="java_separator">({</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span><span class="java_separator">(</span><span class="java_plain">value&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_type">Book</span><span class="java_separator">.</span><span class="java_keyword">class</span><span class="java_separator">,</span><span class="java_plain">&nbsp;rel&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;comments&quot;</span><span class="java_separator">,</span><span class="java_plain">&nbsp;pathParameters&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;${title}&quot;</span><span class="java_separator">),</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span><span class="java_separator">(</span><span class="java_plain">value&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_type">Comment</span><span class="java_separator">.</span><span class="java_keyword">class</span><span class="java_separator">,</span><span class="java_plain">&nbsp;pathParameters&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_separator">{</span><span class="java_literal">&quot;${book.title}&quot;</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;${id}&quot;</span><span class="java_separator">})</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_separator">})</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@GET</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Path</span><span class="java_separator">(</span><span class="java_literal">&quot;book/{id}/comments&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">Collection</span><span class="java_operator">&lt;</span><span class="java_type">Comment</span><span class="java_operator">&gt;</span><span class="java_plain">&nbsp;getComments</span><span class="java_separator">(</span><span class="java_plain">@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;id&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;bookId</span><span class="java_separator">);</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">AddLinks</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span><span class="java_separator">(</span><span class="java_plain">pathParameters&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_separator">{</span><span class="java_literal">&quot;${book.title}&quot;</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;${id}&quot;</span><span class="java_separator">})</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@GET</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Path</span><span class="java_separator">(</span><span class="java_literal">&quot;book/{id}/comment/{cid}&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">Comment</span><span class="java_plain">&nbsp;getComment</span><span class="java_separator">(</span><span class="java_plain">@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;id&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;bookId</span><span class="java_separator">,</span><span class="java_plain">&nbsp;@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;cid&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;commentId</span><span class="java_separator">);</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span><span class="java_separator">(</span><span class="java_plain">pathParameters&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_separator">{</span><span class="java_literal">&quot;${book.title}&quot;</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;${id}&quot;</span><span class="java_separator">})</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@POST</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Path</span><span class="java_separator">(</span><span class="java_literal">&quot;book/{id}/comments&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">void</span><span class="java_plain">&nbsp;addComment</span><span class="java_separator">(</span><span class="java_plain">@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;id&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;bookId</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_type">Comment</span><span class="java_plain">&nbsp;comment</span><span class="java_separator">);</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span><span class="java_separator">(</span><span class="java_plain">pathParameters&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_separator">{</span><span class="java_literal">&quot;${book.title}&quot;</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;${id}&quot;</span><span class="java_separator">})</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@PUT</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Path</span><span class="java_separator">(</span><span class="java_literal">&quot;book/{id}/comment/{cid}&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">void</span><span class="java_plain">&nbsp;updateComment</span><span class="java_separator">(</span><span class="java_plain">@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;id&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;bookId</span><span class="java_separator">,</span><span class="java_plain">&nbsp;@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;cid&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;commentId</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_type">Comment</span><span class="java_plain">&nbsp;comment</span><span class="java_separator">);</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span><span class="java_separator">(</span><span class="java_type">Comment</span><span class="java_separator">.</span><span class="java_keyword">class</span><span class="java_separator">,</span><span class="java_plain">&nbsp;pathParameters&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_separator">{</span><span class="java_literal">&quot;${book.title}&quot;</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;${id}&quot;</span><span class="java_separator">})</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@DELETE</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Path</span><span class="java_separator">(</span><span class="java_literal">&quot;book/{id}/comment/{cid}&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">void</span><span class="java_plain">&nbsp;deleteComment</span><span class="java_separator">(</span><span class="java_plain">@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;id&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;bookId</span><span class="java_separator">,</span><span class="java_plain">&nbsp;@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;cid&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;commentId</span><span class="java_separator">);</span>
+</span>
+<!--  --><br/><span class="java_separator">}</span></pre>
+			</div>
+		</div>
+		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e808"/>8.2.6. Securing entities</h3></div></div></div>
+			
+			<p>
+			You can restrict which links are injected in the resource based on security restrictions for the client,
+			so that if the current client doesn't have permission to delete a resource he will not be presented
+			with the <code class="constant">"delete"</code> link relation.
+			</p>
+			<p>
+			Security restrictions can either be specified on the <code class="classname">@LinkResource</code> annotation,
+			or using RESTEasy and EJB's security annotation <code class="classname">@RolesAllowed</code> on the JAX-RS
+			method.
+			</p>
+			<table id="d4e815">
+				<caption>表 8.4. <p><code class="classname">@LinkResource</code> security restrictions</p></caption>
+				<thead>
+					<tr>
+						<th rowspan="1" colspan="1">Parameter</th>
+						<th rowspan="1" colspan="1">Type</th>
+						<th rowspan="1" colspan="1">Function</th>
+						<th rowspan="1" colspan="1">Default</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td rowspan="1" colspan="1">constraint</td>
+						<td rowspan="1" colspan="1"><code class="classname">String</code></td>
+						<td rowspan="1" colspan="1">A UEL expression which must evaluate to true to inject this method's link in the
+						response entity.</td>
+						<td rowspan="1" colspan="1">Defaults to using <code class="classname">@RolesAllowed</code> from the JAX-RS method.</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e833"/>8.2.7. Extending the UEL context</h3></div></div></div>
+			
+			<p>
+			We've seen that both the URI template values and the security constraints of <code class="classname">@LinkResource</code>
+			use UEL to evaluate expressions, and we provide a basic UEL context with access only to the entity
+			we're injecting links in, and nothing more.
+			</p>
+			<p>
+			If you want to add more variables or functions in this
+			context, you can by adding a <code class="classname">@LinkELProvider</code> annotation on the JAX-RS method,
+			its class, or its package. This annotation's value should point to a class that implements the
+			<code class="classname">ELProvider</code> interface, which wraps the default <code class="classname">ELContext</code>
+			in order to add any missing functions.
+			</p>
+			<p>
+			For example, if you want to support the Seam annotation <code class="varname">s:hasPermission(target, permission)</code>
+			in your security constraints, you can add a <code class="classname">package-info.java</code> file like this:
+			</p>
+			<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="JAVA"><!-- <br/> --><span class="java_plain">@</span><!-- <br/> --><span class="java_type">LinkELProvider</span><!-- <br/> --><span class="java_separator">(</span><!-- <br/> --><span class="java_type">SeamELProvider</span><!-- <br/> --><span class="java_separator">.</span><!-- <br/> --><span class="java_keyword">class</span><!-- <br/> --><span class="java_separator">)</span>
+<!--  --><br/><span class="java_keyword">package</span><span class="java_plain">&nbsp;org</span><span class="java_separator">.</span><span class="java_plain">jboss</span><span class="java_separator">.</span><span class="java_plain">resteasy</span><span class="java_separator">.</span><span class="java_plain">links</span><span class="java_separator">.</span><span class="java_plain">test</span><span class="java_separator">;</span>
+</span>
+<!--  --><br/><span class="java_keyword">import</span><span class="java_plain">&nbsp;org</span><span class="java_separator">.</span><span class="java_plain">jboss</span><span class="java_separator">.</span><span class="java_plain">resteasy</span><span class="java_separator">.</span><span class="java_plain">links</span><span class="java_separator">.</span><span class="java_operator">*</span><span class="java_separator">;</span></pre>
+			<p>
+			With the following provider implementation:
+			</p>
+			<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="JAVA"><!-- <br/> --><span class="java_keyword">package</span><!-- <br/> --><span class="java_plain">&nbsp;org</span><!-- <br/> --><span class="java_separator">.</span><!-- <br/> --><span class="java_plain">jboss</span><!-- <br/> --><span class="java_separator">.</span><!-- <br/> --><span class="java_plain">resteasy</span><!-- <br/> --><span class="java_separator">.</span><!-- <br/> --><span class="java_plain">links</span><!-- <br/> --><span class="java_separator">.</span><!-- <br/> --><span class="java_plain">test</span><!-- <br/> --><span class="java_separator">;</span>
+</span>
+<!--  --><br/><span class="java_keyword">import</span><span class="java_plain">&nbsp;javax</span><span class="java_separator">.</span><span class="java_plain">el</span><span class="java_separator">.</span><span class="java_type">ELContext</span><span class="java_separator">;</span>
+<!--  --><br/><span class="java_keyword">import</span><span class="java_plain">&nbsp;javax</span><span class="java_separator">.</span><span class="java_plain">el</span><span class="java_separator">.</span><span class="java_type">ELResolver</span><span class="java_separator">;</span>
+<!--  --><br/><span class="java_keyword">import</span><span class="java_plain">&nbsp;javax</span><span class="java_separator">.</span><span class="java_plain">el</span><span class="java_separator">.</span><span class="java_type">FunctionMapper</span><span class="java_separator">;</span>
+<!--  --><br/><span class="java_keyword">import</span><span class="java_plain">&nbsp;javax</span><span class="java_separator">.</span><span class="java_plain">el</span><span class="java_separator">.</span><span class="java_type">VariableMapper</span><span class="java_separator">;</span>
+</span>
+<!--  --><br/><span class="java_keyword">import</span><span class="java_plain">&nbsp;org</span><span class="java_separator">.</span><span class="java_plain">jboss</span><span class="java_separator">.</span><span class="java_plain">seam</span><span class="java_separator">.</span><span class="java_plain">el</span><span class="java_separator">.</span><span class="java_type">SeamFunctionMapper</span><span class="java_separator">;</span>
+</span>
+<!--  --><br/><span class="java_keyword">import</span><span class="java_plain">&nbsp;org</span><span class="java_separator">.</span><span class="java_plain">jboss</span><span class="java_separator">.</span><span class="java_plain">resteasy</span><span class="java_separator">.</span><span class="java_plain">links</span><span class="java_separator">.</span><span class="java_type">ELProvider</span><span class="java_separator">;</span>
+</span>
+<!--  --><br/><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_keyword">class</span><span class="java_plain">&nbsp;</span><span class="java_type">SeamELProvider</span><span class="java_plain">&nbsp;</span><span class="java_keyword">implements</span><span class="java_plain">&nbsp;</span><span class="java_type">ELProvider</span><span class="java_plain">&nbsp;</span><span class="java_separator">{</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">ELContext</span><span class="java_plain">&nbsp;getContext</span><span class="java_separator">(</span><span class="java_keyword">final</span><span class="java_plain">&nbsp;</span><span class="java_type">ELContext</span><span class="java_plain">&nbsp;ctx</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_separator">{</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">return</span><span class="java_plain">&nbsp;</span><span class="java_keyword">new</span><span class="java_plain">&nbsp;</span><span class="java_type">ELContext</span><span class="java_separator">()</span><span class="java_plain">&nbsp;</span><span class="java_separator">{</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">private</span><span class="java_plain">&nbsp;</span><span class="java_type">SeamFunctionMapper</span><span class="java_plain">&nbsp;functionMapper</span><span class="java_separator">;</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Override</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">ELResolver</span><span class="java_plain">&nbsp;getELResolver</span><span class="java_separator">()</span><span class="java_plain">&nbsp;</span><span class="java_separator">{</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">return</span><span class="java_plain">&nbsp;ctx</span><span class="java_separator">.</span><span class="java_plain">getELResolver</span><span class="java_separator">();</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_separator">}</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Override</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">FunctionMapper</span><span class="java_plain">&nbsp;getFunctionMapper</span><span class="java_separator">()</span><span class="java_plain">&nbsp;</span><span class="java_separator">{</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">if</span><span class="java_plain">&nbsp;</span><span class="java_separator">(</span><span class="java_plain">functionMapper&nbsp;</span><span class="java_operator">==</span><span class="java_plain">&nbsp;</span><span class="java_literal">null</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;functionMapper&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_keyword">new</span><span class="java_plain">&nbsp;</span><span class="java_type">SeamFunctionMapper</span><span class="java_separator">(</span><span class="java_plain">ctx</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_separator">.</span><span class="java_plain">getFunctionMapper</span><span class="java_separator">());</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">return</span><span class="java_plain">&nbsp;functionMapper</span><span class="java_separator">;</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_separator">}</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Override</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">VariableMapper</span><span class="java_plain">&nbsp;getVariableMapper</span><span class="java_separator">()</span><span class="java_plain">&nbsp;</span><span class="java_separator">{</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">return</span><span class="java_plain">&nbsp;ctx</span><span class="java_separator">.</span><span class="java_plain">getVariableMapper</span><span class="java_separator">();</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_separator">}</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_separator">};</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_separator">}</span>
+</span>
+<!--  --><br/><span class="java_separator">}</span></pre>
+			<p>
+			And then use it as such:
+			</p>
+				<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="JAVA"><!-- <br/> --><span class="java_plain">@</span><!-- <br/> --><span class="java_type">Path</span><!-- <br/> --><span class="java_separator">(</span><!-- <br/> --><span class="java_literal">&quot;/&quot;</span><!-- <br/> --><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">@</span><span class="java_type">Consumes</span><span class="java_separator">({</span><span class="java_literal">&quot;application/xml&quot;</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;application/json&quot;</span><span class="java_separator">})</span>
+<!--  --><br/><span class="java_plain">@</span><span class="java_type">Produces</span><span class="java_separator">({</span><span class="java_literal">&quot;application/xml&quot;</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;application/json&quot;</span><span class="java_separator">})</span>
+<!--  --><br/><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_keyword">interface</span><span class="java_plain">&nbsp;</span><span class="java_type">BookStore</span><span class="java_plain">&nbsp;</span><span class="java_separator">{</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">AddLinks</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResources</span><span class="java_separator">({</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span><span class="java_separator">(</span><span class="java_plain">value&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_type">Book</span><span class="java_separator">.</span><span class="java_keyword">class</span><span class="java_separator">,</span><span class="java_plain">&nbsp;rel&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;comments&quot;</span><span class="java_separator">,</span><span class="java_plain">&nbsp;constraint&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;${s:hasPermission(this,&nbsp;'add-comment')}&quot;</span><span class="java_separator">),</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span><span class="java_separator">(</span><span class="java_plain">value&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_type">Comment</span><span class="java_separator">.</span><span class="java_keyword">class</span><span class="java_separator">,</span><span class="java_plain">&nbsp;constraint&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;${s:hasPermission(this,&nbsp;'insert')}&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_separator">})</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@GET</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Path</span><span class="java_separator">(</span><span class="java_literal">&quot;book/{id}/comments&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">Collection</span><span class="java_operator">&lt;</span><span class="java_type">Comment</span><span class="java_operator">&gt;</span><span class="java_plain">&nbsp;getComments</span><span class="java_separator">(</span><span class="java_plain">@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;id&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;bookId</span><span class="java_separator">);</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">AddLinks</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span><span class="java_separator">(</span><span class="java_plain">constraint&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;${s:hasPermission(this,&nbsp;'read')}&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@GET</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Path</span><span class="java_separator">(</span><span class="java_literal">&quot;book/{id}/comment/{cid}&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">Comment</span><span class="java_plain">&nbsp;getComment</span><span class="java_separator">(</span><span class="java_plain">@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;id&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;bookId</span><span class="java_separator">,</span><span class="java_plain">&nbsp;@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;cid&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;commentId</span><span class="java_separator">);</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span><span class="java_separator">(</span><span class="java_plain">constraint&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;${s:hasPermission(this,&nbsp;'insert')}&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@POST</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Path</span><span class="java_separator">(</span><span class="java_literal">&quot;book/{id}/comments&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">void</span><span class="java_plain">&nbsp;addComment</span><span class="java_separator">(</span><span class="java_plain">@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;id&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;bookId</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_type">Comment</span><span class="java_plain">&nbsp;comment</span><span class="java_separator">);</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span><span class="java_separator">(</span><span class="java_plain">constraint&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;${s:hasPermission(this,&nbsp;'update')}&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@PUT</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Path</span><span class="java_separator">(</span><span class="java_literal">&quot;book/{id}/comment/{cid}&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">void</span><span class="java_plain">&nbsp;updateComment</span><span class="java_separator">(</span><span class="java_plain">@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;id&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;bookId</span><span class="java_separator">,</span><span class="java_plain">&nbsp;@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;cid&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;commentId</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_type">Comment</span><span class="java_plain">&nbsp;comment</span><span class="java_separator">);</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">LinkResource</span><span class="java_separator">(</span><span class="java_type">Comment</span><span class="java_separator">.</span><span class="java_keyword">class</span><span class="java_separator">,</span><span class="java_plain">&nbsp;constraint&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_literal">&quot;${s:hasPermission(this,&nbsp;'delete')}&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@DELETE</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">Path</span><span class="java_separator">(</span><span class="java_literal">&quot;book/{id}/comment/{cid}&quot;</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">void</span><span class="java_plain">&nbsp;deleteComment</span><span class="java_separator">(</span><span class="java_plain">@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;id&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;bookId</span><span class="java_separator">,</span><span class="java_plain">&nbsp;@</span><span class="java_type">PathParam</span><span class="java_separator">(</span><span class="java_literal">&quot;cid&quot;</span><span class="java_separator">)</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;commentId</span><span class="java_separator">);</span>
+</span>
+<!--  --><br/><span class="java_separator">}</span></pre>
+		</div>
+		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e849"/>8.2.8. Resource facades</h3></div></div></div>
+			
+			<p>
+			Sometimes it is useful to add resources which are just containers or layers on other resources. For
+			example if you want to represent a collection of <code class="classname">Comment</code> with a start index
+			and a certain number of entries, in order to implement paging. Such a collection is not really an
+			entity in your model, but it should obtain the <code class="constant">"add"</code> and <code class="constant">"list"</code>
+			link relations for the <code class="constant">Comment</code> entity.
+			</p>
+			<p>
+			This is possible using resource facades. A resource facade is a resource which implements the
+			<code class="classname">ResourceFacade&lt;T&gt;</code> interface for the type <code class="varname">T</code>, and as
+			such, should receive all links for that type.
+			</p>
+			<p>
+			Since in most cases the instance of the <code class="varname">T</code> type is not directly available in the
+			resource facade, we need another way to extract its URI template values, and this is done by calling
+			the resource facade's <code class="methodname">pathParameters()</code> method to obtain a map of URI template
+			values by name. This map will be used to fill in the URI template values for any link generated for
+			<code class="varname">T</code>, if there are enough values in the map.
+			</p>
+			<p>
+			Here is an example of such a resource facade for a collection of <code class="classname">Comment</code>s:
+			</p>
+				<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="JAVA"><!-- <br/> --><span class="java_plain">@</span><!-- <br/> --><span class="java_type">XmlRootElement</span>
+<!--  --><br/><span class="java_plain">@</span><span class="java_type">XmlAccessorType</span><span class="java_separator">(</span><span class="java_type">XmlAccessType</span><span class="java_separator">.</span><span class="java_plain">NONE</span><span class="java_separator">)</span>
+<!--  --><br/><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_keyword">class</span><span class="java_plain">&nbsp;</span><span class="java_type">ScrollableCollection</span><span class="java_plain">&nbsp;</span><span class="java_keyword">implements</span><span class="java_plain">&nbsp;</span><span class="java_type">ResourceFacade</span><span class="java_operator">&lt;</span><span class="java_type">Comment</span><span class="java_operator">&gt;</span><span class="java_plain">&nbsp;</span><span class="java_separator">{</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">private</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_plain">&nbsp;bookId</span><span class="java_separator">;</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">XmlAttribute</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">private</span><span class="java_plain">&nbsp;</span><span class="java_type">int</span><span class="java_plain">&nbsp;start</span><span class="java_separator">;</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">XmlAttribute</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">private</span><span class="java_plain">&nbsp;</span><span class="java_type">int</span><span class="java_plain">&nbsp;totalRecords</span><span class="java_separator">;</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">XmlElement</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">private</span><span class="java_plain">&nbsp;</span><span class="java_type">List</span><span class="java_operator">&lt;</span><span class="java_type">Comment</span><span class="java_operator">&gt;</span><span class="java_plain">&nbsp;comments&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_keyword">new</span><span class="java_plain">&nbsp;</span><span class="java_type">ArrayList</span><span class="java_operator">&lt;</span><span class="java_type">Comment</span><span class="java_operator">&gt;</span><span class="java_separator">();</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;@</span><span class="java_type">XmlElementRef</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">private</span><span class="java_plain">&nbsp;</span><span class="java_type">RESTServiceDiscovery</span><span class="java_plain">&nbsp;rest</span><span class="java_separator">;</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">Class</span><span class="java_operator">&lt;</span><span class="java_type">Comment</span><span class="java_operator">&gt;</span><span class="java_plain">&nbsp;facadeFor</span><span class="java_separator">()</span><span class="java_plain">&nbsp;</span><span class="java_separator">{</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">return</span><span class="java_plain">&nbsp;</span><span class="java_type">Comment</span><span class="java_separator">.</span><span class="java_keyword">class</span><span class="java_separator">;</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_separator">}</span>
+</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">public</span><span class="java_plain">&nbsp;</span><span class="java_type">Map</span><span class="java_operator">&lt;</span><span class="java_type">String</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_operator">?</span><span class="java_plain">&nbsp;</span><span class="java_keyword">extends</span><span class="java_plain">&nbsp;</span><span class="java_type">Object</span><span class="java_operator">&gt;</span><span class="java_plain">&nbsp;pathParameters</span><span class="java_separator">()</span><span class="java_plain">&nbsp;</span><span class="java_separator">{</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_type">HashMap</span><span class="java_operator">&lt;</span><span class="java_type">String</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_operator">&gt;</span><span class="java_plain">&nbsp;map&nbsp;</span><span class="java_operator">=</span><span class="java_plain">&nbsp;</span><span class="java_keyword">new</span><span class="java_plain">&nbsp;</span><span class="java_type">HashMap</span><span class="java_operator">&lt;</span><span class="java_type">String</span><span class="java_separator">,</span><span class="java_plain">&nbsp;</span><span class="java_type">String</span><span class="java_operator">&gt;</span><span class="java_separator">();</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;map</span><span class="java_separator">.</span><span class="java_plain">put</span><span class="java_separator">(</span><span class="java_literal">&quot;id&quot;</span><span class="java_separator">,</span><span class="java_plain">&nbsp;bookId</span><span class="java_separator">);</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_keyword">return</span><span class="java_plain">&nbsp;map</span><span class="java_separator">;</span>
+<!--  --><br/><span class="java_plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="java_separator">}</span>
+<!--  --><br/><span class="java_separator">}</span></pre>
+			<p>
+			This will produce such an XML collection:
+			</p>
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="XML"><!-- XML : generated by JHighlight v1.0 (http://jhighlight.dev.java.net) -->
+<span class="xml_processing_instruction">&lt;?xml&nbsp;version=&quot;1.0&quot;&nbsp;encoding=&quot;UTF-8&quot;&nbsp;standalone=&quot;yes&quot;?&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">collection</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">xmlns:atom</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;http://www.w3.org/2005/Atom&quot;</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">totalRecords</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;2&quot;</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">start</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;0&quot;</span><span class="xml_tag_symbols">&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;</span><span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">atom.link</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">href</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;http://localhost:8081/book/foo/comments&quot;</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">rel</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;add&quot;</span><span class="xml_tag_symbols">/&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;</span><span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">atom.link</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">href</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;http://localhost:8081/book/foo/comments&quot;</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">rel</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;list&quot;</span><span class="xml_tag_symbols">/&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;</span><span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">comment</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">xmlid</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;0&quot;</span><span class="xml_tag_symbols">&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;&nbsp;</span><span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">text</span><span class="xml_tag_symbols">&gt;</span><span class="xml_plain">great&nbsp;book</span><span class="xml_tag_symbols">&lt;/</span><span class="xml_tag_name">text</span><span class="xml_tag_symbols">&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;&nbsp;</span><span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">atom.link</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">href</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;http://localhost:8081/book/foo/comment/0&quot;</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">rel</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;self&quot;</span><span class="xml_tag_symbols">/&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;&nbsp;</span><span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">atom.link</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">href</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;http://localhost:8081/book/foo/comment/0&quot;</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">rel</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;update&quot;</span><span class="xml_tag_symbols">/&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;&nbsp;</span><span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">atom.link</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">href</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;http://localhost:8081/book/foo/comment/0&quot;</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">rel</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;remove&quot;</span><span class="xml_tag_symbols">/&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;&nbsp;</span><span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">atom.link</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">href</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;http://localhost:8081/book/foo/comments&quot;</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">rel</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;add&quot;</span><span class="xml_tag_symbols">/&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;&nbsp;</span><span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">atom.link</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">href</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;http://localhost:8081/book/foo/comments&quot;</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">rel</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;list&quot;</span><span class="xml_tag_symbols">/&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;</span><span class="xml_tag_symbols">&lt;/</span><span class="xml_tag_name">comment</span><span class="xml_tag_symbols">&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;</span><span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">comment</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">xmlid</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;1&quot;</span><span class="xml_tag_symbols">&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;&nbsp;</span><span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">text</span><span class="xml_tag_symbols">&gt;</span><span class="xml_plain">terrible&nbsp;book</span><span class="xml_tag_symbols">&lt;/</span><span class="xml_tag_name">text</span><span class="xml_tag_symbols">&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;&nbsp;</span><span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">atom.link</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">href</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;http://localhost:8081/book/foo/comment/1&quot;</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">rel</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;self&quot;</span><span class="xml_tag_symbols">/&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;&nbsp;</span><span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">atom.link</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">href</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;http://localhost:8081/book/foo/comment/1&quot;</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">rel</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;update&quot;</span><span class="xml_tag_symbols">/&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;&nbsp;</span><span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">atom.link</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">href</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;http://localhost:8081/book/foo/comment/1&quot;</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">rel</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;remove&quot;</span><span class="xml_tag_symbols">/&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;&nbsp;</span><span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">atom.link</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">href</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;http://localhost:8081/book/foo/comments&quot;</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">rel</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;add&quot;</span><span class="xml_tag_symbols">/&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;&nbsp;</span><span class="xml_tag_symbols">&lt;</span><span class="xml_tag_name">atom.link</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">href</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;http://localhost:8081/book/foo/comments&quot;</span><span class="xml_plain">&nbsp;</span><span class="xml_attribute_name">rel</span><span class="xml_tag_symbols">=</span><span class="xml_attribute_value">&quot;list&quot;</span><span class="xml_tag_symbols">/&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_plain">&nbsp;</span><span class="xml_tag_symbols">&lt;/</span><span class="xml_tag_name">comment</span><span class="xml_tag_symbols">&gt;</span><span class="xml_plain"></span><br />
+<span class="xml_tag_symbols">&lt;/</span><span class="xml_tag_name">collection</span><span class="xml_tag_symbols">&gt;</span><span class="xml_plain"></span><br />
+</pre>
+		</div>
+	</div>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_HeaderParam.html"><strong>上一页</strong>第 7 章 @HeaderParam</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="_MatrixParam.html"><strong>下一页</strong>第 9 章 @MatrixParam</a></li></ul></body></html>

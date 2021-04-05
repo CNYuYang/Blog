@@ -1,0 +1,1300 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 26 章 Multipart Providers</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="json-p.html" title="第 25 章 JSON Support via Java EE 7 JSON-P API"/><link rel="next" href="JAX-RS_2.1_additions.html" title="第 27 章 JAX-RS 2.1 Additions"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="json-p.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="JAX-RS_2.1_additions.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Multipart"/>第 26 章 Multipart Providers</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="Multipart.html#multipart_mixed_group">26.1. Multipart/mixed</a></span></dt><dd><dl><dt><span class="section"><a href="Multipart.html#multipart_output">26.1.1. Writing multipart/mixed messages</a></span></dt><dt><span class="section"><a href="Multipart.html#MultipartInput">26.1.2. Reading multipart/mixed messages</a></span></dt><dt><span class="section"><a href="Multipart.html#Simple_mulitpart_message_example">26.1.3. Simple multipart/mixed message example</a></span></dt><dt><span class="section"><a href="Multipart.html#message_with_GenericType_example">26.1.4. Multipart/mixed message with GenericType example</a></span></dt><dt><span class="section"><a href="Multipart.html#multipart_list_example">26.1.5. java.util.List with multipart/mixed data example</a></span></dt></dl></dd><dt><span class="section"><a href="Multipart.html#multipart_related_group">26.2. Multipart/related</a></span></dt><dd><dl><dt><span class="section"><a href="Multipart.html#Writing_multipart_related">26.2.1. Writing multipart/related messages</a></span></dt><dt><span class="section"><a href="Multipart.html#Reading_multipart_related">26.2.2. Reading multipart/related messages</a></span></dt><dt><span class="section"><a href="Multipart.html#multipart_related_example">26.2.3. Multipart/related message example</a></span></dt><dt><span class="section"><a href="Multipart.html#XML-binary_Optimized_Packaging">26.2.4. XML-binary Optimized Packaging (XOP)</a></span></dt><dt><span class="section"><a href="Multipart.html#XopWithMultipartRelated_return_object_example">26.2.5. @XopWithMultipartRelated return object example</a></span></dt><dt><span class="section"><a href="Multipart.html#XopWithMultipartRelated_input_parameter_example">26.2.6. @XopWithMultipartRelated input parameter example</a></span></dt></dl></dd><dt><span class="section"><a href="Multipart.html#multipart_formData_group">26.3. Multipart/form-data</a></span></dt><dd><dl><dt><span class="section"><a href="Multipart.html#Writing_multipart_formData">26.3.1. Writing multipart/form-data messages</a></span></dt><dt><span class="section"><a href="Multipart.html#Reading_multipart_formData">26.3.2. Reading multipart/form-data messages</a></span></dt><dt><span class="section"><a href="Multipart.html#simple_multipart_formData_example">26.3.3. Simple multipart/form-data message example</a></span></dt><dt><span class="section"><a href="Multipart.html#Map_with_multipart_formData">26.3.4. java.util.Map with multipart/form-data</a></span></dt><dt><span class="section"><a href="Multipart.html#Multipart_FormData_Output">26.3.5. Multipart/form-data java.util.Map as method return type</a></span></dt><dt><span class="section"><a href="Multipart.html#multipartform_annotation">26.3.6. @MultipartForm and POJOs</a></span></dt></dl></dd><dt><span class="section"><a href="Multipart.html#multipart_parsing_note">26.4. Note about multipart parsing and working with other frameworks</a></span></dt><dt><span class="section"><a href="Multipart.html#multipart_overwrite_default_content_type">26.5. Overwriting the default fallback content type for multipart messages</a></span></dt><dt><span class="section"><a href="Multipart.html#multipart_overwrite_content_type">26.6. Overwriting the content type for multipart messages</a></span></dt><dt><span class="section"><a href="Multipart.html#multipart_overwrite_default_charset">26.7. Overwriting the default fallback charset for multipart messages</a></span></dt></dl></div>
+    
+    <p>RESTEasy has rich support for the "multipart/*" and "multipart/form-data" mime types.
+        The multipart mime
+        format is used to pass lists of content bodies. Multiple content bodies are embedded
+        in one message.
+        "multipart/form-data" is often found in web application HTML Form documents and is generally
+        used to
+        upload files. The form-data format is the same as other multipart formats, except that
+        each inlined piece
+        of content has a name associated with it.
+    </p>
+    <p>RESTEasy provides
+        a custom API for reading and writing multipart types as well as marshalling arbitrary List
+       (for any multipart type) and Map (multipart/form-data only) objects
+    </p>
+    <p>Classes <code class="code">MultipartInput</code> and <code class="code">MultipartOutput</code> provides read and write
+        support for mime type "multipart/mixed" messages respectively.  They provide for
+        multiple part messages, in which one or more different sets of data are combined in a single body.
+    </p>
+    <p><code class="code">MultipartRelatedInput</code> and <code class="code">MultipartRelatedOutput</code> classes
+        provide read and write
+        support for mime type "multipart/related" messages.  These are messages that contain
+        multiple body parts that are inter-related.
+    </p>
+    <p><code class="code">MultipartFormDataInput</code> and <code class="code">MultipartFormDataOutput</code> classes
+        provide read and write
+        support for mine type "multipart/form-data".  This type is used when returning
+        a set of values as the the result of a user filling out a form or for uploading files.
+    </p>
+
+   <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="multipart_mixed_group"/>26.1. Multipart/mixed</h2></div></div></div>
+      
+
+   <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="multipart_output"/>26.1.1. Writing multipart/mixed messages</h3></div></div></div>
+      
+
+      <p><code class="code">MultipartOutput</code> provides a set of addPart methods for
+         registering message content
+         and specifying special marshalling requirements.  In all cases the addPart
+         methods require
+         an input parameter, Object and a MediaType that declares the mime type of the object.
+         Sometimes you may have an object in which marshalling is sensitive to generic type metadata.
+         In such cases, use an addPart method in which you declare the GenericType of the entity Object.
+         Perhaps a file will be passed as content and it will require UTF-8 encoding.
+         Setting input parameter, utf8Encode to <code class="code">true</code> will indicate to RESTEasy to process the
+         filename according to the character set and language encoding rules of <code class="code">rfc5987</code>.
+         This flag is only processed when mime type "multipart/form-data" is specified.
+      </p>
+      <p><code class="code">MultipartOutput</code> automatically generates a unique message boundary identifier
+         when it is created.  Method setBoundary is provided in case you wish to declare
+         a different identifier.
+      </p>
+      <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public class MultipartOutput
+{
+   public OutputPart addPart(Object entity, MediaType mediaType);
+   public OutputPart addPart(Object entity, MediaType mediaType,
+        String filename);
+   public OutputPart addPart(Object entity, MediaType mediaType,
+        String filename, boolean utf8Encode);
+   public OutputPart addPart(Object entity, GenericType&lt;?&gt; type,
+        MediaType mediaType);
+   public OutputPart addPart(Object entity, GenericType&lt;?&gt; type,
+        MediaType mediaType, String filename);
+   public OutputPart addPart(Object entity, GenericType&lt;?&gt; type,
+        MediaType mediaType, String filename, boolean utf8Encode);
+   public OutputPart addPart(Object entity, Class&lt;?&gt; type, Type genericType,
+        MediaType mediaType);
+   public OutputPart addPart(Object entity, Class&lt;?&gt; type, Type genericType,
+        MediaType mediaType, String filename);
+   public OutputPart addPart(Object entity, Class&lt;?&gt; type, Type genericType,
+        MediaType mediaType, String filename, boolean utf8Encode);
+   public List&lt;OutputPart&gt; getParts();
+   public String getBoundary();
+   public void setBoundary(String boundary);
+}</pre>
+
+      <p>Each message part registered with <code class="code">MultipartOutput</code> is represented by an
+      <code class="code">OutputPart</code> object.  Class <code class="code">MultipartOutput</code> generates an
+      <code class="code">OutputPart</code> object for each addPart method call.
+      </p>
+      <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public class OutputPart {
+   public OutputPart(final Object entity, final Class&lt;?&gt; type,
+        final Type genericType, final MediaType mediaType);
+   public OutputPart(final Object entity, final Class&lt;?&gt; type,
+        final Type genericType, final MediaType mediaType,
+        final String filename);
+   public OutputPart(final Object entity, final Class&lt;?&gt; type,
+        final Type genericType, final MediaType mediaType,
+        final String filename, final boolean utf8Encode);
+   public MultivaluedMap&lt;String, Object&gt; getHeaders();
+   public Object getEntity();
+   public Class&lt;?&gt; getType();
+   public Type getGenericType();
+   public MediaType getMediaType();
+   public String getFilename();
+   public boolean isUtf8Encode();
+}</pre>
+   </div>
+
+      <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="MultipartInput"/>26.1.2. Reading multipart/mixed messages</h3></div></div></div>
+         
+         <p><code class="code">MultipartInput</code> and <code class="code">InputPart</code> are interface
+            classes that provide
+            access to multipart/mixed message data.  RESTEasy provides an implementation
+            of these classes.  They perform the work to retrieve message data.
+         </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+
+package org.jboss.resteasy.plugins.providers.multipart;
+
+import java.util.List;
+
+public interface MultipartInput {
+   List&lt;InputPart&gt; getParts();
+   String getPreamble();
+   /**
+    * Call this method to delete any temporary files created from unmarshalling
+    * this multipart message
+    * Otherwise they will be deleted on Garbage Collection or JVM exit.
+    */
+   void close();
+}</pre>
+
+
+    <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+
+package org.jboss.resteasy.plugins.providers.multipart;
+
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import java.io.IOException;
+import java.lang.reflect.Type;
+
+/**
+ * Represents one part of a multipart message.
+ */
+public interface InputPart {
+   /**
+    * If no content-type header is sent in a multipart message part
+    * "text/plain; charset=ISO-8859-1" is assumed.
+    *
+    * This can be overwritten by setting a different String value in
+    * {@link org.jboss.resteasy.spi.HttpRequest#setAttribute(String, Object)}
+    * with this ("resteasy.provider.multipart.inputpart.defaultContentType")
+    * String as key. It should be done in a
+    * {@link javax.ws.rs.container.ContainerRequestFilter}.
+    */
+   String DEFAULT_CONTENT_TYPE_PROPERTY =
+    "resteasy.provider.multipart.inputpart.defaultContentType";
+
+   /**
+    * If there is a content-type header without a charset parameter,
+    * charset=US-ASCII is assumed.
+    *
+    * This can be overwritten by setting a different String value in
+    * {@link org.jboss.resteasy.spi.HttpRequest#setAttribute(String, Object)}
+    * with this ("resteasy.provider.multipart.inputpart.defaultCharset")
+    * String as key. It should be done in a
+    * {@link javax.ws.rs.container.ContainerRequestFilter}.
+    */
+   String DEFAULT_CHARSET_PROPERTY =
+    "resteasy.provider.multipart.inputpart.defaultCharset";
+
+   /**
+    * @return headers of this part
+    */
+   MultivaluedMap&lt;String, String&gt; getHeaders();
+   String getBodyAsString() throws IOException;
+   &lt;T&gt; T getBody(Class&lt;T&gt; type, Type genericType) throws IOException;
+   &lt;T&gt; T getBody(GenericType&lt;T&gt; type) throws IOException;
+
+   /**
+    * @return "Content-Type" of this part
+    */
+   MediaType getMediaType();
+
+   /**
+    * @return true if the Content-Type was resolved from the message, false if
+    *         it was resolved from the server default
+    */
+   boolean isContentTypeFromMessage();
+
+   /**
+    * Change the media type of the body part before you extract it.
+    * Useful for specifying a charset.
+    * @param mediaType media type
+    */
+   void setMediaType(MediaType mediaType);
+}}</pre>
+
+      </div>
+
+      <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="Simple_mulitpart_message_example"/>26.1.3. Simple multipart/mixed message example</h3></div></div></div>
+         
+      <p>The following example shows how to read and write a simple multipart/mixed
+         message.
+      </p>
+      <p>The data to be transfered is a very simple class, Soup.
+      </p>
+      <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+
+package org.jboss.resteasy.test.providers.multipart.resource;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlElement;
+
+@XmlRootElement(name = "soup")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Soup {
+    @XmlElement
+    private String id;
+
+    public Soup(){}
+    public Soup(final String id){this.id = id;}
+    public String getId(){return id;}
+}
+</pre>
+
+
+         <p>This code fragment creates a multipart/mixed message passing
+            Soup information using class, <code class="code">MultipartOutput</code>.
+         </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+ 
+      MultipartOutput multipartOutput = new MultipartOutput();
+      multipartOutput.addPart(new Soup("Chicken Noodle"),
+            MediaType.APPLICATION_XML_TYPE);
+      multipartOutput.addPart(new Soup("Vegetable"),
+            MediaType.APPLICATION_XML_TYPE);
+      multipartOutput.addPart("Granny's Soups", MediaType.TEXT_PLAIN_TYPE);
+ </pre>
+
+         <p>This code fragment uses class <code class="code">MultipartInput</code>
+            to extract the Soup information provided by multipartOutput
+            above.
+         </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+      // MultipartInput multipartInput, the entity returned in the client in a
+      // Response object or the input value of an endpoint method parameter.
+      for (InputPart inputPart : multipartInput.getParts()) {
+          if (MediaType.APPLICATION_XML_TYPE.equals(inputPart.getMediaType())) {
+              Soup c = inputPart.getBody(Soup.class, null);
+              String name = c.getId();
+          } else {
+              String s = inputPart.getBody(String.class, null);
+          }
+      }
+ </pre>
+
+         <p>Returning a multipart/mixed message from an endpoint can be done
+            in two ways.  <code class="code">MultipartOutput</code> can be returned as the method's
+            return object or as an entity in a <code class="code">Response</code> object.
+         </p>
+    <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+
+    @GET
+    @Path("soups/obj")
+    @Produces("multipart/mixed")
+    public MultipartOutput soupsObj() {
+        return multipartOutput;
+    }
+
+    @GET
+    @Path("soups/resp")
+    @Produces("multipart/mixed")
+    public Response soupsResp() {
+      return Response.ok(multipartOutput, MediaType.valueOf("multipart/mixed"))
+                     .build();
+    }
+</pre>
+
+      <p>There is no difference in the way a client retrieves the message
+         from the endpoint.  It is done as follows.
+      </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+      ResteasyClient client = (ResteasyClient)ClientBuilder.newClient();
+      ResteasyWebTarget target = client.target(THE_URL);
+      Response response = target.request().get();
+      MultipartInput multipartInput = response.readEntity(MultipartInput.class);
+
+      for (InputPart inputPart : multipartInput.getParts()) {
+          if (MediaType.APPLICATION_XML_TYPE.equals(inputPart.getMediaType())) {
+              Soup c = inputPart.getBody(Soup.class, null);
+              String name = c.getId();
+          } else {
+              String s = inputPart.getBody(String.class, null);
+          }
+      }
+
+      client.close();
+ </pre>
+
+
+      <p>
+         A client sends the message, multipartOutput, to an endpoint
+         as an entity object in an HTTP method call in this code fragment.
+      </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+
+        ResteasyClient client = (ResteasyClient)ClientBuilder.newClient();
+        ResteasyWebTarget target = client.target(SOME_URL + "/register/soups");
+        Entity&lt;MultipartOutput&gt; entity = Entity.entity(multipartOutput,
+                new MediaType("multipart", "mixed"));
+        Response response = target.request().post(entity);
+ </pre>
+
+   <p>Here is the endpoint receiving the message and extracting the contents.
+   </p>
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+       
+ @POST
+ @Consumes("multipart/mixed")
+ @Path("register/soups")
+  public void registerSoups(MultipartInput multipartInput) throws IOException {
+
+      for (InputPart inputPart : multipartInput.getParts()) {
+         if (MediaType.APPLICATION_XML_TYPE.equals(inputPart.getMediaType())) {
+                Soup c = inputPart.getBody(Soup.class, null);
+                String name = c.getId();
+         } else {
+                String s = inputPart.getBody(String.class, null);
+         }
+      }
+  }
+ </pre>
+
+      </div>
+
+      <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="message_with_GenericType_example"/>26.1.4. Multipart/mixed message with GenericType example</h3></div></div></div>
+         
+         <p>This example shows how to read and write a multipart/mixed message
+            whose content consists of a generic type, in this case a List&lt;Soup&gt;.
+            The <code class="code">MultipartOutput</code> and <code class="code">MultipartIntput</code> methods
+            that use <code class="code">GenericType</code> parameters are used.
+         </p>
+         <p>The multipart/mixed message is created using <code class="code">MultipartOutput</code>
+            as follows.
+         </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+        MultipartOutput multipartOutput = new MultipartOutput();
+        List&lt;Soup&gt; soupList = new ArrayList&lt;Soup&gt;();
+        soupList.add(new Soup("Chicken Noodle"));
+        soupList.add(new Soup("Vegetable"));
+        multipartOutput.addPart(soupList, new GenericType&lt;List&lt;Soup&gt;&gt;(){},
+               MediaType.APPLICATION_XML_TYPE );
+        multipartOutput.addPart("Granny's Soups", MediaType.TEXT_PLAIN_TYPE);
+ </pre>
+         <p>The message data is extracted with <code class="code">MultipartInput</code>.
+            Note there are two <code class="code">MultipartInput</code> getBody methods that
+            can be used to retrieve data specifying <code class="code">GenericType</code>.
+            This code fragment uses the second one but shows the first one in comments.
+         </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+   &lt;T&gt; T getBody(Class&lt;T&gt; type, Type genericType) throws IOException;
+   &lt;T&gt; T getBody(GenericType&lt;T&gt; type) throws IOException;
+ </pre>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+   // MultipartInput multipartInput, the entity returned in the client in a
+   // Response object or the input value of an endpoint method parameter.
+   GenericType&lt;List&lt;Soup&gt;&gt; gType = new GenericType&lt;List&lt;Soup&gt;&gt;(){};
+
+   for (InputPart inputPart : multipartInput.getParts()) {
+      if (MediaType.APPLICATION_XML_TYPE.equals(inputPart.getMediaType())) {
+         List&lt;Soup&gt; c = inputPart.getBody(gType);
+      // List&lt;Soup&gt; c = inputPart.getBody(gType.getRawType(), gType.getType());
+      } else {
+         String s = inputPart.getBody(String.class, null);;
+      }
+   }
+ </pre>
+
+      </div>
+
+      <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="multipart_list_example"/>26.1.5. java.util.List with multipart/mixed data example</h3></div></div></div>
+         
+
+         <p>When a set of message parts are uniform they do not need to be
+            written using <code class="code">MultipartOutput</code> or read with
+            <code class="code">MultipartInput</code>.  They can be sent and received as a
+            <code class="code">List</code>.
+            RESTEasy performs the necessary work to read and write the message data.
+         </p>
+   <p>For this example the data to be transmitted is class,
+      <code class="code">ContextProvidersCustomer</code>
+   </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+    package org.jboss.resteasy.test.providers.multipart.resource;
+
+    import javax.xml.bind.annotation.XmlAccessType;
+    import javax.xml.bind.annotation.XmlAccessorType;
+    import javax.xml.bind.annotation.XmlElement;
+    import javax.xml.bind.annotation.XmlRootElement;
+
+    @XmlRootElement(name = "customer")
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public class ContextProvidersCustomer {
+       @XmlElement
+       private String name;
+
+       public ContextProvidersCustomer() { }
+       public ContextProvidersCustomer(final String name) {
+          this.name = name;
+      }
+       public String getName() { return name;}
+    }
+ </pre>
+
+         <p>In this code fragment the client creates and sends of list
+            <code class="code">ContextProvidersCustomers</code>.
+         </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+      List&lt;ContextProvidersCustomer&gt; customers =
+            new ArrayList&lt;ContextProvidersCustomer&gt;();
+      customers.add(new ContextProvidersCustomer("Bill"));
+      customers.add(new ContextProvidersCustomer("Bob"));
+
+      Entity&lt;ContextProvidersCustomer&gt; entity = Entity.entity(customers,
+        new MediaType("multipart", "mixed"));
+
+      Client client = ClientBuilder.newClient();
+      WebTarget target = client.target(SOME_URL);
+      Response response = target.request().post(entity);
+ </pre>
+
+    <p>The endpoint receives the list, alters the contents and returns a new list.
+    </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+   @POST
+   @Consumes("multipart/mixed")
+   @Produces(MediaType.APPLICATION_XML)
+   @Path("post/list")
+   public List&lt;ContextProvidersName&gt; postList(
+         List&lt;ContextProvidersCustomer&gt; customers) throws IOException {
+
+      List&lt;ContextProvidersName&gt; names = new ArrayList&lt;ContextProvidersName&gt;();
+
+      for (ContextProvidersCustomer customer : customers) {
+         names.add(new ContextProvidersName("Hello " + customer.getName()));
+      }
+      return names;
+   }
+ </pre>
+
+         <p>The client receives the altered message data and processes it.
+         </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+    Response response = target.request().post(entity);
+    List&lt;ContextProvidersCustomer&gt; rtnList =
+      response.readEntity(new GenericType&lt;List&lt;ContextProvidersCustomer&gt;&gt;(){});
+        :
+        :
+ </pre>
+
+      </div>
+   </div>
+
+
+
+   <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="multipart_related_group"/>26.2. Multipart/related</h2></div></div></div>
+      
+      <p>The Multipart/Related mime type is intended for compound objects
+         consisting of several inter-related body parts, (RFC2387).  There is a root or
+         start part.  All other parts are referenced from the root part.  Each
+         part has a unique id.  The type and the id of the start part is presented
+         in parameters in the message content-type header.
+      </p>
+
+   <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="Writing_multipart_related"/>26.2.1. Writing multipart/related messages</h3></div></div></div>
+      
+
+      <p>RESTEasy provides class <code class="code">MultipartRelatedOutput</code> to assist
+         the user in specifying the required information and generating a properly
+         formatted message.  <code class="code">MultipartRelatedOutput</code> is a subclass of
+         <code class="code">MultipartOutput</code>.
+      </p>
+      <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+         
+package org.jboss.resteasy.plugins.providers.multipart;
+
+import javax.ws.rs.core.MediaType;
+
+public class MultipartRelatedOutput extends MultipartOutput {
+   private String startInfo;
+
+   /**
+    * The part used as the root.
+    */
+   public OutputPart getRootPart();
+
+   /**
+    * entity  object representing the part's body
+    * mediaType Content-Type of the part
+    * contentId  Content-ID to be used as identification for the current
+    *            part, optional, if null one will be generated
+    * contentTransferEncoding
+    *            value used for the Content-Transfer-Encoding header
+    *            field of the part. It's optional, if you don't want to set
+    *            this pass null. Example values are: "7bit",
+    *            "quoted-printable", "base64", "8bit", "binary"
+    */
+   public OutputPart addPart(Object entity, MediaType mediaType,
+         String contentId, String contentTransferEncoding);
+
+   /**
+    * start-info parameter of the Content-Type.  An optional parameter.
+    * As described in RFC2387, section 3.3. The Start-Info Parameter
+    */
+   public String getStartInfo();
+}
+ </pre>
+
+   </div>
+
+   <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="Reading_multipart_related"/>26.2.2. Reading multipart/related messages</h3></div></div></div>
+      
+      <p><code class="code">MultipartRelatedInput</code> is an interface class that provides
+         access to multipart/related message data.  It is a subclass of
+         <code class="code">MultipartInput</code>.  RESTEasy provides an implementation of
+         this class. It performs the work to retrieve message data.
+      </p>
+      <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+         
+package org.jboss.resteasy.plugins.providers.multipart;
+
+import javax.ws.rs.core.MediaType;
+
+public class MultipartRelatedOutput extends MultipartOutput {
+   private String startInfo;
+
+   /**
+    * The part used as the root.
+    */
+   public OutputPart getRootPart();
+
+   /**
+    * entity  object representing the part's body
+    * mediaType Content-Type of the part
+    * contentId  Content-ID to be used as identification for the current
+    *            part, optional, if null one will be generated
+    * contentTransferEncoding
+    *            value used for the Content-Transfer-Encoding header
+    *            field of the part. It's optional, if you don't want to set
+    *            this pass null. Example values are: "7bit",
+    *            "quoted-printable", "base64", "8bit", "binary"
+    */
+   public OutputPart addPart(Object entity, MediaType mediaType,
+         String contentId, String contentTransferEncoding);
+
+   /**
+    * start-info parameter of the Content-Type.  An optional parameter.
+    * As described in RFC2387, section 3.3. The Start-Info Parameter
+    */
+   public String getStartInfo();
+}
+ </pre>
+   </div>
+
+   <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="multipart_related_example"/>26.2.3. Multipart/related message example</h3></div></div></div>
+      
+   <p>The client in this example creates a multipart/related message,
+      POSTs it to the endpoint and processes the multipart/related message
+      returned by the endpoint.
+   </p>
+      <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+         
+MultipartRelatedOutput mRelatedOutput = new MultipartRelatedOutput();
+mRelatedOutput.setStartInfo("text/html");
+mRelatedOutput.addPart("Bill", new MediaType("image", "png"), "bill", "binary");
+mRelatedOutput.addPart("Bob", new MediaType("image", "png"), "bob", "binary");
+
+Entity&lt;MultipartRelatedOutput&gt; entity = Entity.entity(mRelatedOutput,
+    new MediaType("multipart", "related"));
+
+Client client = ClientBuilder.newClient();
+WebTarget target = client.target(SOME_URL);
+Response response = target.request().post(entity);
+
+MultipartRelatedInput result = response.readEntity(
+      MultipartRelatedInput.class);
+Map&lt;String, InputPart&gt; map = result.getRelatedMap();
+Set&lt;String&gt; keys = map.keySet();
+boolean a = keys.contains("Bill");
+boolean b = keys.contains("Bob");
+for (InputPart inputPart : map.values()) {
+    String alterName = inputPart.getBody(String.class, null);
+}
+ </pre>
+      <p>Here is the endpoint the client above is calling.
+      </p>
+
+      <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+         
+@POST
+@Consumes("multipart/related")
+@Produces("multipart/related")
+@Path("post/related")
+public MultipartRelatedOutput postRelated(MultipartRelatedInput input)
+        throws IOException {
+
+  MultipartRelatedOutput rtnMRelatedOutput = new MultipartRelatedOutput();
+        rtnMRelatedOutput.setStartInfo("text/html");
+
+  for (Iterator&lt;InputPart&gt; it = input.getParts().iterator(); it.hasNext(); ) {
+      InputPart part = it.next();
+      String name = part.getBody(String.class, null);
+      rtnMRelatedOutput.addPart("Hello " + name,
+                    new MediaType("image", "png"), name, null);
+  }
+  return rtnMRelatedOutput;
+}
+ </pre>
+
+   </div>
+
+      <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="XML-binary_Optimized_Packaging"/>26.2.4. XML-binary Optimized Packaging (XOP)</h3></div></div></div>
+         
+         <p>RESTEasy supports XOP messages packaged as multipart/related messages
+            (<a class="link" href="">http://www.w3.org/TR/xop10/</a>).
+            A JAXB annotated POJO that also holds binary content can be transmitted using XOP.
+            XOP allows the binary data to skip going through the XML serializer because
+            binary data can be serialized differently from text and this can result in faster
+            transport time.
+         </p>
+         <p>RESTEasy requires annotation @XopWithMultipartRelated to be placed on any
+            endpoint method that returns an object that is to be to be processed with XOP
+            and on any endpoint input parameter that is to be processed by XOP.
+         </p>
+         <p>RESTEasy highly recommends, if you know the exact mime type of the POJO's
+            binary data, tag the field with annotation @XmlMimeType.  This annotation tells
+            JAXB the mime type of the binary content, however this is not required in order
+            to do XOP packaging.
+         </p>
+      </div>
+
+      <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="XopWithMultipartRelated_return_object_example"/>26.2.5. @XopWithMultipartRelated return object example</h3></div></div></div>
+         
+
+         <p>The data to be transmitted is class, <code class="code">ContextProvidersXop</code>.
+            Note that field <code class="code">bytes</code> is identified as an application/octet-stream
+            mime type using annotation @XmlMimeType
+         </p>
+
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+package org.jboss.resteasy.test.providers.multipart.resource;
+
+import javax.ws.rs.core.MediaType;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlMimeType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class ContextProvidersXop {
+
+   @XmlMimeType(MediaType.APPLICATION_OCTET_STREAM)
+   private byte[] bytes;
+
+   public ContextProvidersXop(final byte[] bytes) {
+      this.bytes = bytes;
+   }
+
+   public ContextProvidersXop() {}
+   public byte[] getBytes() {return bytes;}
+   public void setBytes(byte[] bytes) {this.bytes = bytes;}
+}
+ </pre>
+
+         <p>The endpoint returns an instance of <code class="code">ContextProvidersXop</code>.
+            Note annotation @XopWithMultipartRelated declared on the method because
+            we want the return object to use XOP packaging.
+         </p>
+
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+   @GET
+   @Path("get/xop")
+   @Produces("multipart/related")
+   @XopWithMultipartRelated
+   public ContextProvidersXop getXop() {
+      return new ContextProvidersXop("goodbye world".getBytes());
+   }
+ </pre>
+
+         <p>The client retreives the data as follows
+         </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+Client client = ClientBuilder.newClient();
+WebTarget target = client.target(SOME_URL);
+Response response = target.request().get();
+ContextProvidersXo entity = response.readEntity(ContextProvidersXop.class);
+client.close();
+ </pre>
+
+      </div>
+
+      <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="XopWithMultipartRelated_input_parameter_example"/>26.2.6. @XopWithMultipartRelated input parameter example</h3></div></div></div>
+         
+         <p>Here is an endpoint that has an input parameter that is
+            transmitted as an XOP package.  Note the @XopWithMultipartRelated
+            annotation on input parameter xop.
+         </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+   @POST
+   @Path("post/xop")
+   @Consumes("multipart/related")
+   public String postXop(@XopWithMultipartRelated ContextProvidersXop xop) {
+      return new String(xop.getBytes());
+   }
+ </pre>
+
+         <p>This client is sending the data to the endpoint above.</p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+ContextProvidersXop xop = new ContextProvidersXop("hello world".getBytes());
+Entity&lt;ContextProvidersXop&gt; entity = Entity.entity(xop,
+    new MediaType("multipart", "related"));
+
+Client client = ClientBuilder.newClient();
+WebTarget target = client.target(SOME_URL);
+Response response = target.request().post(entity);
+ </pre>
+
+      </div>
+
+
+</div>
+
+
+
+
+   <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="multipart_formData_group"/>26.3. Multipart/form-data</h2></div></div></div>
+      
+      <p>The MultiPart/Form-Data mime type is used in sending form data (rfc2388).
+         It can include data generated by user input, information that is typed, or
+         included from files that the user has selected.  "multipart/form-data" is
+         often found in web application HTML Form documents and is generally used
+         to upload files. The form-data format is the same as other multi-part formats,
+         except that each inlined piece of content has a name associated with it.
+      </p>
+
+
+   <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="Writing_multipart_formData"/>26.3.1. Writing multipart/form-data messages</h3></div></div></div>
+      
+
+      <p>Form data consists of key/value pairs.  RESTEasy provides class
+         <code class="code">MultipartFormDataOutput</code> to assist the user in specifying
+         the required information and generating a properly formatted message.
+         It is a subclass of <code class="code">MultipartOutput</code>.  And as with
+         multipart/mixed data sometimes there may be marshalling which is
+         sensitive to generic type metadata, in those cases use the methods
+         containing input parameter GenericType.
+      </p>
+
+      <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+         
+package org.jboss.resteasy.plugins.providers.multipart;
+
+public class MultipartFormDataOutput extends MultipartOutput
+{
+    public OutputPart addFormData(String key, Object entity,
+            MediaType mediaType)
+    public OutputPart addFormData(String key, Object entity, GenericType type,
+            MediaType mediaType)
+    public OutputPart addFormData(String key, Object entity, Class type,
+            Type genericType, MediaType mediaType)
+    public Map&lt;String, OutputPart&gt; getFormData()
+    public Map&lt;String, List&lt;OutputPart&gt;&gt; getFormDataMap()
+}
+</pre>
+   </div>
+
+
+   <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="Reading_multipart_formData"/>26.3.2. Reading multipart/form-data messages</h3></div></div></div>
+      
+      <p><code class="code">MultipartFormDataInput</code> is an interface class that
+         provides access to multipart/form-data message data. It is a subclass
+         of <code class="code">MultipartInput</code>. RESTEasy provides an implementation
+         of this class. It performs the work to retrieve message data.
+      </p>
+      <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+         
+package org.jboss.resteasy.plugins.providers.multipart;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.core.GenericType;
+
+public interface MultipartFormDataInput extends MultipartInput {
+   /**
+    * @return A parameter map containing a list of values per name.
+    */
+   Map&lt;String, List&lt;InputPart&gt;&gt; getFormDataMap();
+   &lt;T&gt; T getFormDataPart(String key, Class&lt;T&gt; rawType, Type genericType)
+         throws IOException;
+   &lt;T&gt; T getFormDataPart(String key, GenericType&lt;T&gt; type) throws IOException;
+}</pre>
+   </div>
+
+
+   <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="simple_multipart_formData_example"/>26.3.3. Simple multipart/form-data message example</h3></div></div></div>
+      
+      <p>The following example show how to read and write a simple
+         multipart/form-data message.
+      </p>
+      <p>The multipart/mixed message is created on the clientside using the
+         <code class="code">MultipartFormDataOutput</code> object.  One piece of form data
+         to be transfered is a very simple class, <code class="code">ContextProvidersName</code>.
+      </p>
+      <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+         
+package org.jboss.resteasy.test.providers.multipart.resource;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "name")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class ContextProvidersName {
+   @XmlElement
+   private String name;
+
+   public ContextProvidersName() {}
+   public ContextProvidersName(final String name) {this.name = name;}
+   public String getName() {return name;}
+}
+ </pre>
+     <p>The client creates and sends the message as follows:
+     </p>
+      <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+         
+      MultipartFormDataOutput output = new MultipartFormDataOutput();
+      output.addFormData("bill", new ContextProvidersCustomer("Bill"),
+         MediaType.APPLICATION_XML_TYPE);
+      output.addFormData("bob", "Bob", MediaType.TEXT_PLAIN_TYPE);
+
+      Entity&lt;MultipartFormDataOutput&gt; entity = Entity.entity(output,
+          new MediaType("multipart", "related"));
+
+      Client client = ClientBuilder.newClient();
+      WebTarget target = client.target(SOME_URL);
+      Response response = target.request().post(entity);
+ </pre>
+
+      <p>The endpoint receives the message and processes it.
+      </p>
+      <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+         
+   @POST
+   @Consumes("multipart/form-data")
+   @Produces(MediaType.APPLICATION_XML)
+   @Path("post/form")
+   public Response postForm(MultipartFormDataInput input)
+         throws IOException {
+
+      Map&lt;String, List&lt;InputPart&gt;&gt; map = input.getFormDataMap();
+      List&lt;ContextProvidersName&gt; names = new ArrayList&lt;ContextProvidersName&gt;();
+
+      for (Iterator&lt;String&gt; it = map.keySet().iterator(); it.hasNext(); ) {
+         String key = it.next();
+         InputPart inputPart = map.get(key).iterator().next();
+         if (MediaType.APPLICATION_XML_TYPE.equals(inputPart.getMediaType())) {
+            names.add(new ContextProvidersName(inputPart.getBody(
+                  ContextProvidersCustomer.class, null).getName()));
+         } else {
+            names.add(new ContextProvidersName(inputPart.getBody(
+                  String.class, null)));
+         }
+      }
+      return Response.ok().build();
+   }
+ </pre>
+
+
+   </div>
+
+
+      <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="Map_with_multipart_formData"/>26.3.4. java.util.Map with multipart/form-data</h3></div></div></div>
+         
+         <p>When the data of a multipart/form-data message is uniform it
+            does not need to be written in a <code class="code">MultipartFormDataOutput</code>
+            object.  It can be sent and received as a <code class="code">java.util.Map</code>
+            object.  RESTEasy performs the necessary work to read and write the
+            message data, however the Map object must declare the type it
+            is unmarshalling via the generic parameters in the Map type declaration.
+         </p>
+      <p>Here is an example of a client creating and sending a multipart/form-data
+         message.
+      </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+      Map&lt;String, ContextProvidersCustomer&gt; customers =
+              new HashMap&lt;String, ContextProvidersCustomer&gt;();
+      customers.put("bill", new ContextProvidersCustomer("Bill"));
+      customers.put("bob", new ContextProvidersCustomer("Bob"));
+
+      Entity&lt;Map&lt;String, ContextProvidersCustomer&gt;&gt; entity =
+        Entity.entity(customers, new MediaType("multipart", "form-data"));
+
+      Client client = ClientBuilder.newClient();
+      WebTarget target = client.target(SOME_URL);
+      Response response = target.request().post(entity)
+ </pre>
+
+   <p>This is the endpoint the client above is calling.  It receives
+      the message and processes it.
+   </p>
+
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+ @POST
+ @Consumes("multipart/form-data")
+ @Produces(MediaType.APPLICATION_XML)
+ @Path("post/map")
+ public Response postMap(Map&lt;String, ContextProvidersCustomer&gt; customers)
+         throws IOException {
+
+   List&lt;ContextProvidersName&gt; names = new ArrayList&lt;ContextProvidersName&gt;();
+   for (Iterator&lt;String&gt; it = customers.keySet().iterator(); it.hasNext(); ) {
+       String key = it.next();
+       ContextProvidersCustomer customer = customers.get(key);
+       names.add(new ContextProvidersName(key + ":" + customer.getName()));
+   }
+   return Response.ok().build();
+ }
+ </pre>
+
+      </div>
+
+
+
+      <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="Multipart_FormData_Output"/>26.3.5. Multipart/form-data java.util.Map as method return type</h3></div></div></div>
+         
+         <p>A <code class="code">java.util.Map</code> object representing a multipart/form-data
+            message can be returned from an endpoint as long as the message data
+            is uniform,  however the endpoint method MUST be annotated with
+            @PartType which declares the media type of the Map entries and the
+            Map object must declare the type it is unmarshalling via the generic
+            parameters in the Map type declaration.  RESTEasy requires this
+            information so it can generate the message properly.</p>
+
+      <p>Here is an example of an endpoint returning a Map of
+         <code class="code">ContextProvidersCustomer</code> to the client.
+      </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+   @GET
+   @Produces("multipart/form-data")
+   @PartType("application/xml")
+   @Path("get/map")
+   public Map&lt;String, ContextProvidersCustomer&gt; getMap() {
+
+      Map&lt;String, ContextProvidersCustomer&gt; map =
+          new HashMap&lt;String, ContextProvidersCustomer&gt;();
+      map.put("bill", new ContextProvidersCustomer("Bill"));
+      map.put("bob", new ContextProvidersCustomer("Bob"));
+      return map;
+   }
+ </pre>
+
+         <p>The client would retrieve the data as follows.</p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+      Client client = ClientBuilder.newClient();
+      WebTarget target = client.target(SOME_URL);
+      Response response = target.request().get();
+      MultipartFormDataInput entity = response.readEntity(
+            MultipartFormDataInput.class);
+      client.close();
+
+      ContextProvidersCustomer bill = entity.getFormDataPart("bill",
+            ContextProvidersCustomer.class, null);
+      ContextProvidersCustomer bob = entity.getFormDataPart("bob",
+            ContextProvidersCustomer.class, null);
+ </pre>
+
+      </div>
+
+
+
+      <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="multipartform_annotation"/>26.3.6. @MultipartForm and POJOs</h3></div></div></div>
+         
+         <p>If you have an exact knowledge of your multipart/form-data packets,
+            you can map them to and from a POJO class using the annotation
+            <code class="code">@org.jboss.resteasy.annotations.providers.multipart.MultipartForm</code>
+            and the JAX-RS <code class="code">@FormParam</code> annotation. Simply define a POJO with
+            at least a default constructor and annotate its fields and/or properties
+            with <code class="code">@FormParams</code>. These <code class="code">@FormParams</code> must
+            also be annotated with
+            <code class="code">@org.jboss.resteasy.annotations.providers.multipart.PartType</code>
+            if you are doing output. For example:
+         </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            public class CustomerProblemForm {
+    @FormParam("customer")
+    @PartType("application/xml")
+    private Customer customer;
+
+    @FormParam("problem")
+    @PartType("text/plain")
+    private String problem;
+
+    public Customer getCustomer() { return customer; }
+    public void setCustomer(Customer cust) { this.customer = cust; }
+    public String getProblem() { return problem; }
+    public void setProblem(String problem) { this.problem = problem; }
+}</pre>
+         <p>After defining the POJO class you can use it to represent multipart/form-data. Here's
+            an example of sending a <code class="code">CustomerProblemForm</code> using the
+            RESTEasy client framework:
+         </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+@Path("portal")
+public interface CustomerPortal {
+
+   @Path("issues/{id}")
+   @Consumes("multipart/form-data")
+   @PUT
+   public void putProblem(@MultipartForm CustomerProblemForm,
+                          @PathParam("id") int id) {
+      CustomerPortal portal = ProxyFactory.create(
+            CustomerPortal.class, "http://example.com");
+      CustomerProblemForm form = new CustomerProblemForm();
+      form.setCustomer(...);
+      form.setProblem(...);
+
+      portal.putProblem(form, 333);
+   }
+}</pre>
+         <p>Note that the <code class="code">@MultipartForm</code> annotation was used to tell RESTEasy
+            that the object has a <code class="code">@FormParam</code>
+            and that it should be marshalled from that. You can also use the same
+            object to receive multipart data.
+            Here is an example of the server side counterpart of our customer portal.
+         </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            @Path("portal")
+public class CustomerPortalServer {
+
+    @Path("issues/{id})
+    @Consumes("multipart/form-data")
+    @PUT
+    public void putIssue(@MultipartForm CustoemrProblemForm,
+                         @PathParam("id") int id) {
+       ... write to database...
+    }
+}</pre>
+         <p>In addition to the XML data format, JSON formatted data can be
+            used to represent POJO classes.
+            To achieve this goal, plug in a JSON provider into your project. For example,
+            add the RESTEasy Jackson2 Provider into your project's dependency scope:
+         </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+&lt;dependency&gt;
+    &lt;groupId&gt;org.jboss.resteasy&lt;/groupId&gt;
+    &lt;artifactId&gt;resteasy-jackson2-provider&lt;/artifactId&gt;
+    &lt;version&gt;${resteasy.ver}&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
+         <p>
+            Now you can write an ordinary POJO class, which Jackson2 will
+            automatically serialize/deserialize into JSON format:
+         </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+public class JsonUser {
+   private String name;
+
+   public JsonUser() {}
+   public JsonUser(final String name) { this.name = name; }
+   public String getName() { return name; }
+   public void setName(String name) { this.name = name; }
+}</pre>
+         <p>The resource class can be written like this:</p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+import org.jboss.resteasy.annotations.providers.multipart.PartType;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+
+@Path("/")
+public class JsonFormResource {
+
+    public JsonFormResource() {
+    }
+
+    public static class Form {
+
+    @FormParam("user")
+    @PartType("application/json")
+    private JsonUser user;
+
+    public Form() {
+    }
+
+    public Form(final JsonUser user) {
+    this.user = user;
+    }
+
+    public JsonUser getUser() {
+      return user;
+    }
+}
+
+    @PUT
+    @Path("form/class")
+    @Consumes("multipart/form-data")
+    public String putMultipartForm(@MultipartForm Form form) {
+         return form.getUser().getName();
+    }
+}</pre>
+         <p>As the code shown above, you can see the PartType of JsonUser is marked as "application/json",
+            and it's included in the "@MultipartForm Form" class instance.
+         </p>
+         <p>To send the request to the resource method, you need to send JSON formatted data
+            that is corresponding with the JsonUser class. The easiest way to do
+            this is to use a proxy class that has
+            the same definition of the resource class. Here is the sample code
+            of the proxy class that is corresponding with the JsonFormResource class:
+         </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+
+@Path("/")
+public interface JsonForm {
+
+@PUT
+@Path("form/class")
+@Consumes("multipart/form-data")
+  String putMultipartForm(@MultipartForm JsonFormResource.Form form);
+}</pre>
+         <p>And then use the proxy class above to send the request to the
+            resource method correctly.  Here is the sample code:
+         </p>
+         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+            
+ResteasyClient client = (ResteasyClient)ClientBuilder.newClient();
+...
+JsonForm proxy = client.target("your_request_url_address")
+                       .proxy(JsonForm.class);
+String name = proxy.putMultipartForm(new JsonFormResource
+                   .Form(new JsonUser("bill")));
+...</pre>
+         <p>If your client side has the Jackson2 provider included, the
+            request will be marshaled correctly.
+            The JsonUser data will be converted into JSON format and sent
+            to the server side.
+            You can also use hand-crafted JSON data as your request and send
+            it to server side, but you have to
+            make sure the request data is in the correct form.
+         </p>
+      </div>
+
+</div>
+
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="multipart_parsing_note"/>26.4. Note about multipart parsing and working with other frameworks</h2></div></div></div>
+        
+        <p>There are a lot of frameworks doing multipart parsing automatically
+           with the help of filters and interceptors, like
+           <code class="code">org.jboss.seam.web.MultipartFilter</code> in Seam and
+           <code class="code">org.springframework.web.multipart.MultipartResolver</code> in Spring,
+            however these incoming multipart request stream can be parsed only once.
+           RESTEasy users working with multipart should
+            make sure that nothing parses the stream before RESTEasy gets it.
+        </p>
+    </div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="multipart_overwrite_default_content_type"/>26.5. Overwriting the default fallback content type for multipart messages</h2></div></div></div>
+        
+        <p>By default if no Content-Type header is present in a part,
+           <code class="code">"text/plain; charset=us-ascii"</code> is used as the fallback.
+           This is the value defined by the MIME RFC. However some web clients,
+           like most, if not all, web browsers,
+            do not send Content-Type headers for all fields in a multipart/form-data
+           request.  They send them only for the file parts.  This can cause
+           character encoding and unmarshalling errors on the server side. To correct
+           this there is an option to define an other, non-rfc compliant fallback value.
+           This can be done dynamically per request with the filter facility of JAX-RS
+           3.0. In the following example we will set
+           <code class="code">"*/*; charset=UTF-8"</code> as the new default fallback:
+            </p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+
+@Provider
+public class InputPartDefaultCharsetOverwriteContentTypeCharsetUTF8
+   implements ContainerRequestFilter {
+
+   @Override
+   public void filter(ContainerRequestContext requestContext) throws IOException
+   {
+      requestContext.setProperty(InputPart.DEFAULT_CONTENT_TYPE_PROPERTY, "*/*; charset=UTF-8");
+   }
+}</pre><p>
+        </p>
+    </div>
+
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="multipart_overwrite_content_type"/>26.6. Overwriting the content type for multipart messages</h2></div></div></div>
+        
+       <p>Using attribute, InputPart.DEFAULT_CONTENT_TYPE_PROPERTY
+          and a filter enables the setting of a default Content-Type,
+          It is also possible to override the Content-Type by setting a
+          different media type with method <code class="code">InputPart.setMediaType()</code>.
+           Here is an example:
+       </p>
+
+        <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+
+@POST
+@Path("query")
+@Consumes(MediaType.MULTIPART_FORM_DATA)
+@Produces(MediaType.TEXT_PLAIN)
+public Response setMediaType(MultipartInput input) throws IOException
+{
+    List&lt;InputPart&gt; parts = input.getParts();
+    InputPart part = parts.get(0);
+    part.setMediaType(MediaType.valueOf("application/foo+xml"));
+    String s = part.getBody(String.class, null);
+    ...
+}</pre>
+
+    </div>
+
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="multipart_overwrite_default_charset"/>26.7. Overwriting the default fallback charset for multipart messages</h2></div></div></div>
+        
+
+        <p>Sometimes, a part may have a Content-Type header with no charset parameter. If the
+            <code class="code">InputPart.DEFAULT_CONTENT_TYPE_PROPERTY</code>
+            property is set and the value has a charset parameter,
+            that value will be appended to an existing Content-Type header that has no charset parameter.
+            It is also possible to specify a default charset using the constant
+            <code class="code">InputPart.DEFAULT_CHARSET_PROPERTY</code>
+            (actual value "resteasy.provider.multipart.inputpart.defaultCharset"):
+        </p>
+
+        <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+
+@Provider
+public class InputPartDefaultCharsetOverwriteContentTypeCharsetUTF8
+   implements ContainerRequestFilter {
+
+   @Override
+   public void filter(ContainerRequestContext requestContext) throws IOException
+   {
+      requestContext.setProperty(InputPart.DEFAULT_CHARSET_PROPERTY, "UTF-8");
+   }
+}</pre>
+
+        <p>If both <code class="code">InputPart.DEFAULT_CONTENT_TYPE_PROPERTY</code> and
+        </p>
+        <p>
+            <code class="code">InputPart.DEFAULT_CHARSET_PROPERTY</code>
+            are set, then the value of
+        </p>
+        <p>
+            <code class="code">InputPart.DEFAULT_CHARSET_PROPERTY</code>
+            will override any charset in the value of
+        </p>
+        <p>
+            <code class="code">InputPart.DEFAULT_CONTENT_TYPE_PROPERTY</code>.
+        </p>
+    </div>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="json-p.html"><strong>上一页</strong>第 25 章 JSON Support via Java EE 7 JSON-P API</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="JAX-RS_2.1_additions.html"><strong>下一页</strong>第 27 章 JAX-RS 2.1 Additions</a></li></ul></body></html>

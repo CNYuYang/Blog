@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 19 章 Resources metadata configuration</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="JAX-RS_Resource_Locators_and_Sub_Resources.html" title="第 18 章 JAX-RS Resource Locators and Sub Resources"/><link rel="next" href="JAX-RS_Content_Negotiation.html" title="第 20 章 JAX-RS Content Negotiation"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="JAX-RS_Resource_Locators_and_Sub_Resources.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="JAX-RS_Content_Negotiation.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Resources_Metadata"/>第 19 章 Resources metadata configuration</h2></div></div></div>
+
+
+<p>
+When processing JAX-RS deployments, RESTEasy relies on <span class="emphasis"><em>ResourceBuilder</em></span> to create metadata for each JAX-RS resource. Such metadata is defined using the metadata SPI in package <span class="emphasis"><em>org.jboss.resteasy.spi.metadata</em></span>, in particular the <span class="emphasis"><em>ResourceClass</em></span> interface:
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+package org.jboss.resteasy.spi.metadata;
+
+public interface ResourceClass
+{
+  String getPath();
+
+  Class&lt;?&gt; getClazz();
+
+  ResourceConstructor getConstructor();
+
+  FieldParameter[] getFields();
+
+  SetterParameter[] getSetters();
+
+  ResourceMethod[] getResourceMethods();
+
+  ResourceLocator[] getResourceLocators();
+}
+</pre><p>
+
+Among the other classes and interfaces defining metadata SPI, the following interfaces are worth a mention here:
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public interface ResourceConstructor
+{
+  ResourceClass getResourceClass();
+
+  Constructor getConstructor();
+
+  ConstructorParameter[] getParams();
+}
+
+public interface ResourceMethod extends ResourceLocator
+{
+  Set&lt;String&gt; getHttpMethods();
+
+  MediaType[] getProduces();
+
+  MediaType[] getConsumes();
+
+  boolean isAsynchronous();
+
+  void markAsynchronous();
+}
+
+public interface ResourceLocator
+{
+  ResourceClass getResourceClass();
+
+  Class&lt;?&gt; getReturnType();
+
+  Type getGenericReturnType();
+
+  Method getMethod();
+
+  Method getAnnotatedMethod();
+
+  MethodParameter[] getParams();
+
+  String getFullpath();
+
+  String getPath();
+
+}
+</pre><p>
+</p>
+
+<p>
+Now, the interesting point is that RESTEasy allows tuning the metadata generation by providing implementations of the <span class="emphasis"><em>ResourceClassProcessor</em></span> interface:
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+package org.jboss.resteasy.spi.metadata;
+
+public interface ResourceClassProcessor
+{
+
+  /**
+   * Allows the implementation of this method to modify the resource metadata represented by
+   * the supplied {@link ResourceClass} instance. Implementation will typically create
+   * wrappers which modify only certain aspects of the metadata.
+   *
+   * @param clazz The original metadata
+   * @return the (potentially modified) metadata (never null)
+   */
+  ResourceClass process(ResourceClass clazz);
+
+}
+</pre><p>
+
+The processors are meant to be, and are resolved as, regular JAX-RS annotated providers. They allow for wrapping resource metadata classes with custom versions that can be used for various advanced scenarios like
+</p><div class="itemizedlist"><ul><li>
+adding additional resource method/locators to the resource
+</li><li>
+altering the http methods
+</li><li>
+altering the @Produces / @Consumes media types
+</li><li>
+...
+</li></ul></div><p>
+
+
+
+
+</p>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="JAX-RS_Resource_Locators_and_Sub_Resources.html"><strong>上一页</strong>第 18 章 JAX-RS Resource Locators and Sub Resources</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="JAX-RS_Content_Negotiation.html"><strong>下一页</strong>第 20 章 JAX-RS Content Negotiation</a></li></ul></body></html>

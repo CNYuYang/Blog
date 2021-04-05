@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 6 章 @QueryParam</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="_PathParam.html" title="第 5 章 @PathParam"/><link rel="next" href="_HeaderParam.html" title="第 7 章 @HeaderParam"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_PathParam.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="_HeaderParam.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="_QueryParam"/>第 6 章 @QueryParam</h2></div></div></div>
+
+
+<div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="note"><h2>注意</h2>
+   <p>
+      RESTEasy <a class="link" href="_NewParam.html" title="第 13 章 Improved @…Param annotations">supports <code class="code">@QueryParam</code> annotations with no parameter name.</a>.
+   </p>
+</div>
+
+<p>
+
+The @QueryParam annotation allows you to map a URI query string parameter or url form encoded parameter to your method invocation.
+</p>
+<p>
+
+GET /books?num=5
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@GET
+public String getBooks(@QueryParam("num") int num) {
+...
+}
+</pre><p>
+</p>
+<p>
+
+Currently since RESTEasy is built on top of a Servlet, it does not distinguish between URI query strings or url form encoded parameters. Like PathParam, your parameter type can be an String, primitive, or class that has a String constructor or static valueOf() method.
+</p>
+<p>
+
+</p>
+<p>
+
+
+</p>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_PathParam.html"><strong>上一页</strong>第 5 章 @PathParam</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="_HeaderParam.html"><strong>下一页</strong>第 7 章 @HeaderParam</a></li></ul></body></html>

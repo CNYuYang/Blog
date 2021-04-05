@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 41 章 Embedded Containers</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Reactive.html" title="第 40 章 Reactive programming support"/><link rel="next" href="RESTEasy_Server-side_Mock_Framework.html" title="第 42 章 Server-side Mock Framework"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Reactive.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="RESTEasy_Server-side_Mock_Framework.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="RESTEasy_Embedded_Container"/>第 41 章 Embedded Containers</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="RESTEasy_Embedded_Container.html#d4e2905">41.1. Undertow</a></span></dt><dt><span class="section"><a href="RESTEasy_Embedded_Container.html#d4e2909">41.2. Sun JDK HTTP Server</a></span></dt><dt><span class="section"><a href="RESTEasy_Embedded_Container.html#d4e2916">41.3. Netty</a></span></dt><dt><span class="section"><a href="RESTEasy_Embedded_Container.html#d4e2922">41.4. Vert.x</a></span></dt><dt><span class="section"><a href="RESTEasy_Embedded_Container.html#d4e2938">41.5. EmbeddedJaxrsServer</a></span></dt></dl></div>
+
+
+    <p>RESTEasy has a few different plugins for different embedabble HTTP and/or Servlet containers if use RESTEasy in
+    a test environment, or within an environment where you do not want a Servlet engine dependency.</p>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2905"/>41.1. Undertow</h2></div></div></div>
+        
+        <p>
+            Undertow is a new Servlet Container that is used by WildFly (JBoss Community Server).  You can embed
+            Undertow as you wish.  Here's a a test that shows it in action.
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+import io.undertow.servlet.api.DeploymentInfo;
+import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
+import org.jboss.resteasy.test.TestPortProvider;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.Application;
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * @author &lt;a href="mailto:bill@burkecentral.com"&gt;Bill Burke&lt;/a&gt;
+ * @version $Revision: 1 $
+ */
+public class UndertowTest
+{
+   private static UndertowJaxrsServer server;
+
+   @Path("/test")
+   public static class Resource
+   {
+      @GET
+      @Produces("text/plain")
+      public String get()
+      {
+         return "hello world";
+      }
+   }
+
+   @ApplicationPath("/base")
+   public static class MyApp extends Application
+   {
+      @Override
+      public Set&lt;Class&lt;?&gt;&gt; getClasses()
+      {
+         HashSet&lt;Class&lt;?&gt;&gt; classes = new HashSet&lt;Class&lt;?&gt;&gt;();
+         classes.add(Resource.class);
+         return classes;
+      }
+   }
+
+   @BeforeClass
+   public static void init() throws Exception
+   {
+      server = new UndertowJaxrsServer().start();
+   }
+
+   @AfterClass
+   public static void stop() throws Exception
+   {
+      server.stop();
+   }
+
+   @Test
+   public void testApplicationPath() throws Exception
+   {
+      server.deployOldStyle(MyApp.class);
+      Client client = ClientBuilder.newClient();
+      String val = client.target(TestPortProvider.generateURL("/base/test"))
+                         .request().get(String.class);
+      Assert.assertEquals("hello world", val);
+      client.close();
+   }
+
+   @Test
+   public void testApplicationContext() throws Exception
+   {
+      server.deployOldStyle(MyApp.class, "/root");
+      Client client = ClientBuilder.newClient();
+      String val = client.target(TestPortProvider.generateURL("/root/test"))
+                         .request().get(String.class);
+      Assert.assertEquals("hello world", val);
+      client.close();
+   }
+
+   @Test
+   public void testDeploymentInfo() throws Exception
+   {
+      DeploymentInfo di = server.undertowDeployment(MyApp.class);
+      di.setContextPath("/di");
+      di.setDeploymentName("DI");
+      server.deploy(di);
+      Client client = ClientBuilder.newClient();
+      String val = client.target(TestPortProvider.generateURL("/di/base/test"))
+                         .request().get(String.class);
+      Assert.assertEquals("hello world", val);
+      client.close();
+   }
+}
+
+</pre><p>
+        </p>
+    </div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2909"/>41.2. Sun JDK HTTP Server</h2></div></div></div>
+        
+        <p>
+            The Sun JDK comes with a simple HTTP server implementation (com.sun.net.httpserver.HttpServer) which you
+            can run RESTEasy on top of.
+        </p>
+    <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class=""> 
+      HttpServer httpServer = HttpServer.create(new InetSocketAddress(port), 10);
+      contextBuilder = new HttpContextBuilder();
+      contextBuilder.getDeployment().getActualResourceClasses().add(SimpleResource.class);
+      HttpContext context = contextBuilder.bind(httpServer);
+      context.getAttributes().put("some.config.info", "42");
+      httpServer.start();
+
+      contextBuilder.cleanup();
+      httpServer.stop(0);
+    </pre>
+    <p>
+        Create your HttpServer the way you want then use the org.jboss.resteasy.plugins.server.sun.http.HttpContextBuilder to initialize Resteasy
+        and bind it to an HttpContext.  The HttpContext attributes are available by injecting in a org.jboss.resteasy.spi.ResteasyConfiguration
+        interface using @Context within your provider and resource classes.
+
+    </p>
+    <p>Maven project you must include is:</p>
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class=""> 
+  &lt;dependency&gt;
+      &lt;groupId&gt;org.jboss.resteasy&lt;/groupId&gt;
+      &lt;artifactId&gt;resteasy-jdk-http&lt;/artifactId&gt;
+      &lt;version&gt;4.7.0-SNAPSHOT&lt;/version&gt;
+  &lt;/dependency&gt;
+</pre>
+
+   
+    </div>
+
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2916"/>41.3. Netty</h2></div></div></div>
+        
+        <p>
+            RESTEasy has integration with the popular Netty project as well..
+        </p>
+    <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class=""> 
+   public static void start(ResteasyDeployment deployment) throws Exception
+   {
+      netty = new NettyJaxrsServer();
+      netty.setDeployment(deployment);
+      netty.setPort(TestPortProvider.getPort());
+      netty.setRootResourcePath("");
+      netty.setSecurityDomain(null);
+      netty.start();
+   }
+    </pre>
+
+    <p>Maven project you must include is:</p>
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class=""> 
+  &lt;dependency&gt;
+      &lt;groupId&gt;org.jboss.resteasy&lt;/groupId&gt;
+      &lt;artifactId&gt;resteasy-netty4&lt;/artifactId&gt;
+      &lt;version&gt;4.7.0-SNAPSHOT&lt;/version&gt;
+  &lt;/dependency&gt;
+</pre>
+
+    </div>
+  <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2922"/>41.4. Vert.x</h2></div></div></div>
+    
+    <p>
+      RESTEasy has integration with the popular Vert.x project as well..
+    </p>
+    <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class=""> 
+   public static void start(VertxResteasyDeployment deployment) throws Exception
+   {
+      VertxJaxrsServer server = new VertxJaxrsServer();
+      server.setDeployment(deployment);
+      server.setPort(TestPortProvider.getPort());
+      server.setRootResourcePath("");
+      server.setSecurityDomain(null);
+      server.start();
+   }
+    </pre>
+
+    <p>Maven project you must include is:</p>
+    <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class=""> 
+  &lt;dependency&gt;
+      &lt;groupId&gt;org.jboss.resteasy&lt;/groupId&gt;
+      &lt;artifactId&gt;resteasy-vertx&lt;/artifactId&gt;
+      &lt;version&gt;4.7.0-SNAPSHOT&lt;/version&gt;
+  &lt;/dependency&gt;
+    </pre>
+
+    <p>The server will bootstrap its own Vert.x instance and Http server.</p>
+
+    <p>When a resource is called, it is done with the Vert.x Event Loop thread, keep in mind to
+    not block this thread and respect the Vert.x programming model, see the related Vert.x <a class="ulink" href="http://vertx.io/docs/vertx-core/java/#_don_t_block_me">manual page</a>.</p>
+
+    <p>Vert.x extends the RESTEasy registry to  provide a new binding scope that creates resources per Event Loop:</p>
+    <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class=""> 
+  VertxResteasyDeployment deployment = new VertxResteasyDeployment();
+  // Create an instance of resource per Event Loop
+  deployment.getRegistry().addPerInstanceResource(Resource.class);
+    </pre>
+
+    <p>The per instance binding scope caches the same resource instance for each event loop providing the same
+    concurrency model than a verticle deployed multiple times.</p>
+
+    <p>Vert.x can also embed a RESTEasy deployment, making easy to use Jax-RS annotated controller in Vert.x applications: </p>
+    <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class=""> 
+  Vertx vertx = Vertx.vertx();
+  HttpServer server = vertx.createHttpServer();
+
+  // Set an handler calling Resteasy
+  server.requestHandler(new VertxRequestHandler(vertx, deployment));
+
+  // Start the server
+  server.listen(8080, "localhost");
+    </pre>
+
+    <p>Vert.x objects can be injected in annotated resources:</p>
+    <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class=""> 
+  @GET
+  @Path("/somepath")
+  @Produces("text/plain")
+  public String context(
+      @Context io.vertx.core.Context context,
+      @Context io.vertx.core.Vertx vertx,
+      @Context io.vertx.core.http.HttpServerRequest req,
+      @Context io.vertx.core.http.HttpServerResponse resp) {
+    return "the-response";
+  }
+    </pre>
+
+  </div>
+   <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2938"/>41.5. EmbeddedJaxrsServer</h2></div></div></div>
+   
+   <p>
+       <code class="classname">EmbeddedJaxrsServer</code> is an interface provided to enable each embedded container
+       wrapper class to configurate, start and stop its container in a standard fashion.
+       Each of <code class="classname">UndertowJaxrsServer</code>, <code class="classname">SunHttpJaxrsServer</code>,
+       <code class="classname">NettyJaxrsServer</code>, and <code class="classname">VertxJaxrsServer</code> implements
+       <code class="classname">EmbeddedJaxrsServer</code>.
+   </p>
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class=""> 
+      public interface EmbeddedJaxrsServer&lt;T&gt; {
+         T deploy();
+         T start();
+         void stop();
+         ResteasyDeployment getDeployment();
+         T setDeployment(ResteasyDeployment deployment);
+         T setPort(int port);
+         T setHostname(String hostname);
+         T setRootResourcePath(String rootResourcePath);
+         T setSecurityDomain(SecurityDomain sc);
+      }
+    </pre>
+   </div>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Reactive.html"><strong>上一页</strong>第 40 章 Reactive programming support</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="RESTEasy_Server-side_Mock_Framework.html"><strong>下一页</strong>第 42 章 Server-side Mock Framework</a></li></ul></body></html>

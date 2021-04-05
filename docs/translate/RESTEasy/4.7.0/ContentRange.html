@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 34 章 Content-Range Support</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="ch33.html" title="第 33 章 CORS"/><link rel="next" href="Cache_NoCache_CacheControl.html" title="第 35 章 RESTEasy Caching Features"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="ch33.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Cache_NoCache_CacheControl.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="ContentRange"/>第 34 章 Content-Range Support</h2></div></div></div>
+   
+   <p>
+      RESTEasy supports <code class="literal">Range</code> requests for <code class="literal">java.io.File</code> response entities.
+   </p>
+      <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+   @Path("/")
+   public class Resource {
+      @GET
+      @Path("file")
+      @Produces("text/plain")
+      public File getFile()
+      {
+         return file;
+      }
+   }
+
+      Response response = client.target(generateURL("/file")).request()
+              .header("Range", "1-4").get();
+      Assert.assertEquals(response.getStatus(), 206);
+      Assert.assertEquals(4, response.getLength());
+      System.out.println("Content-Range: " + response.getHeaderString("Content-Range"));
+
+
+      </pre>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="ch33.html"><strong>上一页</strong>第 33 章 CORS</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="Cache_NoCache_CacheControl.html"><strong>下一页</strong>第 35 章 RESTEasy Caching Features</a></li></ul></body></html>

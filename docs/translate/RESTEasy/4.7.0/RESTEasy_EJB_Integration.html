@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 47 章 EJB Integration</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="ch46.html" title="第 46 章 Body Encryption and Signing via SMIME"/><link rel="next" href="RESTEasy_Spring_Integration.html" title="第 48 章 Spring Integration"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="ch46.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="RESTEasy_Spring_Integration.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="RESTEasy_EJB_Integration"/>第 47 章 EJB Integration</h2></div></div></div>
+
+
+<p>
+
+To integrate with EJB you must first modify your EJB's published interfaces.  RESTEasy currently only has simple portable integration with EJBs so you must also manually configure your RESTEasy WAR.
+</p>
+<p>
+
+
+</p>
+<p>
+
+RESTEasy currently only has simple integration with EJBs.  To make an EJB a JAX-RS resource, you must annotate an SLSB's @Remote or @Local interface with JAX-RS annotations:
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Local
+@Path("/Library")
+public interface Library {
+   
+   @GET
+   @Path("/books/{isbn}")
+   public String getBook(@PathParam("isbn") String isbn);
+}
+
+@Stateless
+public class LibraryBean implements Library {
+
+...
+
+}
+</pre><p>
+</p>
+<p>
+
+</p>
+<p>
+
+
+</p>
+<p>
+
+Next, in RESTEasy's web.xml file you must manually register the EJB with RESTEasy using the resteasy.jndi.resources &lt;context-param&gt;
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+&lt;web-app&gt;
+   &lt;display-name&gt;Archetype Created Web Application&lt;/display-name&gt;
+   &lt;context-param&gt;
+      &lt;param-name&gt;resteasy.jndi.resources&lt;/param-name&gt;
+      &lt;param-value&gt;LibraryBean/local&lt;/param-value&gt;
+   &lt;/context-param&gt;
+
+   ...
+&lt;/web-app&gt;
+</pre><p>
+</p>
+<p>
+
+This is the only portable way we can offer EJB integration.  Future versions of RESTEasy will have tighter integration
+    with WildFly so you do not have to do any manual registrations or modifications to web.xml.  For right now though,
+    we're focusing on portability.
+</p>
+<p>
+
+</p>
+<p>
+
+
+</p>
+<p>
+
+If you're using RESTEasy with an EAR and EJB, a good structure to have is:
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+my-ear.ear
+|------myejb.jar
+|------resteasy-jaxrs.war
+       |
+       ----WEB-INF/web.xml
+       ----WEB-INF/lib (nothing)
+|------lib/
+       |
+       ----All RESTEasy jar files
+</pre><p>
+</p>
+<p>
+
+From the distribution, remove all libraries from WEB-INF/lib and place them in a common EAR lib.  OR.  Just place the RESTEasy jar dependencies in your application server's system classpath.  (i.e. In JBoss put them in server/default/lib)
+</p>
+<p>
+
+An example EAR project is available from our testsuite here.
+</p>
+<p>
+
+
+</p>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="ch46.html"><strong>上一页</strong>第 46 章 Body Encryption and Signing via SMIME</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="RESTEasy_Spring_Integration.html"><strong>下一页</strong>第 48 章 Spring Integration</a></li></ul></body></html>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 38 章 Asynchronous Job Service</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Asynchronous_HTTP_Request_Processing.html" title="第 37 章 Asynchronous HTTP Request Processing"/><link rel="next" href="Async_Injection.html" title="第 39 章 Asynchronous Injection"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Asynchronous_HTTP_Request_Processing.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Async_Injection.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="async_job_service"/>第 38 章 Asynchronous Job Service</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="async_job_service.html#async_job">38.1. Using Async Jobs</a></span></dt><dt><span class="sect1"><a href="async_job_service.html#oneway">38.2. Oneway: Fire and Forget</a></span></dt><dt><span class="sect1"><a href="async_job_service.html#async_job_setup">38.3. Setup and Configuration</a></span></dt></dl></div>
+   
+   <p>
+      The RESTEasy Asynchronous Job Service is an implementation of the Asynchronous Job pattern defined in O'Reilly's "Restful Web Services" book.  The idea of it is to bring asynchronicity to a synchronous protocol.
+   </p>
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="async_job"/>38.1. Using Async Jobs</h2></div></div></div>
+     
+      <p>While HTTP is a synchronous protocol
+      it does have a faint idea of asynchronous invocations.  The HTTP 1.1 response code 202, "Accepted" means that the server
+      has received and accepted the response for processing, but the processing has not yet been completed.  The RESTEasy 
+      Asynchronous Job Service builds around this idea.
+   </p>
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+POST http://example.com/myservice?asynch=true
+</pre>
+   <p>
+    For example, if you make the above post with the asynch query parameter set to true, RESTEasy will return a 202, "Accepted" response code and run the invocation in the background.  It also sends back a Location header with a URL pointing to where the response of the background method is located.
+   </p>
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+HTTP/1.1 202 Accepted
+Location: http://example.com/asynch/jobs/3332334
+</pre>
+   <p>
+   The URI will have the form of:
+   </p>
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+/asynch/jobs/{job-id}?wait={millisconds}|nowait=true
+</pre>
+   <p>You can perform the GET, POST, and DELETE operations on this job URL.  GET returns whatever the JAX-RS resource method you invoked
+   returned as a response if the job was completed.  If the job has not completed, this GET will return a response code of 202, Accepted.  Invoking GET does not remove the job, so you can call it multiple times.  When RESTEasy's job queue gets full, it will evict
+the least recently used job from memory.  You can manually clean up after yourself by calling DELETE on the URI.  POST does
+a read of the JOB response and will remove the JOB it has been completed.
+</p>
+   <p>Both GET and POST allow you to specify a maximum
+wait time in milliseconds, a "wait" query parameter.  Here's an example:
+</p>
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+POST http://example.com/asynch/jobs/122?wait=3000
+</pre>
+   <p>  If you do not specify a "wait" parameter, the GET or POST will not wait at all if the job is not complete.</p>
+   <p>  NOTE!!  While you can invoke GET, DELETE, and PUT methods asynchronously, this breaks the HTTP 1.1 contract of these methods.  While these invocations may not change the state of the resource if invoked more than once, they do change the state of the server as new Job entries with each invocation.  If you want to be a purist, stick with only invoking POST methods asynchronously.
+   </p>
+   <p> Security NOTE!  RESTEasy role-based security (annotations) does not work with the Asynchronous Job Service.  You must use
+   XML declarative security within your web.xml file. Why? It is impossible to implement role-based security portably.  In the future, we may have specific JBoss integration, but will not support other environments.</p>
+   <p>NOTE. A <code class="classname">SecureRandom</code> object is used to generate unique job ids. For security purposes, the
+   <code class="classname">SecureRandom</code> is periodically reseeded. By default, it is reseeded after 100 uses. This value
+   may be configured with the servlet init parameter "resteasy.secure.random.max.use".
+   </p>
+   </div>
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="oneway"/>38.2. Oneway: Fire and Forget</h2></div></div></div>
+      
+      <p>
+         RESTEasy also supports the notion of fire and forget.  This will also return a 202, Accepted response, but no Job will
+         be created.  This is as simple as using the oneway query parameter instead of asynch.  For example:
+      </p>
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+POST http://example.com/myservice?oneway=true
+</pre>
+   <p> Security NOTE!  RESTEasy role-based security (annotations) does not work with the Asynchronous Job Service.  You must use
+   XML declaritive security within your web.xml file. Why? It is impossible to implement role-based security portably.  In the future, we may have specific JBoss integration, but will not support other environments.</p>
+   </div>
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="async_job_setup"/>38.3. Setup and Configuration</h2></div></div></div>
+     
+     <p>You must enable the Asynchronous Job Service, as it is not turned on by default. If the relevant configuration properties are configured
+     in web.xml, it would look like the following: </p>
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+
+&lt;web-app&gt;
+    &lt;!-- enable the Asynchronous Job Service --&gt;
+    &lt;context-param&gt;
+        &lt;param-name&gt;resteasy.async.job.service.enabled&lt;/param-name&gt;
+        &lt;param-value&gt;true&lt;/param-value&gt;
+    &lt;/context-param&gt;
+
+    &lt;!-- The next context parameters are all optional.  
+         Their default values are shown as example param-values --&gt;
+
+    &lt;!-- How many jobs results can be held in memory at once? --&gt;
+    &lt;context-param&gt;
+        &lt;param-name&gt;resteasy.async.job.service.max.job.results&lt;/param-name&gt;
+        &lt;param-value&gt;100&lt;/param-value&gt;
+    &lt;/context-param&gt;
+
+    &lt;!-- Maximum wait time on a job when a client is querying for it --&gt;
+    &lt;context-param&gt;
+        &lt;param-name&gt;resteasy.async.job.service.max.wait&lt;/param-name&gt;
+        &lt;param-value&gt;300000&lt;/param-value&gt;
+    &lt;/context-param&gt;
+
+    &lt;!-- Thread pool size of background threads that run the job --&gt;
+    &lt;context-param&gt;
+        &lt;param-name&gt;resteasy.async.job.service.thread.pool.size&lt;/param-name&gt;
+        &lt;param-value&gt;100&lt;/param-value&gt;
+    &lt;/context-param&gt;
+
+    &lt;!-- Set the base path for the Job uris --&gt;
+    &lt;context-param&gt;
+        &lt;param-name&gt;resteasy.async.job.service.base.path&lt;/param-name&gt;
+        &lt;param-value&gt;/asynch/jobs&lt;/param-value&gt;
+    &lt;/context-param&gt;
+
+    ...
+&lt;/web-app&gt;
+
+</pre>
+
+   <p>See <a class="xref" href="Installation_Configuration.html#microprofile_config" title="3.4. 配置">第 3.4 节 “配置”</a> for more information about application configuration.</p>
+   </div>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Asynchronous_HTTP_Request_Processing.html"><strong>上一页</strong>第 37 章 Asynchronous HTTP Request Processing</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="Async_Injection.html"><strong>下一页</strong>第 39 章 Asynchronous Injection</a></li></ul></body></html>

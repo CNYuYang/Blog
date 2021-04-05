@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 5 章 @PathParam</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Using_Path.html" title="第 4 章 Using @Path and @GET, @POST, etc."/><link rel="next" href="_QueryParam.html" title="第 6 章 @QueryParam"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Using_Path.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="_QueryParam.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="_PathParam"/>第 5 章 @PathParam</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="_PathParam.html#Advanced__PathParam_and_Regular_Expressions">5.1. Advanced @PathParam and Regular Expressions</a></span></dt><dt><span class="sect1"><a href="_PathParam.html#_PathParam_and_PathSegment">5.2. @PathParam and PathSegment</a></span></dt></dl></div>
+
+
+<div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="note"><h2>注意</h2>
+   <p>
+      RESTEasy <a class="link" href="_NewParam.html" title="第 13 章 Improved @…Param annotations">supports <code class="code">@PathParam</code> annotations with no parameter name.</a>.
+   </p>
+</div>
+
+<p>
+
+@PathParam is a parameter annotation which allows you to map variable URI path fragments into your method call.
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("/library")
+public class Library {
+
+   @GET
+   @Path("/book/{isbn}")
+   public String getBook(@PathParam("isbn") String id) {
+      // search my database and get a string representation and return it
+   }
+}
+</pre><p>
+</p>
+<p>
+
+What this allows you to do is embed variable identification within the URIs of your resources.  In the above example, an isbn URI parameter is used
+to pass information about the book we want to access.  The parameter type you inject into can be any primitive type, a String, or any Java object that has
+a constructor that takes a String parameter, or a static valueOf method that takes a String as a parameter.  For example, lets say we wanted isbn to be a real object.  We could do:
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@GET
+@Path("/book/{isbn}")
+public String getBook(@PathParam("isbn") ISBN id) {...}
+
+public class ISBN {
+   public ISBN(String str) {...}
+}
+</pre><p>
+</p>
+<p>
+
+Or instead of a public String constructors, have a valueOf method:
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public class ISBN {
+    public static ISBN valueOf(String isbn) {...}
+}
+</pre><p>
+</p>
+<p>
+
+</p>
+<p>
+
+
+</p>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Advanced__PathParam_and_Regular_Expressions"/>5.1. Advanced @PathParam and Regular Expressions</h2></div></div></div>
+
+
+<p>
+
+There are a few more complicated uses of @PathParams not discussed in the previous section.
+</p>
+<p>
+
+</p>
+<p>
+
+
+</p>
+<p>
+
+You are allowed to specify one or more path params embedded in one URI segment.  Here are some examples:
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+1. @Path("/aaa{param}bbb")
+2. @Path("/{name}-{zip}")
+3. @Path("/foo{name}-{zip}bar")
+</pre><p>
+</p>
+<p>
+
+So, a URI of "/aaa111bbb" would match #1.  "/bill-02115" would match #2.  "foobill-02115bar" would match #3.
+</p>
+<p>
+
+
+</p>
+<p>
+
+We discussed before how you can use regular expression patterns within @Path values.
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@GET
+@Path("/aaa{param:b+}/{many:.*}/stuff")
+public String getIt(@PathParam("param") String bs, @PathParam("many") String many) {...}
+</pre><p>
+</p>
+<p>
+
+For the following requests, lets see what the values of the "param" and "many" @PathParams would be:
+</p>
+<p>
+
+</p><div class="table"><a id="d4e521"/><p class="title"><b>表 5.1. </b></p><div class="table-contents">
+<table border="1"><colgroup><col/><col/><col/></colgroup><thead><tr><th>
+Request</th><th>
+param</th><th>
+many</th></tr></thead><tbody><tr><td>
+GET /aaabb/some/stuff</td><td>
+bb</td><td>
+some</td></tr><tr><td>
+GET /aaab/a/lot/of/stuff</td><td>
+b</td><td>
+a/lot/of</td></tr></tbody></table>
+</div></div><p><br class="table-break"/>
+
+</p>
+<p>
+
+
+</p>
+</div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="_PathParam_and_PathSegment"/>5.2. @PathParam and PathSegment</h2></div></div></div>
+
+
+<p>
+
+The specification has a very simple abstraction for examining a fragment of the URI path being invoked on  javax.ws.rs.core.PathSegment:
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public interface PathSegment {
+
+    /**
+     * Get the path segment.
+     * &lt;p&gt;
+     * @return the path segment
+     */
+    String getPath();
+    
+    /**
+     * Get a map of the matrix parameters associated with the path segment
+     * @return the map of matrix parameters
+     */
+    MultivaluedMap&lt;String, String&gt; getMatrixParameters();
+
+}
+</pre><p>
+</p>
+<p>
+
+You can have RESTEasy inject a PathSegment instead of a value with your @PathParam.
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@GET
+@Path("/book/{id}")
+public String getBook(@PathParam("id") PathSegment id) {...}
+</pre><p>
+</p>
+<p>
+
+This is very useful if you have a bunch of @PathParams that use matrix parameters.  The idea of matrix parameters is
+    that they are an arbitrary set of name-value pairs embedded in a uri path segment.  The PathSegment object gives you
+    access to these parameters. See also MatrixParam.
+</p>
+<p>
+
+A matrix parameter example is:
+</p>
+<p>
+
+GET http://host.com/library/book;name=EJB 3.0;author=Bill Burke
+</p>
+<p>
+
+The basic idea of matrix parameters is that it represents resources that are addressable by their attributes as well as their raw id.
+</p>
+<p>
+
+</p>
+<p>
+
+</p>
+<p>
+
+</p>
+<p>
+
+</p>
+<p>
+
+</p>
+<p>
+
+</p>
+<p>
+
+</p>
+<p>
+
+</p>
+<p>
+
+</p>
+<p>
+
+</p>
+<p>
+
+
+</p>
+</div>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Using_Path.html"><strong>上一页</strong>第 4 章 Using @Path and @GET, @POST, etc.</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="_QueryParam.html"><strong>下一页</strong>第 6 章 @QueryParam</a></li></ul></body></html>

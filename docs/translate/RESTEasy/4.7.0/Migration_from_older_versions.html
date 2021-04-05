@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 59 章 Migration from older versions</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Maven_and_RESTEasy.html" title="第 58 章 Maven and RESTEasy"/><link rel="next" href="REST_BOOKS.html" title="第 60 章 Books You Can Read"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Maven_and_RESTEasy.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="REST_BOOKS.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Migration_from_older_versions"/>第 59 章 Migration from older versions</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="Migration_from_older_versions.html#d4e4720">59.1. Migration to RESTEasy 3.0 series</a></span></dt><dt><span class="sect1"><a href="Migration_from_older_versions.html#Migration_to_RESTEasy_3.1">59.2. Migration to RESTEasy 3.1 series</a></span></dt><dt><span class="sect1"><a href="Migration_from_older_versions.html#d4e4819">59.3. Migration to RESTEasy 3.5+ series</a></span></dt><dt><span class="sect1"><a href="Migration_from_older_versions.html#d4e4824">59.4. Migration to RESTEasy 4 series</a></span></dt></dl></div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4720"/>59.1. Migration to RESTEasy 3.0 series</h2></div></div></div>
+    
+    
+    <p>
+        Many facilities from RESTEasy 2 appear in a different form in RESTEasy 3. For example, much
+        of the client framework in RESTEasy 2 is formalized, in modified form, in JAX-RS 2.0. RESTEasy
+        versions 3.0.x implement both the older deprecated form and the newer conformant form. The
+        deprecated form is moved to legacy module in RESTEasy 3.1 and finally removed in RESTEasy 4.
+        For more information on upgrading from various deprecated facilities in RESTEasy 2, see
+        <a class="ulink" href="http://docs.jboss.org/resteasy/docs/resteasy-upgrade-guide-en-US.pdf">http://docs.jboss.org/resteasy/docs/resteasy-upgrade-guide-en-US.pdf</a>
+    </p>
+</div>
+
+
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Migration_to_RESTEasy_3.1"/>59.2. Migration to RESTEasy 3.1 series</h2></div></div></div>
+    
+
+    <p>
+    RESTEasy 3.1.0.Final release comes with many changes compared to previous 3.0 point releases.
+    User discernible changes in RESTEasy 3.1.0.Final include
+    </p>
+    
+    <div class="itemizedlist"><ul><li>module reorganization</li><li>package reorganization</li><li>new features</li><li>minor behavioral changes</li><li>miscellaneous changes</li></ul></div>
+    
+    <p>
+    In this chapter we focus on changes that might cause existing code to fail or behave in new ways.
+    The audience for this discussion may be partitioned into three subsets, depending on the version
+    of RESTEasy currently in use, the API currently in use, and the API to be used after an upgrade
+    to RESTEasy 3.1. The following APIs are available:
+    </p>
+    
+    <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li>
+      <p><span class="bold"><strong>RESTEasy 2</strong></span>: RESTEasy 2 conforms to the JAX-RS 1 specification, and adds a
+      variety of additional facilities, such as a client API, a caching system, an interceptor framework, etc. 
+      All of these user facing classes and interfaces comprise the RESTEasy 2 API.</p>
+      </li><li>
+      <p><span class="bold"><strong>RESTEasy 3</strong></span>: RESTEasy 3 conforms to the JAX-RS 2 specification, and adds some additional
+      facilities. Many of the non-spec facilities from the RESTEasy 2 API are formalized, in altered form,
+      in JAX-RS 2, in which case the older facilites are deprecated. The non-deprecated user facing classes and interfaces in
+      RESTEasy 3 comprise the RESTEasy 3 API.</p>
+      </li></ol></div>
+    
+    <p>
+    These definitions are rather informal and imprecise, since the user facing classes / interfaces in Resteasy
+    3.0.19.Final, for example, are a proper superset of the user facing classes / interfaces in RESTEasy 3.0.1.Final.
+    For this discussion, we identify the API with the version currently in use in a given project.
+    </p>
+    
+    <p>
+    Now, there are three potential target audiences of users planning to upgrade to RESTEasy 3.1.0.Final:
+    </p>
+    
+    <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li>
+      <p>Those currently using RESTEasy API 3 with some RESTEasy 3.0.x release</p>
+      </li><li>
+      <p>Those currently using RESTEasy API 2 with some RESTEasy 2.x or 3.0.x release and planning
+      to upgrade to RESTEasy API 3</p>
+      </li><li>
+      <p>Those currently using RESTEasy API 2 with some RESTEasy 2.x or 3.0.x release and planning
+      to continue to use RESTEasy API 2</p>
+      </li></ol></div>
+    
+    <p>
+    Of these, users in Group 2 have the most work to do in upgrading from RESTEasy API 2 to RESTEasy API 3.
+    They should consult the separate guide
+    <a class="ulink" href="http://docs.jboss.org/resteasy/docs/resteasy-upgrade-guide-en-US.pdf">Upgrading from RESTEasy 2 to RESTEasy 3</a>.
+    </p>
+
+    <p>
+    Ideally, users in Groups 1 and 3 might make some changes to take advantage of new features but would have
+    no changes forced on them by reorganization or altered behavior. Indeed, that is almost the case, but there
+    are a few changes that they should be aware of.
+    </p>
+    
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4753"/>1. Upgrading with RESTEasy 3 API</h2></div></div></div>
+    
+    
+    <p>
+    All RESTEasy changes are documented in JIRA issues. Issues that describe detectable changes in
+    release 3.1.0.Final that might impact existing applications include
+    </p>
+    
+    <div class="itemizedlist"><ul><li>
+      <a class="ulink" href="https://issues.jboss.org/browse/RESTEASY-1341">RESTEASY-1341: Build method of org.jboss.resteasy.client.jaxrs.internal.ClientInvocationBuilder always return the same instance.</a>
+      <p>
+      When a <code class="methodname">build()</code> method from
+      </p>
+      <div class="itemizedlist"><ul><li><code class="classname">org.jboss.resteasy.client.jaxrs.internal.ClientInvocationBuilder</code> in resteasy-client,</li><li><code class="classname">org.jboss.resteasy.specimpl.LinkBuilderImpl</code> in resteasy-jaxrs,</li><li><code class="classname">org.jboss.resteasy.specimpl.ResteasyUriBuilder</code> in resteasy-jaxrs</li></ul></div>
+      <p>
+      is called, it will return a new object. This behavior might be seen indirectly. For example,
+      </p>
+      <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+Builder builder = client.target(generateURL(path)).request();
+...
+Link link = new LinkBuilderImpl().uri(href).build();
+...
+URI uri = uriInfo.getBaseUriBuilder().path("test").build();
+      </pre>
+      </li><li>
+      <a class="ulink" href="https://issues.jboss.org/browse/RESTEASY-1433">RESTEASY-1433: Compile with JDK 1.8 source/target version</a>
+      <p>
+      As it says. Depending on the application, it might be necessary to recompile with a target of JDK 1.8 so that calls to RESTEasy code
+      can work.
+      </p>
+      </li><li>
+      <a class="ulink" href="https://issues.jboss.org/browse/RESTEASY-1484">RESTEASY-1484: CVE-2016-6346: Abuse of GZIPInterceptor in can lead to denial of service attack</a>
+      <p>
+      Prior to release 3.1.0.Final, the default behavior of RESTEasy was to use GZIP to compress and decompress messages
+      whenever "gzip" appeared in the Content-Encoding header.
+      However, decompressing messages can lead to security issues, so, as of release 3.1.0.Final, GZIP compression has to
+      be enabled explicitly. For details, see Chapter <a class="link" href="gzip.html" title="第 32 章 Content encoding">GZIP Compression/Decompression</a>.
+      </p>
+      <p><span class="bold"><strong>Note.</strong></span> Because of some package reorganization due to RESTEASY-1531 (see below),
+      the GZIP interceptors, which used to be in package <code class="classname">org.jboss.resteasy.plugins.interceptors.encoding</code> are
+      now in <code class="classname">org.jboss.resteasy.plugins.interceptors</code>.</p>
+      </li><li>
+      <a class="ulink" href="https://issues.jboss.org/browse/RESTEASY-1531">RESTEASY-1531: Restore removed RESTEasy internal classes into a deprecated/disabled module</a>
+      <p>
+      This issue is related to refactoring deprecated elements of the RESTEasy 2 API into a separate module, and, ideally,
+      would have no bearing at all on RESTEasy 3. However, a reorganization of packages has led to moving some
+      non-deprecated API elements in the resteasy-jaxrs module:
+      </p>
+      
+      <div class="itemizedlist"><ul><li>
+          <div class="literallayout"><p><code class="classname">org.jboss.resteasy.client.ClientURI</code> is now<br/>
+          <code class="classname">org.jboss.resteasy.annotations.ClientURI</code></p></div>
+        </li><li>
+          <div class="literallayout"><p><code class="classname">org.jboss.resteasy.core.interception.JaxrsInterceptorRegistryListener</code> is now<br/>
+<code class="classname">org.jboss.resteasy.core.interception.jaxrs.JaxrsInterceptorRegistryListener</code></p></div>
+        </li><li>
+	      <div class="literallayout"><p><code class="classname">org.jboss.resteasy.spi.interception.DecoratorProcessor</code> is now<br/>
+<code class="classname">org.jboss.resteasy.spi.DecoratorProcessor</code></p></div>
+	    </li><li>
+          <div class="literallayout"><p>All of the dynamic features and interceptors in the package<br/>
+<code class="classname">org.jboss.resteasy.plugins.interceptors.encoding</code> are now in<br/>
+<code class="classname">org.jboss.resteasy.plugins.interceptors</code></p></div>
+        </li></ul></div>
+	  </li></ul></div>
+    </div>
+
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4801"/>2. Upgrading with RESTEasy 2 API</h2></div></div></div>
+    
+    
+    <p>
+    Most of the deprecated classes and interfaces
+    from RESTEasy 2 have been segregated in a separate module, resteasy-legacy, as of release 3.1.0.Final.
+    A few remain in module resteasy-jaxrs for technical reasons. Eventually, all such classes and interfaces will be
+    removed from RESTEasy. Most of the relocated elements are internal, so ensuring that resteasy-legacy is on the
+    classpath will make most changes undetectable. One way to do that, of course, is to include it in an application's
+    WAR. In the context of WildFly, it is also possible to use a jboss-deployment-structure.xml file in the 
+    WEB-INF directory of your WAR file. For example:
+    </p>
+    
+        <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+&lt;jboss-deployment-structure&gt;
+    &lt;deployment&gt;
+        &lt;dependencies&gt;
+            &lt;module name="org.jboss.resteasy.resteasy-legacy"/&gt;
+        &lt;/dependencies&gt;
+    &lt;/deployment&gt;
+&lt;/jboss-deployment-structure&gt;</pre>
+
+    <p>
+    There are a few API classes and interfaces from resteasy-jaxrs that have moved to a new package
+    in resteasy-legacy. These are
+    </p>
+    
+    <div class="itemizedlist"><ul><li><div class="literallayout"><p><code class="classname">org.jboss.resteasy.annotations.ClientResponseType</code> is now<br/>
+<code class="classname">org.jboss.resteasy.annotations.legacy.ClientResponseType</code></p></div>
+      </li><li><div class="literallayout"><p><code class="classname">org.jboss.resteasy.spi.Link</code> is now<br/>
+	    <code class="classname">org.jboss.resteasy.client.Link</code></p></div>
+      </li><li><div class="literallayout"><p><code class="classname">org.jboss.resteasy.spi.LinkHeader</code> is now<br/>
+	    <code class="classname">org.jboss.resteasy.client.LinkHeader</code></p></div>
+      </li></ul></div>
+    </div>
+
+</div>
+
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4819"/>59.3. Migration to RESTEasy 3.5+ series</h2></div></div></div>
+    
+    <p>
+      RESTEasy 3.5 series is a spin-off of the old RESTEasy 3.0 series, featuring JAX-RS 2.1 implementation.
+    </p>
+    <p>
+      The reason why 3.5 comes from 3.0 instead of the 3.1 / 4.0 development streams is basically providing
+      users with a selection of RESTEasy 4 critical / strategic new features, while ensuring full backward
+      compatiblity. As a consequence, no major issues are expected when upgrading RESTEasy from 3.0.x to 3.5.x.
+      The 3.6 and all other 3.x minors after that are backward compatible evolutions of 3.5 series.
+    </p>
+    <p>
+      The natural upgrade path for users already on RESTEasy 3.1 series is straight to RESTEasy 4 instead.
+    </p>
+</div>
+
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4824"/>59.4. Migration to RESTEasy 4 series</h2></div></div></div>
+    
+    <p>
+      User migrating from RESTEasy 3.0 and 3.5+ series should be aware of the changes mentioned in the
+      <a class="xref" href="Migration_from_older_versions.html#Migration_to_RESTEasy_3.1" title="59.2. Migration to RESTEasy 3.1 series">第 59.2 节 “Migration to RESTEasy 3.1 series”</a>. In addition to that,
+      the aspects from the following sections are to be considered.
+    </p>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4828"/>1. Public / private API</h2></div></div></div>
+        
+        <p>
+            The <code class="classname">resteasy-jaxrs</code> and <code class="classname">resteasy-client</code> modules
+            in RESTEasy 3 contain most of the framework classes and
+            there's no real demarcation between what is internal implementation detail and what is for public
+            consumption. In WildFly, the artifact archives from those modules are also included in a public module.
+            Given the common expectation of full backward compatibility of whatever comes from public modules,
+            to allow for easier project evolution and maintenance, in RESTEasy 4.0.0.Final those big components
+            have been split as follows: 
+        </p>
+        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4833"/>1.1. resteasy-core-spi</h3></div></div></div>
+          
+          <p>
+            The public classes of the former <code class="classname">resteasy-jaxrs</code> module; the following packages
+            are included:
+          </p>
+          <div class="itemizedlist"><ul><li><code class="classname">org.jboss.resteasy.annotations</code></li><li><code class="classname">org.jboss.resteasy.api.validation</code></li><li><code class="classname">org.jboss.resteasy.spi</code></li><li><code class="classname">org.jboss.resteasy.plugins.providers.validation</code></li></ul></div>
+        </div>
+        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4846"/>1.2. resteasy-core</h3></div></div></div>
+          
+          <p>
+            The internal details of the former <code class="classname">resteasy-jaxrs</code> module, including classes
+            from the following packages:
+          </p>
+          <div class="itemizedlist"><ul><li><code class="classname">org.jboss.resteasy.core</code></li><li><code class="classname">org.jboss.resteasy.mock</code></li><li><code class="classname">org.jboss.resteasy.plugins</code></li><li><code class="classname">org.jboss.resteasy.specimpl</code></li><li><code class="classname">org.jboss.resteasy.tracing</code></li><li><code class="classname">org.jboss.resteasy.util</code></li></ul></div>
+        </div>
+        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4863"/>1.3. resteasy-client-api</h3></div></div></div>
+          
+          <p>
+            The public classes from the former <code class="classname">resteasy-client</code> module, basically whatever
+            is used for configuring the RESTEasy client additions:
+          </p>
+          <div class="itemizedlist"><ul><li><code class="classname">ClientHttpEngine</code> and <code class="classname">ClientHttpEngineBuilder</code></li><li><code class="classname">ProxyBuilder</code> and <code class="classname">ProxyConfig</code></li><li><code class="classname">ResteasyClient</code></li><li><code class="classname">ResteasyClientBuilder</code></li><li><code class="classname">ResteasyWebTarget</code></li></ul></div>
+        </div>
+        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4880"/>1.4. resteasy-client</h3></div></div></div>
+          
+          <p>
+            The remainings of the former <code class="classname">resteasy-client</code> module, internal details.
+          </p>
+        </div>
+        <p>
+          As a consequence of the split, all modules except <code class="classname">resteasy-core-spi</code> and
+          <code class="classname">resteasy-client-api</code> are effectively private / internal. User applications and
+          integration code should not directly rely on classes from those modules, which can be changed without
+          going through any formal deprecation process.
+        </p>
+        <p>
+          Unfortunately, the refactoring that led to this implied some unavoidable class moves and changes breaking backward
+          compatibility. A detailed list of the potentially problematic changes is available on the
+          <a class="ulink" href="https://github.com/resteasy/Resteasy/pull/1697">refactoring PR</a>.
+        </p>
+    </div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4889"/>2. Deprecated classes and modules removal</h2></div></div></div>
+        
+        <p>
+          All classes and modules that were deprecated in RESTEasy 3 have been dropped in 4. In particular, this
+          includes the legacy modules (<code class="classname">resteasy-legacy</code>, <code class="classname">security-legacy</code>)
+          that were introduced in 3.1.
+        </p>
+        <p>
+          In addition to the legacy modules, few other modules have been dropped for multiple different reasons,
+          including dependency on unsupported / abandoned libraries, better options available, etc:
+        </p>
+        <div class="itemizedlist"><ul><li><code class="classname">resteasy-jackson-provider</code>, users should rely on <code class="classname">resteasy-jackson2-provider</code> instead;</li><li><code class="classname">resteasy-jettison-provider</code>, users should rely on <code class="classname">resteasy-jackson2-provider</code> instead;</li><li><code class="classname">abdera-atom-provider</code>;</li><li><code class="classname">resteasy-yaml-provider</code>;</li><li><code class="classname">resteasy-rx-java</code>, users should rely on <code class="classname">resteasy-rx-java2</code> instead;</li><li><code class="classname">tjws</code>.</li></ul></div>
+        <p>
+          The <code class="classname">resteasy-validator-provider-11</code> is also gone, with the
+          <code class="classname">resteasy-validator-provider</code> one now supporting Bean Validation 2.0.
+        </p>
+    </div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4914"/>3. Behavior changes</h2></div></div></div>
+        
+        <p>
+          With the <code class="classname">ClientHttpEngine</code> based on Apache HTTP Client 4.0 having gone (it
+          was previously deprecated) and the engine based on version 4.3 of the same library being the default,
+          the user might want to double check the notes about connection close in <a class="xref" href="RESTEasy_Client_Framework.html#apache_4_3" title="51.3.4. Apache HTTP Client 4.3 APIs">第 51.3.4 节 “Apache HTTP Client 4.3 APIs”</a>.
+        </p>
+        <p>
+          The conversion of <code class="classname">String</code> ojects to <code class="classname">MediaType</code> objects is quite
+          common in RESTEasy; for performances reasons a cache has been added to store the results of that conversion;
+          by default the cache keeps the result of 200 conversions, but the number can be configured by setting the
+          <code class="classname">org.jboss.resteasy.max_mediatype_cache_size</code> system property.
+        </p>
+    </div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4923"/>4. Other changes</h2></div></div></div>
+        
+        <div class="itemizedlist"><ul><li>
+                In releases 3.x, when bean validation (<a class="xref" href="Validation.html" title="第 56 章 Validation">第 56 章 <i>Validation</i></a>) threw instances of exceptions
+                <p>
+                    </p><div class="itemizedlist"><ul><li><code class="classname">javax.validation.ConstraintDefinitionException</code>,</li><li><code class="classname">javax.validation.ConstraintDeclarationException</code>, or</li><li><code class="classname">javax.validation.GroupDefinitionException</code>,</li></ul></div><p>
+                    they were wrapped in a
+                    <code class="classname">org.jboss.resteasy.api.validation.Resteasy.ResteasyViolationException</code>,
+                    which <code class="classname">org.jboss.resteasy.api.validation.ResteasyViolationExceptionMapper</code>,
+                    the built-in implementation of
+                    <code class="classname">javax.ws.rs.ext.ExceptionMapper&lt;javax.validation.ValidationException&gt;</code>,
+                    then turned into descriptive text.
+                    As of release 4.0.0, instances of <code class="classname">ConstraintDefinitionException</code>, etc., are thrown as is.
+                    They are still caught by <code class="classname">ResteasyViolationExceptionMapper</code>, so, in general, there is
+                    no detectable change. It should be noted, however, that an implementation of
+                    <code class="classname">ExceptionMapper&lt;ResteasyViolationException&gt;</code>, which, prior to release
+                    4.0.0, would have caught wrapped instances of <code class="classname">ConstraintDefinitionException</code>,
+                    will not catch unwrapped instances.
+                </p>
+            </li><li>
+              The <code class="classname">ResteasyProviderFactory</code> is now an abstract class and is meant to be created using
+              its <code class="classname">getInstance()</code> and <code class="classname">newInstance()</code> methods. Moreover, on client
+              side, the resolution of the current instance is cached for each thread local context classloader.
+            </li><li>
+              The <code class="classname">ResteasyClient</code> and <code class="classname">ResteasyClientBuilder</code> are now abstract
+              classes (from <code class="classname">resteasy-client-api</code>) and are not meant for user direct instantiation;
+              plain JAX-RS API usage is expected instead:
+              <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+//ResteasyClient client = new ResteasyClientBuilder().build(); NO!
+//if plan JAX-RS is enough ...
+Client client = ClientBuilder.newClient();
+...
+//if RESTEasy API is needed ...
+ResteasyClient client = (ResteasyClient)ClientBuilder.newClient();
+
+
+//ResteasyClientBuilder builder = new ResteasyClientBuilder(); NO!
+//if plan JAX-RS is enough ...
+ClientBuilder builder = ClientBuilder.newBuilder();
+...
+//if RESTEasy API is needed ...
+ResteayClientBuilder builder = (ResteasyClientBuilder)ClientBuilder.newBuilder();
+              </pre>
+            </li><li>
+              The package <code class="classname">org.jboss.resteasy.plugins.stats</code> (which contains a resource and some related classes) has
+              been moved out of the <code class="classname">resteasy-jaxb-provider</code> module into a <code class="classname">new resteasy-stats</code> module.
+            </li></ul></div>
+    </div>
+</div>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Maven_and_RESTEasy.html"><strong>上一页</strong>第 58 章 Maven and RESTEasy</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="REST_BOOKS.html"><strong>下一页</strong>第 60 章 Books You Can Read</a></li></ul></body></html>

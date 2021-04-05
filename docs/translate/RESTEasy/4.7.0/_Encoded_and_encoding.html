@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 16 章 @Encoded and encoding</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="_DefaultValue.html" title="第 15 章 @DefaultValue"/><link rel="next" href="_Context.html" title="第 17 章 @Context"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_DefaultValue.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="_Context.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="_Encoded_and_encoding"/>第 16 章 @Encoded and encoding</h2></div></div></div>
+
+
+<p>
+
+JAX-RS allows you to get encoded or decoded @*Params and specify path definitions and parameter names using encoded or decoded strings.
+</p>
+<p>
+
+
+</p>
+<p>
+
+The @javax.ws.rs.Encoded annotation can be used on a class, method, or param.  By default, inject @PathParam and @QueryParams are decoded.  By additionally adding the @Encoded annotation, the value of these params will be provided in encoded form.
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("/")
+public class MyResource {
+
+    @Path("/{param}")
+    @GET
+    public String get(@PathParam("param") @Encoded String param) {...}
+}
+</pre><p>
+</p>
+<p>
+
+In the above example, the value of the @PathParam injected into the param of the get() method will be URL encoded.  Adding the @Encoded annotation as a paramater annotation triggers this affect.
+</p>
+<p>
+
+You may also use the @Encoded annotation on the entire method and any combination of @QueryParam or @PathParam's values will be encoded.
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("/")
+public class MyResource {
+  
+    @Path("/{param}")
+    @GET
+    @Encoded
+    public String get(@QueryParam("foo") String foo, @PathParam("param") String param) {}
+}
+</pre><p>
+</p>
+<p>
+
+In the above example, the values of the "foo" query param and "param" path param will be injected as encoded values.
+</p>
+<p>
+
+You can also set the default to be encoded for the entire class.
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("/")
+@Encoded
+public class ClassEncoded {
+  
+    @GET
+    public String get(@QueryParam("foo") String foo) {}
+}
+</pre><p>
+</p>
+<p>
+
+
+</p>
+<p>
+
+The @Path annotation has an attribute called encode.  Controls whether the literal part of the supplied value (those characters that are not part of a template variable) are URL encoded. If true, any characters in the URI template that are not valid URI character will be automatically encoded. If false then all characters must be valid URI characters.  By default this is set to true.  If you want to encoded the characters yourself, you may.
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path(value="hello%20world", encode=false)
+</pre><p>
+</p>
+<p>
+
+
+</p>
+<p>
+
+Much like @Path.encode(), this controls whether the specified query param name should be encoded by the container before it tries to find the query param in the request.
+</p>
+<p>
+
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@QueryParam(value="hello%20world", encode=false)
+</pre><p>
+</p>
+<p>
+
+</p>
+<p>
+
+</p>
+<p>
+
+
+</p>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_DefaultValue.html"><strong>上一页</strong>第 15 章 @DefaultValue</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="_Context.html"><strong>下一页</strong>第 17 章 @Context</a></li></ul></body></html>

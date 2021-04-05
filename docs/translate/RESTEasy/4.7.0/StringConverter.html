@@ -1,0 +1,824 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 28 章 String marshalling for String based @*Param</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="JAX-RS_2.1_additions.html" title="第 27 章 JAX-RS 2.1 Additions"/><link rel="next" href="Responses_using_javax.ws.rs.core.Response.html" title="第 29 章 Responses using javax.ws.rs.core.Response"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="JAX-RS_2.1_additions.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Responses_using_javax.ws.rs.core.Response.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="StringConverter"/>第 28 章 String marshalling for String based @*Param</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="StringConverter.html#d4e1797">28.1. Simple conversion</a></span></dt><dt><span class="sect1"><a href="StringConverter.html#d4e1810">28.2. ParamConverter</a></span></dt><dt><span class="sect1"><a href="StringConverter.html#d4e1828">28.3. StringParameterUnmarshaller</a></span></dt><dt><span class="sect1"><a href="StringConverter.html#d4e1854">28.4. Collections</a></span></dt><dd><dl><dt><span class="sect2"><a href="StringConverter.html#d4e1878">28.4.1. @QueryParam</a></span></dt><dt><span class="sect2"><a href="StringConverter.html#d4e1886">28.4.2. @MatrixParam</a></span></dt><dt><span class="sect2"><a href="StringConverter.html#d4e1898">28.4.3. @HeaderParam</a></span></dt><dt><span class="sect2"><a href="StringConverter.html#d4e1907">28.4.4. @CookieParam</a></span></dt><dt><span class="sect2"><a href="StringConverter.html#d4e1915">28.4.5. @PathParam</a></span></dt></dl></dd><dt><span class="sect1"><a href="StringConverter.html#d4e1931">28.5. Extension to ParamConverter semantics</a></span></dt><dt><span class="sect1"><a href="StringConverter.html#d4e1967">28.6. Default multiple valued ParamConverter</a></span></dt></dl></div>
+   
+   
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1797"/>28.1. Simple conversion</h2></div></div></div>
+   
+   
+   <p>
+   Parameters and properties annotated with <code class="classname">@CookieParam</code>, 
+   <code class="classname">@HeaderParam</code>, <code class="classname">@MatrixParam</code>, <code class="classname">@PathParam</code>, or 
+   <code class="classname">@QueryParam</code> are represented as strings in a raw HTTP request. The specification
+   says that any of these injected parameters can be converted to an object if the object's class has
+   a <code class="methodname">valueOf(String)</code> static method or a constructor that takes one <code class="classname">String</code>parameter.
+   In the following, for example,
+   </p>
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public static class Customer {
+   private String name;
+
+   public Customer(String name) {
+      this.name = name;
+   }
+   
+   public String getName() {
+      return name;
+   }
+}
+
+@Path("test")
+public static class TestResource {
+
+   @GET
+   @Path("")
+   public Response test(@QueryParam("cust") Customer cust) {
+      return Response.ok(cust.getName()).build();
+   }
+}
+
+@Test
+public void testQuery() throws Exception {
+   Invocation.Builder request = ClientBuilder.newClient().target("http://localhost:8081/test?cust=Bill").request();
+   Response response = request.get();
+   ...
+}
+   </pre>
+   <p>
+   the query "?cust=Bill" will be transformed automatically to an instance of <code class="classname">Customer</code> with name
+   == "Bill".  
+   </p>
+   </div>
+   
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1810"/>28.2. ParamConverter</h2></div></div></div>
+   
+   
+   <p>
+   What if you have a class where <code class="methodname">valueOf()</code>or this string constructor don't exist or are inappropriate
+   for an HTTP request? JAX-RS 2.0 has the <code class="classname">javax.ws.rs.ext.ParamConverterProvider</code> to help
+   in this situation.
+   </p>
+   
+   <p>
+   A <code class="classname">ParamConverterProvider</code> is a provider defined as follows:
+   </p>
+      
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public interface ParamConverterProvider {
+
+   public &lt;T&gt; ParamConverter&lt;T&gt; getConverter(Class&lt;T&gt; rawType, Type genericType, Annotation annotations[]);
+}
+   </pre>
+   
+   <p>
+   where a <code class="classname">ParamConverter</code> is defined:
+   </p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public interface ParamConverter&lt;T&gt; {
+   ...
+   public T fromString(String value);
+   public String toString(T value);
+}
+   </pre>
+   
+   <p>
+   For example, consider <code class="classname">DateParamConverterProvider</code> and <code class="classname">DateParamConverter</code>:
+   </p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Provider
+public class DateParamConverterProvider implements ParamConverterProvider {
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public &lt;T&gt; ParamConverter&lt;T&gt; getConverter(Class&lt;T&gt; rawType, Type genericType, Annotation[] annotations) {
+      if (rawType.isAssignableFrom(Date.class)) {
+         return (ParamConverter&lt;T&gt;) new DateParamConverter();
+      }
+      return null;
+   }
+}
+
+public class DateParamConverter implements ParamConverter&lt;Date&gt; {
+
+   public static final String DATE_PATTERN = "yyyyMMdd";
+
+   @Override
+   public Date fromString(String param) {
+      try {
+         return new SimpleDateFormat(DATE_PATTERN).parse(param.trim());
+      } catch (ParseException e) {
+         throw new BadRequestException(e);
+      }
+   }
+
+   @Override
+   public String toString(Date date) {
+      return new SimpleDateFormat(DATE_PATTERN).format(date);
+   }
+}
+   </pre>
+   
+   <p>
+   Sending a <code class="classname">Date</code> in the form of a query, e.g., "?date=20161217" will cause the string "20161217"
+   to be converted to a <code class="classname">Date</code> on the server.
+   </p>
+   </div>
+   
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1828"/>28.3. StringParameterUnmarshaller</h2></div></div></div>
+   
+   
+   <p>
+   In addition to the JAX-RS <code class="classname">javax.ws.rs.ext.ParamConverterProvider</code>,
+   RESTEasy also has its own <code class="classname">org.jboss.resteasy.StringParameterUnmarshaller</code>, defined
+   </p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public interface StringParameterUnmarshaller&lt;T&gt;
+{
+   void setAnnotations(Annotation[] annotations);
+
+   T fromString(String str);
+}
+   </pre>
+   <p>
+   It is similar to <code class="classname">javax.ws.rs.ext.ParamConverter</code> except that
+   </p>
+   <div class="itemizedlist"><ul><li>it converts only from <code class="classname">String</code>s;</li><li>it is configured with the annotations on the injected parameter, which 
+                allows for fine-grained control over the injection; and</li><li>it is bound to a given parameter by an annotation that is annotated with the meta-annotation
+                <code class="classname">org.jboss.resteasy.annotations.StringParameterUnmarshallerBinder:</code></li></ul></div>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Target({ElementType.ANNOTATION_TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface StringParameterUnmarshallerBinder
+{
+   Class&lt;? extends StringParameterUnmarshaller&gt; value();
+}
+   </pre>
+   <p>
+   For example,
+   </p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+   @Retention(RetentionPolicy.RUNTIME)
+   @StringParameterUnmarshallerBinder(TestDateFormatter.class)
+   public @interface TestDateFormat {
+      String value();
+   }
+
+   public static class TestDateFormatter implements StringParameterUnmarshaller&lt;Date&gt; {
+      private SimpleDateFormat formatter;
+
+      public void setAnnotations(Annotation[] annotations) {
+         TestDateFormat format = FindAnnotation.findAnnotation(annotations, TestDateFormat.class);
+         formatter = new SimpleDateFormat(format.value());
+      }
+
+      public Date fromString(String str) {
+         try {
+            return formatter.parse(str);
+         } catch (ParseException e) {
+            throw new RuntimeException(e);
+         }
+      }
+   }
+   
+   @Path("/")
+   public static class TestResource {
+
+      @GET
+      @Produces("text/plain")
+      @Path("/datetest/{date}")
+      public String get(@PathParam("date") @TestDateFormat("MM-dd-yyyy") Date date) {
+         Calendar c = Calendar.getInstance();
+         c.setTime(date);
+         return date.toString();
+      }
+   }
+   </pre>
+   
+   <p>
+   Note that the annotation <code class="classname">@StringParameterUnmarshallerBinder</code> on the
+   annotation <code class="classname">@TestDateFormat</code> binds the formatter
+   <code class="classname">TestDateFormatter</code> to a parameter annotated with <code class="classname">@TestDateFormat</code>.
+   In this example, <code class="classname">TestDateFormatter</code> is used to format the <code class="classname">Date</code> parameter.
+   Note also that the parameter "MM-dd-yyyy" to <code class="classname">@TestDateFormat</code> is accessible from
+   <code class="methodname">TestDateFormatter.setAnnotations()</code>.
+   </p>
+   </div>
+   
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1854"/>28.4. Collections</h2></div></div></div>
+   
+   
+   <p>
+   For parameters and properties annotated with <code class="classname">@CookieParam</code>, <code class="classname">@HeaderParam</code>,
+   <code class="classname">@MatrixParam</code>, <code class="classname">@PathParam,</code> or <code class="classname">@QueryParam</code>, the JAX-RS specification
+   [<a class="ulink" href="https://jcp.org/aboutJava/communityprocess/final/jsr339/index.html">https://jcp.org/aboutJava/communityprocess/final/jsr339/index.html</a>]
+   allows conversion as defined in the Javadoc of the
+   corresponding annotation. In general, the following types are supported: 
+   </p>
+   
+   <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li>
+   Types for which a <code class="classname">ParamConverter</code> is available via a registered <code class="classname">ParamConverterProvider</code>. See
+   Javadoc for these classes for more information.
+   </li><li>
+   Primitive types.
+   </li><li>
+   Types that have a constructor that accepts a single <code class="classname">String</code> argument.
+   </li><li>
+   Types that have a static method named <code class="methodname">valueOf</code> or <code class="methodname">fromString</code>
+   with a single <code class="classname">String</code> argument
+   that return an instance of the type. If both methods are present then <code class="methodname">valueOf</code> MUST be used
+   unless the type is an enum in which case <code class="methodname">fromString</code> MUST be used.
+   </li><li>
+   List&lt;T&gt;, Set&lt;T&gt;, or SortedSet&lt;T&gt;, where T satisfies 3 or 4 above.
+   </li></ol></div>
+   
+   <p>
+   Items 1, 3, and 4 have been discussed above, and item 2 is obvious. Note that item 5 allows for
+   collections of parameters. How these collections are expressed in HTTP messages depends, by
+   default, on the particular kind of parameter. In most cases, the notation for collections is based
+   on convention rather than a specification.
+   </p>
+   
+   <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e1878"/>28.4.1. @QueryParam</h3></div></div></div>
+   
+   
+   <p>
+   For example, a multivalued query parameter is conventionally expressed like this:
+   </p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+http://bluemonkeydiamond.com?q=1&amp;q=2&amp;q=3
+   </pre>
+   
+   <p>
+   In this case, there is a query with name "q" and value {1, 2, 3}. This notation is further supported
+   in JAX-RS by the method
+   </p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public MultivaluedMap&lt;String, String&gt; getQueryParameters();
+   </pre>
+   
+   <p>
+   in <code class="classname">javax.ws.rs.core.UriInfo</code>.
+   </p>
+   </div>
+   
+   <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e1886"/>28.4.2. @MatrixParam</h3></div></div></div>
+   
+   
+   <p>
+   There is no specified syntax for collections derived from matrix parameters, but
+   </p>
+   
+   <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li>
+   matrix parameters in a URL segment are conventionally separated by ";", and
+   </li><li>
+   the method
+   <pre xmlns="" class="">
+MultivaluedMap&lt;String, String&gt; getMatrixParameters();
+   </pre>
+   <p>
+   in <code class="classname">javax.ws.rs.core.PathSegment</code> supports extraction of collections from matrix parameters.
+   </p>
+   </li></ol></div>
+      
+   <p>
+   RESTEasy adopts the convention that multiple instances of a matrix parameter with the same name
+   are treated as a collection. For example,
+   </p>
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+http://bluemonkeydiamond.com/sippycup;m=1;m=2;m=3
+   </pre>
+   
+   <p>
+   is interpreted as a matrix parameter on path segment "sippycup" with name "m" and value {1, 2, 3}.
+   </p>
+   </div>
+   
+   <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e1898"/>28.4.3. @HeaderParam</h3></div></div></div>
+   
+   
+   <p>
+   The HTTP 1.1 specification doesn't exactly specify that multiple components of a header value
+   should be separated by commas, but commas are used in those headers that naturally use lists,
+   e.g. Accept and Allow. Also, note that the method
+   </p>
+  
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public MultivaluedMap&lt;String, String&gt; getRequestHeaders();
+   </pre>
+   
+   <p>
+   in <code class="classname">javax.ws.rs.core.HttpHeaders</code> returns a <code class="classname">MultivaluedMap</code>.
+   It is natural, then, for RESTEasy to treat
+   </p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+x-header: a, b, c
+   </pre>
+   
+   <p>
+   as mapping name "x-header" to set {a, b, c}.
+   </p>
+   </div>
+   
+   <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e1907"/>28.4.4. @CookieParam</h3></div></div></div>
+   
+   
+   <p>
+   The syntax for cookies is specified, but, unfortunately, it is specified in multiple competing
+   specifications. Typically, multiple name=value cookie pairs are separated by ";". However, unlike
+   the case with query and matrix parameters, there is no specified JAX-RS method that returns a
+   collection of cookie values. Consequently, if two cookies with the same name are received on
+   the server and directed to a collection typed parameter, RESTEasy will inject only the second one.
+   Note, in fact, that the method
+   </p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public Map&lt;String, Cookie&gt; getCookies();
+   </pre>
+   
+   <p>
+   in <code class="classname">javax.ws.rs.core.HttpHeaders</code> returns a <code class="classname">Map</code> rather than a
+   <code class="classname">MultivaluedMap</code>.
+   </p>
+   
+   </div>
+   
+   <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e1915"/>28.4.5. @PathParam</h3></div></div></div>
+   
+   
+   <p>
+   Deriving a collection from path segments is somewhat less natural than it is for other parameters,
+   but JAX-RS supports the injection of multiple <code class="classname">javax.ws.rs.core.PathSegment</code>s. There are a
+   couple of ways of obtaining multiple <code class="classname">PathSegment</code>s. One is through the use of multiple path
+   variables with the same name. For example, the result of calling <code class="methodname">testTwoSegmentsArray()</code> and
+   <code class="methodname">testTwoSegmentsList()</code> in
+   </p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("")
+public static class TestResource {
+
+   @GET
+   @Path("{segment}/{other}/{segment}/array")
+   public Response getTwoSegmentsArray(@PathParam("segment") PathSegment[] segments) {
+      System.out.println("array segments: " + segments.length);
+      return Response.ok().build();
+   }
+   
+   @GET
+   @Path("{segment}/{other}/{segment}/list")
+   public Response getTwoSegmentsList(@PathParam("segment") List&lt;PathSegment&gt; segments) {
+      System.out.println("list segments: " + segments.size());
+      return Response.ok().build();
+   }
+}
+
+...
+
+   @Test
+   public void testTwoSegmentsArray() throws Exception {
+      Invocation.Builder request = client.target("http://localhost:8081/a/b/c/array").request();
+      Response response = request.get();
+      Assert.assertEquals(200, response.getStatus());
+      response.close();
+   }
+   
+   @Test
+   public void testTwoSegmentsList() throws Exception {
+      Invocation.Builder request = client.target("http://localhost:8081/a/b/c/list").request();
+      Response response = request.get();
+      Assert.assertEquals(200, response.getStatus());
+      response.close();
+   }
+   </pre>
+   
+   <p>is</p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+array segments: 2
+list segments: 2
+   </pre>
+   
+   <p>
+   An alternative is to use a wildcard template parameter. For example, the output of calling
+   <code class="methodname">testWildcardArray()</code> and <code class="methodname">testWildcardList() </code>in
+   </p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("")
+public static class TestResource {
+
+   @GET
+   @Path("{segments:.*}/array")
+   public Response getWildcardArray(@PathParam("segments") PathSegment[] segments) {
+      System.out.println("array segments: " + segments.length);
+      return Response.ok().build();
+   }
+   
+   @GET
+   @Path("{segments:.*}/list")
+   public Response getWildcardList(@PathParam("segments") List&lt;PathSegment&gt; segments) {
+      System.out.println("list segments: " + segments.size());
+      return Response.ok().build();
+   }
+   
+...
+
+   @Test
+   public void testWildcardArray() throws Exception {
+      Invocation.Builder request = client.target("http://localhost:8081/a/b/c/array").request();
+      Response response = request.get();
+      response.close();
+   }
+   
+   @Test
+   public void testWildcardList() throws Exception {
+      Invocation.Builder request = client.target("http://localhost:8081/a/b/c/list").request();
+      Response response = request.get();
+      response.close();
+   }
+   </pre>
+   
+   <p>is</p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+array segments: 3
+list segments: 3
+   </pre>
+   
+   </div>
+   </div>
+   
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1931"/>28.5. Extension to <code class="classname">ParamConverter</code> semantics</h2></div></div></div>
+   
+   
+   <p>
+   In the JAX-RS semantics, a <code class="classname">ParamConverter</code> is supposed to convert a single <code class="classname">String</code> that
+   represents an individual object. RESTEasy extends the semantics to allow a <code class="classname">ParamConverter</code>
+   to parse the <code class="classname">String</code> representation of multiple objects and generate a <code class="classname">List&lt;T&gt;</code>,
+   <code class="classname">Set&lt;T&gt;</code>, <code class="classname">SortedSet&lt;T&gt;</code>, array, or, indeed, any multivalued data structure
+   whatever. First, consider the resource
+   </p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("queryParam")
+public static class TestResource {
+
+   @GET
+   @Path("")
+   public Response conversion(@QueryParam("q") List&lt;String&gt; list) {
+      return Response.ok(stringify(list)).build();
+   }
+}
+
+private static &lt;T&gt; String stringify(List&lt;T&gt; list) {
+   StringBuffer sb = new StringBuffer();
+   for (T s : list) {
+      sb.append(s).append(',');
+   }
+   return sb.toString();
+}
+   </pre>
+   
+   <p>
+   Calling <code class="classname">TestResource</code> as follows, using the standard notation,
+   </p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Test
+public void testQueryParamStandard() throws Exception {
+   Client client = ClientBuilder.newClient();
+   Invocation.Builder request = client.target("http://localhost:8081/queryParam?q=20161217&amp;q=20161218&amp;q=20161219").request();
+   Response response = request.get();
+   System.out.println("response: " + response.readEntity(String.class));
+}
+   </pre>
+   
+   <p>results in</p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+response: 20161217,20161218,20161219,
+   </pre>
+   
+   <p>
+   Suppose, instead, that we want to use a comma separated notation. We can add
+   </p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+public static class MultiValuedParamConverterProvider implements ParamConverterProvider
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public &lt;T&gt; ParamConverter&lt;T&gt; getConverter(Class&lt;T&gt; rawType, Type genericType, Annotation[] annotations) {
+      if (List.class.isAssignableFrom(rawType)) {
+         return (ParamConverter&lt;T&gt;) new MultiValuedParamConverter();
+      }
+      return null;
+   }   
+}
+
+public static class MultiValuedParamConverter implements ParamConverter&lt;List&lt;?&gt;&gt; {
+
+   @Override
+   public List&lt;?&gt; fromString(String param) {
+      if (param == null || param.trim().isEmpty()) {
+         return null;
+      }
+      return parse(param.split(","));
+   }
+
+   @Override
+   public String toString(List&lt;?&gt; list) {
+      if (list == null || list.isEmpty()) {
+         return null;
+      }
+      return stringify(list);
+   }
+   
+   private static List&lt;String&gt; parse(String[] params) {
+      List&lt;String&gt; list = new ArrayList&lt;String&gt;();
+      for (String param : params) {
+         list.add(param);
+      }
+      return list;
+   }
+}
+   </pre>
+   
+   <p>Now we can call</p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Test
+public void testQueryParamCustom() throws Exception {
+   Client client = ClientBuilder.newClient();
+   Invocation.Builder request = client.target("http://localhost:8081/queryParam?q=20161217,20161218,20161219").request();
+   Response response = request.get();
+   System.out.println("response: " + response.readEntity(String.class));
+}
+   </pre>
+   
+   <p>and get</p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+response: 20161217,20161218,20161219,
+   </pre>
+   
+   <p>
+   Note that in this case, <code class="methodname">MultiValuedParamConverter.fromString()</code> creates and returns an
+   <code class="classname">ArrayList</code>, so <code class="methodname">TestResource.conversion()</code> could be rewritten
+   </p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("queryParam")
+public static class TestResource {
+
+   @GET
+   @Path("")
+   public Response conversion(@QueryParam("q") ArrayList&lt;String&gt; list) {
+      return Response.ok(stringify(list)).build();
+   }
+}
+   </pre>
+   
+   <p>
+   On the other hand, <code class="classname">MultiValuedParamConverter</code> could be rewritten to return a
+   <code class="classname">LinkList</code> and the parameter list in <code class="methodname">TestResource.conversion()</code>
+   could be either a <code class="classname">List</code> or a <code class="classname">LinkedList</code>.
+   </p>
+   
+   <p>
+   Finally, note that this extension works for arrays as well. For example,
+   </p>
+   
+   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+  public static class Foo {
+      private String foo;
+      public Foo(String foo) {this.foo = foo;}
+      public String getFoo() {return foo;}
+   }
+   
+   public static class FooArrayParamConverter implements ParamConverter&lt;Foo[]&gt; {
+
+      @Override
+      public Foo[] fromString(String value)
+      {
+         String[] ss = value.split(",");
+         Foo[] fs = new Foo[ss.length];
+         int i = 0;
+         for (String s : ss) {
+            fs[i++] = new Foo(s);
+         }
+         return fs;
+      }
+
+      @Override
+      public String toString(Foo[] values)
+      {
+         StringBuffer sb = new StringBuffer();
+         for (int i = 0; i &lt; values.length; i++) {
+            sb.append(values[i].getFoo()).append(",");
+         }
+         if (sb.length() &gt; 0) {
+            sb.deleteCharAt(sb.length() - 1);
+         }
+         return sb.toString();
+      }
+   }
+   
+   @Provider
+   public static class FooArrayParamConverterProvider implements ParamConverterProvider {
+
+      @SuppressWarnings("unchecked")
+      @Override
+      public &lt;T&gt; ParamConverter&lt;T&gt; getConverter(Class&lt;T&gt; rawType, Type genericType, Annotation[] annotations) {
+         if (rawType.equals(Foo[].class));
+         return (ParamConverter&lt;T&gt;) new FooArrayParamConverter();
+      }
+   }
+   
+   @Path("")
+   public static class ParamConverterResource {
+
+      @GET
+      @Path("test")
+      public Response test(@QueryParam("foos") Foo[] foos) {
+         return Response.ok(new FooArrayParamConverter().toString(foos)).build();
+      }
+   }
+   </pre>
+   </div>
+ 
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1967"/>28.6. Default multiple valued <code class="classname">ParamConverter</code></h2></div></div></div>
+   
+   
+   <p>
+   RESTEasy includes two built-in <code class="classname">ParamConverter</code>s in the resteasy-jaxrs module,
+   one for <code class="classname">Collection</code>s:
+   </p>
+   
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+   <code xmlns="http://www.w3.org/1999/xhtml" class="classname">org.jboss.resteasy.plugins.providers.MultiValuedCollectionParamConverter</code>,
+</pre>
+
+   <p>
+   and one for arrays:
+   </p>
+   
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+   <code xmlns="http://www.w3.org/1999/xhtml" class="classname">org.jboss.resteasy.plugins.providers.MultiValuedArrayParamConverter</code>,
+</pre>
+   
+   <p>
+   which implement the concepts in the previous section.
+   </p>
+   
+   <p>
+   In particular, <code class="methodname">MultiValued*ParamConverter.fromString()</code> can transform a
+   string representation coming over the network into a <code class="classname">Collection</code> or array, and
+   <code class="methodname">MultiValued*ParamConverter.toString()</code> can be used by a client side proxy
+   to transform <code class="classname">Collection</code>s or arrays into a string representation.
+   </p>
+   
+   <p>
+   String representations are determined by <code class="classname">org.jboss.resteasy.annotations.Separator</code>,
+   a parameter annotation in the resteasy-core module:
+   </p>
+   
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Target({ElementType.PARAMETER})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Separator
+{
+   public String value() default "";
+}
+</pre>
+
+   <p>
+   The value of <code class="code">Separator.value()</code> is used to separate individual elements of a <code class="classname">Collection</code>
+   or array. For example, a proxy implementing
+   </p>
+   
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("path/separator/multi/{p}")
+@GET
+public String pathMultiSeparator(@PathParam("p") @Separator("-") List&lt;String&gt; ss); 
+</pre>
+
+   <p>
+   will turn
+   </p>
+   
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+List&lt;String&gt; list = new ArrayList&lt;String&gt;();
+list.add("abc");
+list.add("xyz");
+proxy.pathMultiSeparator(list);
+</pre>
+
+  <p>
+  and "path/separator/multi/{p}" into ".../path/separator/multi/abc-xyz". On the server side,
+  the RESTEasy runtime will turn "abc-xyz" back into a list consisting of elements "abc" and "xyz" for
+  </p>
+  
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("path/separator/multi/{p}")
+@GET
+public String pathMultiSeparator(@PathParam("p") @Separator("-") List&lt;String&gt; ss) {
+   StringBuffer sb = new StringBuffer();
+   for (String s : ss) {
+      sb.append(s);
+      sb.append("|");
+   }
+   return sb.toString();
+}
+</pre>
+  
+   <p>
+   which will return "abc|xyz|".
+   </p>
+   
+   <p>
+   In fact, the value of the <code class="classname">Separator</code> annotations may be a more general regular
+   expression, which is passed to <code class="methodname">String.split()</code>. For example, "[-,;]" tells the
+   server side to break up a string using either "-", ",", or ";". On the client side, a string will be created
+   using the first element, "-" in this case.
+   </p>
+   
+   <p>
+   If a parameter is annotated with <code class="classname">@Separator</code> with no value, then the default value is
+   </p>
+   
+   <div class="itemizedlist"><ul><li>"," for a <code class="classname">@HeaderParam</code>, <code class="classname">@MatrixParam</code>,
+      <code class="classname">@PathParam</code>, or <code class="classname">@QueryParam</code>, and
+      </li><li>
+      "-" for a <code class="classname">@CookieParam</code>.
+      </li></ul></div>
+   
+   <p>
+      The <code class="classname">MultiValued*ParamConverter</code>s depend on existing facilities for handling
+      the individual elements. On the server side, once it has parsed the incoming string into substrings,
+      <code class="classname">MultiValued*ParamConverter</code> turns each substring into an Java object according
+      to Section 3.2 "Fields and Bean Properties" of the JAX-RS specification. On the client side, 
+      <code class="classname">MultiValued*ParamConverter</code> turns a Java object into a string as follows:
+   </p>
+   
+   <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li>look for a <code class="classname">ParamConverter</code>;</li><li>
+         if there is no suitable <code class="classname">ParamConverter</code> and the parameter
+         is labeled <code class="classname">@HeaderParam</code>, look for a
+         <code class="classname">HeaderDelegate</code>; or</li><li>
+         call <code class="methodname">toString()</code>.
+      </li></ol></div>
+   
+   <p>
+   These <code class="classname">ParamConverter</code>s are meant to be fairly general, but there are a number of
+   restrictions:
+   </p>
+   
+   <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li>They don't handle nested <code class="classname">Collections</code> or arrays. That is,
+      <code class="classname">List&lt;String&gt;</code> and <code class="code">String[]</code> are OK, but
+      <code class="classname">List&lt;List&lt;String&gt;&gt;</code> and <code class="code">String[][]</code> are not. 
+      </li><li>
+      The regular expression used in <code class="classname">Separator</code> must match the regular expression
+<pre xmlns="" class="">
+"\\p{Punct}|\\[\\p{Punct}+\\]"
+</pre>
+
+      That is, it must be either a single instance of a punctuation symbol, i.e., a symbol in the set
+<pre xmlns="" class="">
+!"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~
+</pre>
+
+      or a class of punctuation symbols like "[-,;]".
+      </li><li>
+      For either of these <code class="classname">ParamConverter</code>s to be available for use with a given parameter, that
+      parameter must be annotated with <code class="classname">@Separator</code>.
+      </li></ol></div>
+   
+   <p>
+   There are also some logical restrictions:
+   </p>
+   
+   <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li>
+      Cookie syntax, as specified in <a class="ulink" href="https://tools.ietf.org/html/rfc6265#section-4.1.1">https://tools.ietf.org/html/rfc6265#section-4.1.1</a>,
+      assigns a meaning to ";", so it cannot be used as a separator.
+      </li><li>
+      If a separator character appears in the content of an element, then there will be problems. For example, if "," is
+      used as a separator, then, if a proxy sends the array <code class="code">["a","b,c","d"]</code>, it will turn into the 
+      string "a,b,c,d" on the wire and be reconstituted on the server as four elements.
+      </li></ol></div>
+   
+   <p>
+   These built-in <code class="classname">ParamConverter</code>s have the lowest priority, so any user supplied 
+   <code class="classname">ParamConverter</code>s will be tried first.
+   </p>
+   </div>
+     
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="JAX-RS_2.1_additions.html"><strong>上一页</strong>第 27 章 JAX-RS 2.1 Additions</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="Responses_using_javax.ws.rs.core.Response.html"><strong>下一页</strong>第 29 章 Responses using javax.ws.rs.core.Response</a></li></ul></body></html>

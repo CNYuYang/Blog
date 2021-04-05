@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 24 章 JSON Support via Jackson</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Atom.html" title="第 23 章 RESTEasy Atom Support"/><link rel="next" href="json-p.html" title="第 25 章 JSON Support via Java EE 7 JSON-P API"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Atom.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="json-p.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="json"/>第 24 章 JSON Support via Jackson</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="json.html#d4e1412">24.1. Using Jackson 1.9.x Outside of WildFly</a></span></dt><dt><span class="sect1"><a href="json.html#d4e1416">24.2. Using Jackson 1.9.x Inside WildFly 8</a></span></dt><dt><span class="sect1"><a href="json.html#d4e1420">24.3. Using Jackson 2 Outside of WildFly</a></span></dt><dt><span class="sect1"><a href="json.html#d4e1424">24.4. Using Jackson 2 Inside WildFly 9 and above</a></span></dt><dt><span class="sect1"><a href="json.html#d4e1428">24.5. Additional RESTEasy Specifics</a></span></dt><dt><span class="sect1"><a href="json.html#JSONP_Support">24.6. JSONP Support</a></span></dt><dt><span class="sect1"><a href="json.html#Jackson_JSON_Decorator">24.7. Jackson JSON Decorator</a></span></dt><dt><span class="sect1"><a href="json.html#JSON_Filter_Support">24.8. JSON Filter Support</a></span></dt><dt><span class="sect1"><a href="json.html#Polymorphic_Typing_deserialization">24.9. Polymorphic Typing deserialization</a></span></dt></dl></div>
+    
+    <p>RESTEasy supports integration with the Jackson project.
+        For more on Jackson 2, see <a class="ulink" href="http://wiki.fasterxml.com/JacksonHome">http://wiki.fasterxml.com/JacksonHome</a>.
+        Besides JAXB like APIs, it has a JavaBean based model, described at
+        <a class="ulink" href="http://wiki.fasterxml.com/JacksonDataBinding">http://wiki.fasterxml.com/JacksonDataBinding</a>,
+        which allows you to easily marshal Java objects to and from JSON.
+        RESTEasy integrates with the JavaBean model.
+        While Jackson does come with its own JAX-RS integration, RESTEasy expanded it a little, as decribed below.
+    </p>
+    <p>
+    <span class="bold"><strong>NOTE.</strong></span> The resteasy-jackson-provider module, which is based on the outdated Jackson 1.9.x, is
+    currently deprecated, and will be removed in a release subsequent to 3.1.0.Final. The resteasy-jackson2-provider
+    module is based on Jackson 2.
+    </p>
+
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1412"/>24.1. Using Jackson 1.9.x Outside of WildFly</h2></div></div></div>
+        
+        <p>If you're deploying RESTEasy outside of WildFly,
+        add the RESTEasy Jackson provder to your WAR pom.xml build:</p>
+        <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+&lt;dependency&gt;
+   &lt;groupId&gt;org.jboss.resteasy&lt;/groupId&gt;
+   &lt;artifactId&gt;resteasy-jackson-provider&lt;/artifactId&gt;
+   &lt;version&gt;${version.resteasy}&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
+    </div>
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1416"/>24.2. Using Jackson 1.9.x Inside WildFly 8</h2></div></div></div>
+        
+        <p>If you're deploying RESTEasy with WildFly 8,
+        there's nothing you need to do except to make sure
+        you've updated your installation with the latest and greatest RESTEasy.  See the
+        <a class="link" href="Installation_Configuration.html" title="第 3 章 安装/配置">Installation/Configuration</a> section
+        of this documentation for more details.</p>
+    </div>
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1420"/>24.3. Using Jackson 2 Outside of WildFly</h2></div></div></div>
+        
+        <p>If you're deploying RESTEasy outside of WildFly,
+        add the RESTEasy Jackson provder to your WAR pom.xml build:</p>
+        <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+&lt;dependency&gt;
+   &lt;groupId&gt;org.jboss.resteasy&lt;/groupId&gt;
+   &lt;artifactId&gt;resteasy-jackson2-provider&lt;/artifactId&gt;
+   &lt;version&gt;${version.resteasy}&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
+    </div>
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1424"/>24.4. Using Jackson 2 Inside WildFly 9 and above</h2></div></div></div>
+        
+        <p>If you're deploying RESTEasy with WildFly 9 or above,
+        there's nothing you need to do except to make sure
+        you've updated your installation with the latest and greatest RESTEasy.  See the
+        <a class="link" href="Installation_Configuration.html" title="第 3 章 安装/配置">Installation/Configuration</a> section
+        of this documentation for more details.</p>
+    </div>
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1428"/>24.5. Additional RESTEasy Specifics</h2></div></div></div>
+        
+
+    <p>The first extra piece that RESTEasy added to the integration was
+        to support "application/*+json". Jackson would only accept "application/json" and "text/json" as valid
+        media types. This allows you to create json-based media types and still
+        let Jackson marshal things for you. For example:
+    </p>
+    <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@Path("/customers")
+public class MyService {
+
+    @GET
+    @Produces("application/vnd.customer+json")
+    public Customer[] getCustomers() {}
+}
+</pre>
+    </div>
+
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="JSONP_Support"/>24.6. JSONP Support</h2></div></div></div>
+        
+        <p>
+            If you're using Jackson, RESTEasy has <a class="ulink" href="http://en.wikipedia.org/wiki/JSONP">JSONP</a> that you can turn on by adding
+            the provider <code class="literal">org.jboss.resteasy.plugins.providers.jackson.JacksonJsonpInterceptor</code> (Jackson2JsonpInterceptor if you're using the Jackson2 provider)
+            to your deployments.
+            If the media type of the response is json and a callback query parameter is given, the response will be a javascript snippet with
+            a method call of the method defined by the callback parameter.
+            For example:
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+GET /resources/stuff?callback=processStuffResponse
+</pre><p>
+            will produce this response:
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+processStuffResponse(&lt;nomal JSON body&gt;)
+</pre><p>
+            This supports the default behavior of <a class="ulink" href="http://api.jquery.com/jQuery.ajax/">jQuery</a>.
+            To enable JacksonJsonpInterceptor in WildFly, you need to import annotations from <code class="literal">org.jboss.resteasy.resteasy-jackson-provider</code> module using jboss-deployment-structure.xml:
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+&lt;jboss-deployment-structure&gt;
+  &lt;deployment&gt;
+    &lt;dependencies&gt;
+      &lt;module name="org.jboss.resteasy.resteasy-jackson-provider" annotations="true"/&gt;
+    &lt;/dependencies&gt;
+  &lt;/deployment&gt;
+&lt;/jboss-deployment-structure&gt;
+</pre><p>
+        </p>
+        <p>
+            You can change the name of the callback parameter by setting the callbackQueryParameter property.
+        </p>
+        <p>
+            JacksonJsonpInterceptor can wrap the response into a try-catch block:
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+try{processStuffResponse(&lt;normal JSON body&gt;)}catch(e){}
+</pre><p>
+            You can enable this feature by setting the resteasy.jsonp.silent property to true
+        </p>
+        <p>
+        <span class="bold"><strong>Note.</strong></span> Because JSONP can be used in
+        <span class="bold"><strong>Cross Site Scripting Inclusion (XSSI) attacks</strong></span>,
+        <code class="methodname">Jackson2JsonpInterceptor</code>
+        is disabled by default. Two steps are necessary to enable it:
+        </p>
+        <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li>As noted above, <code class="methodname">Jackson2JsonpInterceptor</code> must be
+           included in the deployment. For example,
+           a service file META-INF/services/javax.ws.rs.ext.Providers with the line
+<pre xmlns="" class="">
+org.jboss.resteasy.plugins.providers.jackson.Jackson2JsonpInterceptor
+</pre>
+           may be included on the classpath
+           </li><li>Also, the parameter parameter "resteasy.jsonp.enable" must be set to "true".
+           [See <a class="xref" href="Installation_Configuration.html#microprofile_config" title="3.4. 配置">第 3.4 节 “配置”</a> for more information about application configuration.]
+           </li></ol></div>
+    </div>
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Jackson_JSON_Decorator"/>24.7. Jackson JSON Decorator</h2></div></div></div>
+        
+        <p>
+            If you are using the Jackson 2 provider, RESTEasy has provided a pretty-printing annotation simliar with the one in JAXB provider:
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+org.jboss.resteasy.annotations.providers.jackson.Formatted
+</pre><p>
+            Here is an example:
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@GET
+@Produces("application/json")
+@Path("/formatted/{id}")
+@Formatted
+public Product getFormattedProduct()
+{
+    return new Product(333, "robot");
+}
+</pre><p>
+            As the example shown above, the @Formatted annotation will enable the underlying Jackson option "SerializationFeature.INDENT_OUTPUT".
+        </p>
+    </div>
+
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="JSON_Filter_Support"/>24.8. JSON Filter Support</h2></div></div></div>
+        
+        <p>
+            In Jackson2 , there is new feature <a class="ulink" href="http://wiki.fasterxml.com/JacksonFeatureJsonFilter">JsonFilter</a> to allow annotate class with @JsonFilter and doing dynamic filtering.
+Here is an example which defines mapping from "nameFilter" to filter instances and filter bean properties when serilize to json format:
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+@JsonFilter(value="nameFilter")
+public class Jackson2Product {
+    protected String name;
+    protected int id;
+    public Jackson2Product() {
+    }
+    public Jackson2Product(final int id, final String name) {
+        this.id = id;
+        this.name = name;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+}
+</pre><p>
+@JsonFilter annotates resource class to filter out some property not to serialize in the json response. To map the filter id and instance we need to create another jackson class to add the id and filter instance map:
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+
+public class ObjectFilterModifier extends ObjectWriterModifier {
+	public ObjectFilterModifier() {
+	}
+	@Override
+	public ObjectWriter modify(EndpointConfigBase&lt;?&gt; endpoint,
+			MultivaluedMap&lt;String, Object&gt; httpHeaders, Object valueToWrite,
+			ObjectWriter w, JsonGenerator jg) throws IOException {
+
+		FilterProvider filterProvider = new SimpleFilterProvider().addFilter(
+				"nameFilter",
+				SimpleBeanPropertyFilter.filterOutAllExcept("name"));
+		return w.with(filterProvider);
+
+	}
+}
+
+</pre><p>
+       Here the method <code class="methodname">modify()</code> will take care of filtering all properties except "name" property before write. To make this work, we need let RESTEasy know this mapping info. This can be easily set in a WriterInterceptor using Jackson's <code class="methodname">ObjectWriterInjector</code>:
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+
+@Provider
+public class JsonFilterWriteInterceptor implements WriterInterceptor{
+
+	private ObjectFilterModifier modifier = new ObjectFilterModifier();
+	@Override
+	public void aroundWriteTo(WriterInterceptorContext context)
+			throws IOException, WebApplicationException {
+		//set a threadlocal modifier
+	    ObjectWriterInjector.set(modifier);
+		context.proceed();
+	}
+
+}
+
+</pre><p>
+Alternatively, Jackson's documentation suggest doing the same in a servlet filter; that however potentially leads to issues on RESTEasy, as the ObjectFilterModifier ends up being stored using a ThreadLocal object and there's no guarantee the same thread serving the servlet filter will be running the resource endpoint execution too. So, for the servlet filter scenario, RESTEasy offers its own injector that relies on the current thread context classloader for carrying over the specified modifier:
+</p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+
+public class ObjectWriterModifierFilter implements Filter {
+	private static ObjectFilterModifier modifier = new ObjectFilterModifier();
+
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {
+	}
+
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response,
+			FilterChain chain) throws IOException, ServletException {
+		ResteasyObjectWriterInjector.set(Thread.currentThread().getContextClassLoader(), modifier);
+		chain.doFilter(request, response);
+	}
+
+	@Override
+	public void destroy() {
+	}
+
+}
+
+</pre><p>
+        </p>
+    </div>
+
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Polymorphic_Typing_deserialization"/>24.9. Polymorphic Typing deserialization</h2></div></div></div>
+        
+        <p>
+           Due to numerous CVEs for a specific kind of Polymorphic Deserialization (see details in FasterXML Jackson documentation), starting from Jackson 2.10 users have a mean to allow only specified classes to be deserialized. RESTEasy enables this feature by default and allows controlling the contents of whitelist of allowed classes/packages using MicroProfile Config.
+
+</p><div class="table"><a id="d4e1473"/><p class="title"><b>表 24.1. </b></p><div class="table-contents">
+                <table border="1"><colgroup><col/><col/><col/></colgroup><thead><tr><th>
+                                Property
+                            </th><th>
+                                Description
+                            </th><td class="auto-generated"> </td></tr></thead><tbody><tr><td>
+                                resteasy.jackson.deserialization.whitelist.allowIfBaseType
+                            </td><td>
+                                Method for appending matcher that will allow all subtypes in cases where nominal base type's class name starts with specific prefix. "*" can be used for allowing any class.
+                            </td><td class="auto-generated"> </td></tr><tr><td>
+                                resteasy.jackson.deserialization.whitelist.allowIfSubType
+                            </td><td>
+                                Method for appending matcher that will allow specific subtype (regardless of declared base type) in cases where subclass name starts with specified prefix. "*" can be used for allowing any class.
+                            </td><td class="auto-generated"> </td></tr></tbody></table>
+            </div></div><p><br class="table-break"/>
+        </p>
+    </div>
+
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Atom.html"><strong>上一页</strong>第 23 章 RESTEasy Atom Support</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="json-p.html"><strong>下一页</strong>第 25 章 JSON Support via Java EE 7 JSON-P API</a></li></ul></body></html>
