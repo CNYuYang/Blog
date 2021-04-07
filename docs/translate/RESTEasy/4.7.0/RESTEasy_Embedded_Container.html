@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 41 章 Embedded Containers</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Reactive.html" title="第 40 章 Reactive programming support"/><link rel="next" href="RESTEasy_Server-side_Mock_Framework.html" title="第 42 章 Server-side Mock Framework"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Reactive.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="RESTEasy_Server-side_Mock_Framework.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="RESTEasy_Embedded_Container"/>第 41 章 Embedded Containers</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="RESTEasy_Embedded_Container.html#d4e2905">41.1. Undertow</a></span></dt><dt><span class="section"><a href="RESTEasy_Embedded_Container.html#d4e2909">41.2. Sun JDK HTTP Server</a></span></dt><dt><span class="section"><a href="RESTEasy_Embedded_Container.html#d4e2916">41.3. Netty</a></span></dt><dt><span class="section"><a href="RESTEasy_Embedded_Container.html#d4e2922">41.4. Vert.x</a></span></dt><dt><span class="section"><a href="RESTEasy_Embedded_Container.html#d4e2938">41.5. EmbeddedJaxrsServer</a></span></dt></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 41 章 Embedded Containers</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Reactive.html" title="第 40 章 Reactive programming support"/><link rel="next" href="RESTEasy_Server-side_Mock_Framework.html" title="第 42 章 Server-side Mock Framework"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Reactive.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="RESTEasy_Server-side_Mock_Framework.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="RESTEasy_Embedded_Container"/>第 41 章 Embedded Containers</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="RESTEasy_Embedded_Container.html#d4e2907">41.1. Undertow</a></span></dt><dt><span class="section"><a href="RESTEasy_Embedded_Container.html#d4e2911">41.2. Sun JDK HTTP Server</a></span></dt><dt><span class="section"><a href="RESTEasy_Embedded_Container.html#d4e2918">41.3. Netty</a></span></dt><dt><span class="section"><a href="RESTEasy_Embedded_Container.html#d4e2924">41.4. Vert.x</a></span></dt><dt><span class="section"><a href="RESTEasy_Embedded_Container.html#d4e2940">41.5. EmbeddedJaxrsServer</a></span></dt></dl></div>
 
 
     <p>RESTEasy has a few different plugins for different embedabble HTTP and/or Servlet containers if use RESTEasy in
     a test environment, or within an environment where you do not want a Servlet engine dependency.</p>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2905"/>41.1. Undertow</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2907"/>41.1. Undertow</h2></div></div></div>
         
         <p>
             Undertow is a new Servlet Container that is used by WildFly (JBoss Community Server).  You can embed
@@ -113,7 +113,7 @@ public class UndertowTest
 </pre><p>
         </p>
     </div>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2909"/>41.2. Sun JDK HTTP Server</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2911"/>41.2. Sun JDK HTTP Server</h2></div></div></div>
         
         <p>
             The Sun JDK comes with a simple HTTP server implementation (com.sun.net.httpserver.HttpServer) which you
@@ -148,7 +148,7 @@ public class UndertowTest
    
     </div>
 
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2916"/>41.3. Netty</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2918"/>41.3. Netty</h2></div></div></div>
         
         <p>
             RESTEasy has integration with the popular Netty project as well..
@@ -175,7 +175,7 @@ public class UndertowTest
 </pre>
 
     </div>
-  <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2922"/>41.4. Vert.x</h2></div></div></div>
+  <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2924"/>41.4. Vert.x</h2></div></div></div>
     
     <p>
       RESTEasy has integration with the popular Vert.x project as well..
@@ -243,7 +243,7 @@ public class UndertowTest
     </pre>
 
   </div>
-   <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2938"/>41.5. EmbeddedJaxrsServer</h2></div></div></div>
+   <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2940"/>41.5. EmbeddedJaxrsServer</h2></div></div></div>
    
    <p>
        <code class="classname">EmbeddedJaxrsServer</code> is an interface provided to enable each embedded container

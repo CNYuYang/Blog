@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 7 章 @HeaderParam</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="_QueryParam.html" title="第 6 章 @QueryParam"/><link rel="next" href="LinkHeader.html" title="第 8 章 Linking resources"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_QueryParam.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="LinkHeader.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="_HeaderParam"/>第 7 章 @HeaderParam</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="_HeaderParam.html#d4e589">7.1. HeaderDelegates</a></span></dt></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 7 章 @HeaderParam</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="_QueryParam.html" title="第 6 章 @QueryParam"/><link rel="next" href="LinkHeader.html" title="第 8 章 Linking resources"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_QueryParam.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="LinkHeader.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="_HeaderParam"/>第 7 章 @HeaderParam</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="_HeaderParam.html#d4e590">7.1. HeaderDelegates</a></span></dt></dl></div>
 
 
 <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="note"><h2>注意</h2>
    <p>
-      RESTEasy <a class="link" href="_NewParam.html" title="第 13 章 Improved @…Param annotations">supports <code class="code">@HeaderParam</code> annotations with no parameter name.</a>.
+      RESTEasy <a class="link" href="_NewParam.html" title="第 13 章 改进的 @…Param 注解"><code class="code">@HeaderParam</code> 注解支持不直接指定参数名</a>。
    </p>
 </div>
 
 <p>
 
-The @HeaderParam annotation allows you to map a request HTTP header to your method invocation.
+@HeaderParam 注解允许您将请求 HTTP 头信息映射到方法调用。
 </p>
 <p>
 
@@ -29,7 +29,7 @@ public String getBooks(@HeaderParam("From") String from) {
 </p>
 <p>
 
-Like PathParam, your parameter type can be an String, primitive, or class that has a String constructor or static valueOf() method.  For example, MediaType has a valueOf() method and you could do:
+与 PathParam 类似，您的参数类型可以是String，原生类型，String作为输入参数的构造函数或静态 valueOf() 方法。例如，MediaType 有一个 valueOf() 方法，您可以这样做:
 </p>
 <p>
 
@@ -46,13 +46,11 @@ public void put(@HeaderParam("Content-Type") MediaType contentType, ...)
 
 </p>
 
-<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e589"/>7.1. <code class="classname">HeaderDelegate</code>s</h2></div></div></div>
+<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e590"/>7.1. <code class="classname">HeaderDelegate</code>s</h2></div></div></div>
 
 
 <p>
-In addition to the usual methods for translating parameters to and from strings, parameters annotated
-with <code class="classname">@HeaderParam</code> have another option: implementations of 
-<code class="classname">RuntimeDelegate$HeaderDelegate</code>:
+除了常见的将参数转换为字符串和从字符串转换参数的方法之外，使用<code class="classname">@HeaderParam</code>注解的参数还有另一个选项: <code class="classname">RuntimeDelegate$HeaderDelegate</code> 的实现:
 </p>
 
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -88,9 +86,9 @@ with <code class="classname">@HeaderParam</code> have another option: implementa
 </pre>
 
 <p>
-<code class="classname">HeaderDelegate</code> is similar to <code class="classname">ParamConverter</code>, but it is not
-very convenient to register a <code class="classname">HeaderDelegate</code> since, unlike, for example,
-<code class="classname">ParamConverterProvider</code>, it is not treated by the JAX-RS specification as a provider.
+<code class="classname">HeaderDelegate</code> 类似于 <code class="classname">ParamConverter</code> ，但是注册一个 <code class="classname">HeaderDelegate</code> 并不十分方便。因为与 <code class="classname">ParamConverterProvider</code> 等不同，JAX-RS 规范没有将它视为提供者(provider)。<code class="classname">org.jboss.resteasy.spi.ResteasyProviderFactory</code> 有如下方法，需要 <code class="classname">javax.ws.rs.core.Configurable</code> 的子类或实现：
+
+
 The class <code class="classname">javax.ws.rs.core.Configurable</code>, which is subclassed by, for example,
 <code class="classname">org.jboss.resteasy.spi.ResteasyProviderFactory</code> has methods like
 </p>
@@ -111,14 +109,11 @@ The class <code class="classname">javax.ws.rs.core.Configurable</code>, which is
 </pre>
 
 <p>
-but it is not clear that they are applicable to <code class="classname">HeaderDelegate</code>s.
+但目前尚不清楚它们是否适用于<code class="classname">HeaderDelegate</code>s。
 </p>
 
 <p>
-RESTEasy approaches this problem by allowing <code class="classname">HeaderDelegate</code>s to be annotated
-with <code class="classname">@Provider</code>. Not only will <code class="methodname">ResteasyProviderFactory.register()</code>
-process <code class="classname">HeaderDelegate</code>s, but another useful consequence is that
-<code class="classname">HeaderDelegate</code>s can be discovered automatically at runtime.
+RESTEasy 通过允许 <code class="classname">HeaderDelegate</code>s 使用<code class="classname">@Provider</code>注解来解决这个问题。不仅 <code class="methodname">ResteasyProviderFactory.register()</code> 处理 <code class="classname">HeaderDelegate</code>s，而且另一个有用的结果是可以在运行时自动发现 <code class="classname">HeaderDelegate</code>s。
 </p>
 </div>
 </div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_QueryParam.html"><strong>上一页</strong>第 6 章 @QueryParam</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="LinkHeader.html"><strong>下一页</strong>第 8 章 Linking resources</a></li></ul></body></html>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 40 章 Reactive programming support</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Async_Injection.html" title="第 39 章 Asynchronous Injection"/><link rel="next" href="RESTEasy_Embedded_Container.html" title="第 41 章 Embedded Containers"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Async_Injection.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="RESTEasy_Embedded_Container.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Reactive"/>第 40 章 Reactive programming support</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="Reactive.html#d4e2495">40.1. CompletionStage</a></span></dt><dt><span class="sect1"><a href="Reactive.html#d4e2535">40.2. CompletionStage in JAX-RS</a></span></dt><dt><span class="sect1"><a href="Reactive.html#d4e2583">40.3. Beyond CompletionStage</a></span></dt><dt><span class="sect1"><a href="Reactive.html#d4e2614">40.4. Pluggable reactive types: RxJava 2 in RESTEasy</a></span></dt><dt><span class="sect1"><a href="Reactive.html#d4e2813">40.5. Proxies</a></span></dt><dt><span class="sect1"><a href="Reactive.html#d4e2827">40.6. Adding extensions</a></span></dt></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 40 章 Reactive programming support</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Async_Injection.html" title="第 39 章 Asynchronous Injection"/><link rel="next" href="RESTEasy_Embedded_Container.html" title="第 41 章 Embedded Containers"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Async_Injection.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="RESTEasy_Embedded_Container.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Reactive"/>第 40 章 Reactive programming support</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="Reactive.html#d4e2497">40.1. CompletionStage</a></span></dt><dt><span class="sect1"><a href="Reactive.html#d4e2537">40.2. CompletionStage in JAX-RS</a></span></dt><dt><span class="sect1"><a href="Reactive.html#d4e2585">40.3. Beyond CompletionStage</a></span></dt><dt><span class="sect1"><a href="Reactive.html#d4e2616">40.4. Pluggable reactive types: RxJava 2 in RESTEasy</a></span></dt><dt><span class="sect1"><a href="Reactive.html#d4e2815">40.5. Proxies</a></span></dt><dt><span class="sect1"><a href="Reactive.html#d4e2829">40.6. Adding extensions</a></span></dt></dl></div>
 
  
     <p>
@@ -22,7 +22,7 @@
            asynchronous computation in reactive program typically involves pushing data from one entity to another, rather
            than polling for data.
         </li></ul></div>
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2495"/>40.1. CompletionStage</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2497"/>40.1. CompletionStage</h2></div></div></div>
 
     <p>
        In java 1.8 and JAX-RS 2.1, the support for reactive programming is fairly limited. Java 1.8 introduces the interface
@@ -171,7 +171,7 @@ private CompletionStage&lt;String&gt; getCompletionStageSupplyAsync1(String s, E
     </p>
 </div>
 
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2535"/>40.2. CompletionStage in JAX-RS</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2537"/>40.2. CompletionStage in JAX-RS</h2></div></div></div>
 
 
     <p>
@@ -411,7 +411,7 @@ public CompletionStage&lt;String&gt; text(@Context HttpRequest req) {
    </div>
 </div>
 
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2583"/>40.3. Beyond CompletionStage</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2585"/>40.3. Beyond CompletionStage</h2></div></div></div>
 
 
     <p>
@@ -478,7 +478,7 @@ public interface Processor&lt;T, R&gt; extends Subscriber&lt;T&gt;, Publisher&lt
     
 </div>
 
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2614"/>40.4. Pluggable reactive types: RxJava 2 in RESTEasy</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2616"/>40.4. Pluggable reactive types: RxJava 2 in RESTEasy</h2></div></div></div>
 
 
     <p>
@@ -509,7 +509,7 @@ public interface Processor&lt;T, R&gt; extends Subscriber&lt;T&gt;, Publisher&lt
        </p>
     </div>
     
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2635"/>1. Server side</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2637"/>1. Server side</h2></div></div></div>
 
     <p>
        Given the class <code class="classname">Thing</code>, which can be represented in JSON:
@@ -641,7 +641,7 @@ public interface FlowableOnSubscribe&lt;T&gt; {
     </p>
 </div>
     
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2664"/>2. Client side</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2666"/>2. Client side</h2></div></div></div>
 
    
     <p>
@@ -717,7 +717,7 @@ public void testPostThingList() throws Exception {
    
 </div>
 
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2695"/>3. Representation on the wire</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2697"/>3. Representation on the wire</h2></div></div></div>
 
 
     <p>
@@ -841,7 +841,7 @@ public @interface Stream
            </dd></dl></div>
 </div>
 
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2745"/>4. Examples.</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2747"/>4. Examples.</h2></div></div></div>
 
     
     <p>
@@ -972,7 +972,7 @@ public void testGetBytes() throws Exception {
    </div>
 </div>
 
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2775"/>5. Rx and SSE</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2777"/>5. Rx and SSE</h2></div></div></div>
 
 
     <p>
@@ -1110,7 +1110,7 @@ public void testSseToFlowable() throws Exception {
     </p>
 </div>
 
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2802"/>6. To stream or not to stream</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2804"/>6. To stream or not to stream</h2></div></div></div>
 
 
     <p>
@@ -1143,7 +1143,7 @@ public void testSseToFlowable() throws Exception {
 </div>
 </div>
 
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2813"/>40.5. Proxies</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2815"/>40.5. Proxies</h2></div></div></div>
 
 
     <p>
@@ -1243,7 +1243,7 @@ public class Rx2FlowableProxyTest {
 </pre>
 </div>
 
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2827"/>40.6. Adding extensions</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2829"/>40.6. Adding extensions</h2></div></div></div>
 
 
     <p>

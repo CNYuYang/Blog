@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 8 章 Linking resources</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="_HeaderParam.html" title="第 7 章 @HeaderParam"/><link rel="next" href="_MatrixParam.html" title="第 9 章 @MatrixParam"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_HeaderParam.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="_MatrixParam.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="LinkHeader"/>第 8 章 Linking resources</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="LinkHeader.html#d4e615">8.1. Link Headers</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e620">8.2. Atom links in the resource representations</a></span></dt><dd><dl><dt><span class="section"><a href="LinkHeader.html#d4e627">8.2.1. Configuration</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e642">8.2.2. Your first links injected</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e663">8.2.3. Customising how the Atom links are serialised</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e669">8.2.4. Specifying which JAX-RS methods are tied to which resources</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e734">8.2.5. Specifying path parameter values for URI templates</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e808">8.2.6. Securing entities</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e833">8.2.7. Extending the UEL context</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e849">8.2.8. Resource facades</a></span></dt></dl></dd></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 8 章 Linking resources</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="_HeaderParam.html" title="第 7 章 @HeaderParam"/><link rel="next" href="_MatrixParam.html" title="第 9 章 @MatrixParam"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_HeaderParam.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="_MatrixParam.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="LinkHeader"/>第 8 章 Linking resources</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="LinkHeader.html#d4e618">8.1. 链路报头</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e623">8.2. Atom links in the resource representations</a></span></dt><dd><dl><dt><span class="section"><a href="LinkHeader.html#d4e630">8.2.1. Configuration</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e645">8.2.2. Your first links injected</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e666">8.2.3. Customising how the Atom links are serialised</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e672">8.2.4. Specifying which JAX-RS methods are tied to which resources</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e737">8.2.5. Specifying path parameter values for URI templates</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e811">8.2.6. Securing entities</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e836">8.2.7. Extending the UEL context</a></span></dt><dt><span class="section"><a href="LinkHeader.html#d4e852">8.2.8. Resource facades</a></span></dt></dl></dd></dl></div>
 	
 	<p>
+		RESTEasy 中有两种机制可用于将资源链接到另一个资源，以及将资源链接到操作: Link HTTP 标头和资源表示中的 Atom 链接。
+		
 		There are two mechanisms available in RESTEasy to link a resource to another, and to link resources to
 		operations: the Link HTTP header, and Atom links inside the resource representations.
 	</p>
-	<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e615"/>8.1. Link Headers</h2></div></div></div>
+	<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e618"/>8.1. 链路报头</h2></div></div></div>
 		
 		<p>
 		RESTEasy has both client and server side support for the <a class="ulink" href="http://tools.ietf.org/html/draft-nottingham-http-link-header-06">Link header specification</a>.
@@ -18,7 +20,7 @@
 		without parsing the entity body.
 		</p>
 	</div>
-	<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e620"/>8.2. Atom links in the resource representations</h2></div></div></div>
+	<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e623"/>8.2. Atom links in the resource representations</h2></div></div></div>
 		
 		<p>
 		RESTEasy allows you to inject <a class="ulink" href="http://tools.ietf.org/html/rfc4287#section-4.2.7">Atom links</a> directly inside the entity objects you are sending to the
@@ -32,13 +34,13 @@
 		concerned resources, for any number of resources in the response. For example, you can have Atom links
 		for the root response entity, and also for each of its children entities.
 		</p>
-		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e627"/>8.2.1. Configuration</h3></div></div></div>
+		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e630"/>8.2.1. Configuration</h3></div></div></div>
 			
 			<p>
 				There is no configuration required to be able to inject Atom links in your resource
 				representation, you just have to have this maven artifact in your path:
 			</p>
-			<table id="d4e630">
+			<table id="d4e633">
 				<caption>表 8.1. Maven artifact for Atom link injection</caption>
 				<thead>
 					<tr>
@@ -56,7 +58,7 @@
 				</tbody>
 			</table>
 		</div>
-		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e642"/>8.2.2. Your first links injected</h3></div></div></div>
+		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e645"/>8.2.2. Your first links injected</h3></div></div></div>
 			
 			<p>
 			You need three things in order to tell RESTEasy to inject Atom links in your entities:
@@ -162,7 +164,7 @@
  }
 }</pre>
 		</div>
-		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e663"/>8.2.3. Customising how the Atom links are serialised</h3></div></div></div>
+		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e666"/>8.2.3. Customising how the Atom links are serialised</h3></div></div></div>
 			
 			<p>
 			Because the <code class="classname">RESTServiceDiscovery</code> is in fact a JAXB type which inherits from
@@ -170,13 +172,13 @@
 			or just rely on the default with <code class="classname">@XmlElementRef</code>.
 			</p>
 		</div>
-		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e669"/>8.2.4. Specifying which JAX-RS methods are tied to which resources</h3></div></div></div>
+		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e672"/>8.2.4. Specifying which JAX-RS methods are tied to which resources</h3></div></div></div>
 			
 			<p>
 			This is all done by annotating the methods with the <code class="classname">@LinkResource</code> annotation.
 			It supports the following optional parameters:
 			</p>
-			<table id="d4e673">
+			<table id="d4e676">
 				<caption>表 8.2. <p><code class="classname">@LinkResource</code> parameters</p></caption>
 				<thead>
 					<tr>
@@ -214,14 +216,14 @@
 			relation.
 			</p>
 		</div>
-		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e734"/>8.2.5. Specifying path parameter values for URI templates</h3></div></div></div>
+		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e737"/>8.2.5. Specifying path parameter values for URI templates</h3></div></div></div>
 			
 			<p>
 			When RESTEasy adds links to your resources it needs to insert the right values in the URI template.
 			This is done either automatically by guessing the list of values from the entity, or by specifying
 			the values in the <code class="classname">@LinkResource</code> <code class="varname">pathParameters</code> parameter.
 			</p>
-			<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h4 class="title"><a id="d4e739"/>8.2.5.1. Loading URI template values from the entity</h4></div></div></div>
+			<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h4 class="title"><a id="d4e742"/>8.2.5.1. Loading URI template values from the entity</h4></div></div></div>
 				
 				<p>
 					URI template values are extracted from the entity from fields or Java Bean properties
@@ -305,7 +307,7 @@
 				obtaining either <code class="constant">"/book/foo/comments"</code> or <code class="constant">"/book/foo/comment/1"</code>.
 				</p>
 			</div>
-			<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h4 class="title"><a id="d4e772"/>8.2.5.2. Specifying path parameters manually</h4></div></div></div>
+			<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h4 class="title"><a id="d4e775"/>8.2.5.2. Specifying path parameters manually</h4></div></div></div>
 				
 				<p>
 				If you do not want to annotate your entities with resource ID annotations (<code class="classname">@ResourceID</code>,
@@ -313,7 +315,7 @@
 				<code class="classname">@ParentResource</code>, you can also specify the URI template values inside the
 				<code class="classname">@LinkResource</code> annotation, using Unified Expression Language expressions:
 				</p>
-				<table id="d4e781">
+				<table id="d4e784">
 					<caption>表 8.3. <p><code class="classname">@LinkResource</code> URI template parameter</p></caption>
 					<thead>
 						<tr>
@@ -380,7 +382,7 @@
 <!--  --><br/><span class="java_separator">}</span></pre>
 			</div>
 		</div>
-		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e808"/>8.2.6. Securing entities</h3></div></div></div>
+		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e811"/>8.2.6. Securing entities</h3></div></div></div>
 			
 			<p>
 			You can restrict which links are injected in the resource based on security restrictions for the client,
@@ -392,7 +394,7 @@
 			or using RESTEasy and EJB's security annotation <code class="classname">@RolesAllowed</code> on the JAX-RS
 			method.
 			</p>
-			<table id="d4e815">
+			<table id="d4e818">
 				<caption>表 8.4. <p><code class="classname">@LinkResource</code> security restrictions</p></caption>
 				<thead>
 					<tr>
@@ -413,7 +415,7 @@
 				</tbody>
 			</table>
 		</div>
-		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e833"/>8.2.7. Extending the UEL context</h3></div></div></div>
+		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e836"/>8.2.7. Extending the UEL context</h3></div></div></div>
 			
 			<p>
 			We've seen that both the URI template values and the security constraints of <code class="classname">@LinkResource</code>
@@ -517,7 +519,7 @@
 </span>
 <!--  --><br/><span class="java_separator">}</span></pre>
 		</div>
-		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e849"/>8.2.8. Resource facades</h3></div></div></div>
+		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e852"/>8.2.8. Resource facades</h3></div></div></div>
 			
 			<p>
 			Sometimes it is useful to add resources which are just containers or layers on other resources. For

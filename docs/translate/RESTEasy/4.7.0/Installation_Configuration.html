@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 3 章 安装/配置</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="license.html" title="第 2 章 开源许可"/><link rel="next" href="Using_Path.html" title="第 4 章 Using @Path and @GET, @POST, etc."/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="license.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Using_Path.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Installation_Configuration"/>第 3 章 安装/配置</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="Installation_Configuration.html#resteasy_modules_in_wildfly">3.1.  WildFly 中的 RESTEasy 模块</a></span></dt><dd><dl><dt><span class="section"><a href="Installation_Configuration.html#other_resteasy_modules">3.1.1. 其他 RESTEasy 模块</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#upgrading-wildfly">3.1.2. 升级 WildFly 中的 RESTEasy</a></span></dt></dl></dd><dt><span class="section"><a href="Installation_Configuration.html#d4e123">3.2. 将 RESTEasy 应用程序部署到 WildFly</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#standalone_resteasy">3.3. 部署到其他 servlet 容器</a></span></dt><dd><dl><dt><span class="section"><a href="Installation_Configuration.html#d4e155">3.3.1. Servlet 3.0 容器</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#d4e161">3.3.2. 老的 servlet 容器</a></span></dt></dl></dd><dt><span class="section"><a href="Installation_Configuration.html#microprofile_config">3.4. 配置</a></span></dt><dd><dl><dt><span class="section"><a href="Installation_Configuration.html#resteasy_microprofile_config">3.4.1. RESTEasy with MicroProfile Config</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#d4e240">3.4.2. Using pure MicroProfile Config</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#d4e259">3.4.3. Using RESTEasy's extension of MicroProfile Config</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#configuring_mp_config">3.4.4. Configuring MicroProfile Config</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#classic_config">3.4.5. RESTEasy's classic configuration mechanism</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#overriding_config">3.4.6. Overriding RESTEasy's configuration mechanism</a></span></dt></dl></dd><dt><span class="section"><a href="Installation_Configuration.html#configuration_switches">3.5. Configuration switches</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#javax.ws.rs.core.Application">3.6. javax.ws.rs.core.Application</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#listener">3.7. RESTEasy as a ServletContextListener</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#filter">3.8. RESTEasy as a Servlet Filter</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#d4e445">3.9. Client side</a></span></dt></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 3 章 安装/配置</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="license.html" title="第 2 章 开源许可"/><link rel="next" href="Using_Path.html" title="第 4 章 使用 @Path 和 @GET, @POST 等注解"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="license.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Using_Path.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Installation_Configuration"/>第 3 章 安装/配置</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="Installation_Configuration.html#resteasy_modules_in_wildfly">3.1.  WildFly 中的 RESTEasy 模块</a></span></dt><dd><dl><dt><span class="section"><a href="Installation_Configuration.html#other_resteasy_modules">3.1.1. 其他 RESTEasy 模块</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#upgrading-wildfly">3.1.2. 升级 WildFly 中的 RESTEasy</a></span></dt></dl></dd><dt><span class="section"><a href="Installation_Configuration.html#d4e123">3.2. 将 RESTEasy 应用程序部署到 WildFly</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#standalone_resteasy">3.3. 部署到其他 servlet 容器</a></span></dt><dd><dl><dt><span class="section"><a href="Installation_Configuration.html#d4e155">3.3.1. Servlet 3.0 容器</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#d4e161">3.3.2. 老的 servlet 容器</a></span></dt></dl></dd><dt><span class="section"><a href="Installation_Configuration.html#microprofile_config">3.4. 配置</a></span></dt><dd><dl><dt><span class="section"><a href="Installation_Configuration.html#resteasy_microprofile_config">3.4.1. RESTEasy with MicroProfile Config</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#d4e241">3.4.2. 完全使用 MicroProfile Config</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#d4e260">3.4.3. 使用 RESTEasy 的 MicroProfile Config扩展</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#configuring_mp_config">3.4.4. 配置 MicroProfile Config</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#classic_config">3.4.5. RESTEasy 的经典配置机制 </a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#overriding_config">3.4.6. 覆盖 RESTEasy 的配置机制</a></span></dt></dl></dd><dt><span class="section"><a href="Installation_Configuration.html#configuration_switches">3.5. 配置开关</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#javax.ws.rs.core.Application">3.6. javax.ws.rs.core.Application</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#listener">3.7. RESTEasy 作为 ServletContextListener</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#filter">3.8. RESTEasy 作为 Servlet Filter</a></span></dt><dt><span class="section"><a href="Installation_Configuration.html#d4e446">3.9. 客户端</a></span></dt></dl></div>
     
 
     <p>
@@ -192,7 +192,7 @@ $ unzip resteasy-jboss-modules-4.7.0-SNAPSHOT.zip
 &lt;/web-app&gt;</pre><p>
         </p>
         <p>
-            另外，如果您想调整或打开/关闭 RESTEasy 的任何特定功能，web.xml 可以提供 init-params 和 context-params 配置选项 (参见 <a class="xref" href="Installation_Configuration.html#configuration_switches" title="3.5. Configuration switches">第 3.5 节 “Configuration switches”</a> )。
+            另外，如果您想调整或打开/关闭 RESTEasy 的任何特定功能，web.xml 可以提供 init-params 和 context-params 配置选项 (参见 <a class="xref" href="Installation_Configuration.html#configuration_switches" title="3.5. 配置开关">第 3.5 节 “配置开关”</a> )。
         </p>
         <p>
             因为我们没有使用 &lt;servlet-mapping&gt; 元素，所以我们必须定义一个 <code class="classname">javax.ws.rs.core.Application</code> 类(见 <a class="xref" href="Installation_Configuration.html#javax.ws.rs.core.Application" title="3.6. javax.ws.rs.core.Application">第 3.6 节 “javax.ws.rs.core.Application”</a> ) 并带有 <code class="classname">javax.ws.rs.ApplicationPath</code> 注解。如果扫描返回类或单例是空集(这是从 <code class="classname">Application</code> 继承而来的行为) ，那么将根据 JAX-RS 注解的存在情况，对 WAR 进行资源和提供程序类的扫描。
@@ -296,89 +296,67 @@ public class MyApplication extends Application
         
         
         <p>
-        RESTEasy has two mutually exclusive mechanisms for retrieving configuration parameters
-        (see <a class="xref" href="Installation_Configuration.html#configuration_switches" title="3.5. Configuration switches">第 3.5 节 “Configuration switches”</a>).
-        The classic mechanism depends on context-params and init-params in a web.xml file.
-        Alternatively, the Eclipse MicroProfile Config project
-        (<a class="ulink" href="https://github.com/eclipse/microprofile-config">https://github.com/eclipse/microprofile-config</a>)
-        provides a flexible parameter retrieval mechanism that RESTEasy will use if the necessary
-        dependencies are available. See <a class="xref" href="Installation_Configuration.html#configuring_mp_config" title="3.4.4. Configuring MicroProfile Config">第 3.4.4 节 “Configuring MicroProfile Config”</a> for more about that. If 
-        they are not available, it will fall back to an extended form of the classic mechanism.
+        RESTEasy 有两种相互排斥的检索配置参数的机制(参见<a class="xref" href="Installation_Configuration.html#configuration_switches" title="3.5. 配置开关">第 3.5 节 “配置开关”</a>)。传统的机制依赖于 web.xml 文件中的 context-params 和 init-params 配置。或者，Eclipse MicroProfile Config 项目(<a class="ulink" href="https://github.com/eclipse/microprofile-config">https://github.com/eclipse/microprofile-config</a>)提供了一种灵活的参数检索机制，如果必要的依赖项可用，RESTEasy 将使用这种机制。请参见<a class="xref" href="Installation_Configuration.html#configuring_mp_config" title="3.4.4. 配置 MicroProfile Config">第 3.4.4 节 “配置 MicroProfile Config”</a> 以获得更多信息。如果它们不可用，就会退回到传统机制的扩展形式。
         </p>
         
         <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="resteasy_microprofile_config"/>3.4.1. RESTEasy with MicroProfile Config</h3></div></div></div>
         
         <p>
-            In the presence of the Eclipse MicroProfile Config API jar and an implementation
-            of the API (see <a class="xref" href="Installation_Configuration.html#configuring_mp_config" title="3.4.4. Configuring MicroProfile Config">第 3.4.4 节 “Configuring MicroProfile Config”</a>), RESTEasy will use the facilities
-            of MicroProfile Config for accessing configuration properties (see <a class="xref" href="Installation_Configuration.html#configuration_switches" title="3.5. Configuration switches">第 3.5 节 “Configuration switches”</a>). 
-            MicroProfile Config offers to both RESTEasy users and RESTEasy developers a great deal of
-            flexibility in controlling runtime configuration.	
+            在有 Eclipse MicroProfile Config API 的 jar 包和 API (见 <a class="xref" href="Installation_Configuration.html#configuring_mp_config" title="3.4.4. 配置 MicroProfile Config">第 3.4.4 节 “配置 MicroProfile Config”</a>)相关实现的情况下 ，RESTEasy 将使用 MicroProfile Config 的工具访问配置属性(见 <a class="xref" href="Installation_Configuration.html#configuration_switches" title="3.5. 配置开关">第 3.5 节 “配置开关”</a>)。MicroProfile Config 为 RESTEasy 用户和 RESTEasy 开发人员提供了很大的灵活性来控制运行时配置。
         </p>
         
         <p>
-            In MicroProfile Config, a <code class="classname">ConfigSource</code> represents a <code class="classname">Map&lt;String, String&gt;</code>
-            of property names to values, and a <code class="classname">Config</code> represents a sequence of <code class="classname">ConfigSource</code>s,
-            ordered by priority. The priority of a <code class="classname">ConfigSource</code> is given by an ordinal (represented by an
-            <code class="classname">int</code>), with a higher value indicating a higher priority. For a given property name, the
-            <code class="classname">ConfigSource</code>s are searched in order until a value is found.
+            在 MicroProfile Config 中，<code class="classname">ConfigSource</code> 是一个<code class="classname">Map&lt;String, String&gt;</code> 表示属性名称到值的映射，<code class="classname">Config</code> 表示按优先级排序的 <code class="classname">ConfigSource</code> 序列。<code class="classname">ConfigSource</code> 的优先级由ordinal变量(用 <code class="classname">int</code> 表示)给出，较高的数值表示较高的优先级。对于给定的属性名，将按顺序搜索 <code class="classname">ConfigSource</code>，直到找到值为止。
         </p>
         <p>
-            MicroProfile Config mandates the presence of the following <code class="classname">ConfigSource</code>s:
+            MicroProfile Config 指定了以下的 <code class="classname">ConfigSource</code>:
         </p>
-        <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li>a <code class="classname">ConfigSource</code> based on System.getProperties() (ordinal = 400)</li><li>a <code class="classname">ConfigSource</code> based on System.getenv() (ordinal = 300)</li><li>a <code class="classname">ConfigSource</code> for each META-INF/microprofile-config.properties file on the ClassPath,
-            separately configurable via a config_ordinal property inside each file (default ordinal = 100)</li></ol></div>
+        <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li>一个 <code class="classname">ConfigSource</code> 来自于 System.getProperties() (ordinal = 400)</li><li>一个 <code class="classname">ConfigSource</code> 来自于 System.getenv() (ordinal = 300)</li><li>一个 <code class="classname">ConfigSource</code> 来自ClassPath中的每个 META-INF/microprofile-config.properties 文件,可以通过每个文件中的 config_ordinal 属性单独配置优先级。(默认的 ordinal = 100)
+            </li></ol></div>
         <p>
-            Note that a property which is found among the System properties and which is also in the System environment will be assigned
-            the System property value because of the relative priorities of the <code class="classname">ConfigSource</code>s.
+            注意，由于 <code class="classname">ConfigSource</code> 的相对优先级，在 System properties 中找到的属性以及在 System environment 中找到的属性将被赋予 System properties 值。
         </p>
         <p>
-            The set of <code class="classname">ConfigSources</code> is extensible. For example, smallrye-config
-            (<a class="ulink" href="https://github.com/smallrye/smallrye-config">https://github.com/smallrye/smallrye-config</a>),
-            the implementation of the MicroProfile Config specification currently used by RESTEasy, adds the following
-            kinds of <code class="classname">ConfigSource</code>s:
+            <code class="classname">ConfigSources</code> 的set集合是可扩展的。例如，目前 RESTEasy 使用的 MicroProfile Config 规范的实现 smallrye-Config (<a class="ulink" href="https://github.com/smallrye/smallrye-config">https://github.com/smallrye/smallrye-config</a>) ，添加了以下几种 <code class="classname">ConfigSource</code>:
         </p>
-        <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li><code class="classname">PropertiesConfigSource</code> creates a <code class="classname">ConfigSource</code> from a
-            Java <code class="classname">Properties</code> object or a Map&lt;String, String&gt; object or a properties file
-            (referenced by its URL) (default ordinal = 100).</li><li><code class="classname">DirConfigSource</code> creates a <code class="classname">ConfigSource</code> that will look into a directory
-            where each file corresponds to a property (the file name is the property key and its textual content is the property value).
-            This <code class="classname">ConfigSource</code> can be used to read configuration from Kubernetes ConfigMap (default ordinal = 100).</li><li><code class="classname">ZkMicroProfileConfig</code> creates a <code class="classname">ConfigSource</code>ConfigSource that is backed by Apache Zookeeper
+        <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li>
+            <code class="classname">PropertiesConfigSource</code> 创建一个 <code class="classname">ConfigSource</code> 来自
+            Java <code class="classname">Properties</code> 对象或者一个 Map&lt;String, String&gt; 对象或者一个 properties 文件
+            (由其 URL 引用) (默认 ordinal = 100)。
+            
+            </li><li>
+            <code class="classname">DirConfigSource</code> 创建一个<code class="classname">ConfigSource</code>，它将查看一个目录，每个文件对应一个属性（文件名是属性键，其文本内容是属性值）。 该<code class="classname">ConfigSource</code> 可用于从Kubernetes ConfigMap读取配置（默认 ordinal = 100 ）。
+            </li><li><code class="classname">ZkMicroProfileConfig</code> 创建一个 <code class="classname">ConfigSource</code>，该<code class="classname">ConfigSource</code>通过 Apache Zookeeper 备份
             (ordinal = 150).</li></ol></div>
         <p>
-            These can be registered programmatically by using an instance of <code class="classname">ConfigProviderResolver</code>:
+            这些可以通过使用 <code class="classname">ConfigProviderResolver</code> 实例以编程方式注册:
         </p>
         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 Config config = new PropertiesConfigSource("file:/// ...");
 ConfigProviderResolver.instance().registerConfig(config, getClass().getClassLoader());
         </pre>
-        <p>where <code class="classname">ConfigProviderResolver</code> is part of the Eclipse API.</p>
-        <p>
-            If the application is running in Wildfly, then Wildfly provides another set of <code class="classname">ConfigSource</code>s,
-            as described in the "MicroProfile Config Subsystem Configuration" section of the WildFly Admin guide
-            (<a class="ulink" href="https://docs.wildfly.org/21/Admin_Guide.html#MicroProfile_Config_SmallRye">https://docs.wildfly.org/21/Admin_Guide.html#MicroProfile_Config_SmallRye</a>).
+        <p> 其中 <code class="classname">ConfigProviderResolver</code> 是 Eclipse API 的一部分。 
         </p>
         <p>
-            Finally, RESTEasy automatically provides three more <code class="classname">ConfigSource</code>s:
+            如果应用程序在 WildFly 运行，那么 WildFly 提供了另一组 <code class="classname">ConfigSource</code> ，正如 WildFly 管理指南(<a class="ulink" href="https://docs.wildfly.org/21/Admin_Guide.html#MicroProfile_Config_SmallRye">https://docs.wildfly.org/21/Admin_Guide.html#MicroProfile_Config_SmallRye</a> )的"MicroProfile Config Subsystem Configuration" 部分所描述的那样。
         </p>
-        <div class="itemizedlist"><ul><li><code class="classname">org.jboss.resteasy.microprofile.config.ServletConfigSource</code> represents
-            a servlet's &lt;init-param&gt;s from web.xml (ordinal = 60).</li><li><code class="classname">org.jboss.resteasy.microprofile.config.FilterConfigSource</code> represents
-            a filter's &lt;init-param&gt;s from web.xml (ordinal = 50). (See <a class="xref" href="Installation_Configuration.html#filter" title="3.8. RESTEasy as a Servlet Filter">第 3.8 节 “RESTEasy as a Servlet Filter”</a> for more information.)
-            </li><li><code class="classname">org.jboss.resteasy.microprofile.config.ServletContextConfigSource</code> represents
-            &lt;context-param&gt;s from web.xml (ordinal = 40).</li></ul></div>
         <p>
-            <span class="bold"><strong>Note. </strong></span>As stated by the MicroProfile Config specification, a special property
-            <code class="classname">config_ordinal</code> can be set within any RESTEasy built-in <code class="classname">ConfigSource</code>s.
-            The default implementation of getOrdinal() will attempt to read this value. If found and a valid integer, the value
-            will be used. Otherwise the respective default value will be used.
+            最后，RESTEasy 自动提供了三个<code class="classname">ConfigSource</code>:
+        </p>
+        <div class="itemizedlist"><ul><li><code class="classname">org.jboss.resteasy.microprofile.config.ServletConfigSource</code> 表示 servlet 在 web.xml 中的 &lt;init-param&gt;s 配置  (ordinal = 60)。</li><li><code class="classname">org.jboss.resteasy.microprofile.config.FilterConfigSource</code> 表示 servlet 在 web.xml 中的 &lt;init-param&gt;s 配置 (ordinal = 50)。 (见 <a class="xref" href="Installation_Configuration.html#filter" title="3.8. RESTEasy 作为 Servlet Filter">第 3.8 节 “RESTEasy 作为 Servlet Filter”</a> for more information.)
+            </li><li><code class="classname">org.jboss.resteasy.microprofile.config.ServletContextConfigSource</code> 表示 web.xml 中的 
+            &lt;context-param&gt;s 配置 (ordinal = 40)。 </li></ul></div>
+        <p>
+            <span class="bold"><strong>Note. </strong></span>
+            正如 MicroProfile Config 规范所述，可以在任何 RESTEasy 内置 <code class="classname">ConfigSource</code> 中设置一个特殊属性 <code class="classname">config_ordinal</code> 。getOrdinal() 的默认实现将尝试读取此值。如果找到并且是一个有效的整数，则将使用该值。否则将使用相应的默认值。
         </p>
         </div>
 
-        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e240"/>3.4.2. Using pure MicroProfile Config</h3></div></div></div>
+        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e241"/>3.4.2. 完全使用 MicroProfile Config</h3></div></div></div>
             
             
             <p>
-                The MicroProfile Config API is very simple. A <code class="classname">Config</code> may be obtained either
-                programatically:
+                MicroProfile Config API 非常简单，可以通过编程方式获得<code class="classname">Config</code>:
             </p>
             
             <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -386,7 +364,7 @@ Config config = ConfigProvider.getConfig();
             </pre>
             
             <p>
-                or, in the presence of CDI, by way of injection:
+                或在有CDI 的情况下，以注入方式:
             </p>
             
             <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -394,7 +372,7 @@ Config config = ConfigProvider.getConfig();
             </pre>
             
             <p>
-                Once a <code class="classname">Config</code> has been obtained, a property can be queried. For example,
+                一旦获取了 <code class="classname">Config</code>，就可以查询属性，举个例子：
             </p>
             
             <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -402,7 +380,7 @@ String s = config.getValue("prop_name", String.class);
             </pre>
             
             <p>
-                or
+                或者
             </p>
             
             <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -410,8 +388,7 @@ String s = config.getOptionalValue("prop_name", String.class).orElse("d'oh");
             </pre>
             
             <p>
-                Now, consider a situation in which "prop_name" has been set by <code class="code">System.setProperty("prop_name", "system")</code>
-                and also by
+                现在，考虑一下这样一种情况: 通过 <code class="code">System.setProperty("prop_name", "system")</code> 设置了"prop_name"，同时有以下配置：
             </p>
             
             <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -422,29 +399,25 @@ String s = config.getOptionalValue("prop_name", String.class).orElse("d'oh");
             </pre>
                
             <p>
-                Then, since the system parameter <code class="classname">ConfigSource</code> has precedence over (has a higher ordinal than)
-                <code class="classname">ServletContextConfigSource</code>, <code class="code">config.getValue("prop_name", String.class)</code> will
-                return "system" rather than "context".
+                然后，由于系统参数 <code class="classname">ConfigSource</code> 的优先级高于(有一个更高的ordinal)  <code class="classname">ServletContextConfigSource</code> ，<code class="code">config.getValue("prop_name", String.class)</code> 将返回"system"而不是"context"。
             </p>
 
         </div>
-        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e259"/>3.4.3. Using RESTEasy's extension of MicroProfile Config</h3></div></div></div>
+        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e260"/>3.4.3. 使用 RESTEasy 的 MicroProfile Config扩展</h3></div></div></div>
             
             
             <p>
-            RESTEasy offers a general purpose parameter retrieval mechanism which incorporates MicroProfile Config if the necessary
-            dependencies are available, and which falls back to an extended version of the classic RESTEasy mechanism 
-            (see <a class="xref" href="Installation_Configuration.html#classic_config" title="3.4.5. RESTEasy's classic configuration mechanism">第 3.4.5 节 “RESTEasy's classic configuration mechanism”</a>) otherwise.
+            RESTEasy 提供了一个通用的参数检索机制，如果有必要的依赖关系可用，它就会包含 MicroProfile Config，否则就会回到经典 RESTEasy 机制的扩展版本(见 <a class="xref" href="Installation_Configuration.html#classic_config" title="3.4.5. RESTEasy 的经典配置机制">第 3.4.5 节 “RESTEasy 的经典配置机制 ”</a>)。
             </p>
             
-            <p>Calling</p>
+            <p>调用</p>
             
             <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 ConfigurationFactory.getInstance().getConfiguration()
             </pre>
             
             <p>
-            will return an instance of org.jboss.resteasy.spi.config.Configuration:
+            将返回一个 org.jboss.resteasy.spi.config.Configuration 的实例:
             </p>
             
             <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -480,7 +453,7 @@ public interface Configuration {
             </pre>
             
         <p>
-        For example,
+        举个例子：
         </p>
         
         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -488,7 +461,7 @@ String value = ConfigurationFactory.getInstance().getConfiguration().getOptional
         </pre>
         
         <p>
-        If MicroProfile Config is available, that would be equivalent to
+        如果 MicroProfile Config 是可用的，那么它等价于
         </p>
         
         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -496,19 +469,17 @@ String value = ConfigProvider.getConfig().getOptionalValue("prop_name", String.c
         </pre>
         
         <p>
-        If MicroProfile Config is not available, then an attempt is made to retrieve the parameter from
-        the following sources:
+        如果 MicroProfile Config 不可用，则尝试从以下源检索该参数:
         </p>
         
-        <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li>system variables, followed by</li><li>environment variables, followed by</li><li>web.xml parameters, as described in <a class="xref" href="Installation_Configuration.html#classic_config" title="3.4.5. RESTEasy's classic configuration mechanism">第 3.4.5 节 “RESTEasy's classic configuration mechanism”</a> </li></ol></div>
+        <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li>系统变量，然后是</li><li>环境变量，然后是</li><li>通过 web.xml 文件配置, 如 <a class="xref" href="Installation_Configuration.html#classic_config" title="3.4.5. RESTEasy 的经典配置机制">第 3.4.5 节 “RESTEasy 的经典配置机制 ”</a> 中所述</li></ol></div>
         </div>
                 
-        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="configuring_mp_config"/>3.4.4. Configuring MicroProfile Config</h3></div></div></div>
+        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="configuring_mp_config"/>3.4.4. 配置 MicroProfile Config</h3></div></div></div>
             
             
             <p>
-                If an application is running inside Wildfly, then all of the dependencies are automatically available. Outside of
-                Wildfly, an application will need the Eclipse MicroProfile API at compile time. In maven, for example, use
+                如果一个应用程序在 Wildfly 内部运行，那么所有的依赖关系都是自动可用的。在 Wildfly 之外，应用程序在编译时需要 Eclipse MicroProfile API。例如，在 maven 中，使用
             </p>
             
             <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -520,7 +491,7 @@ String value = ConfigProvider.getConfig().getOptionalValue("prop_name", String.c
             </pre>
             
             <p>
-                It will also need the implementation, smallrye-config, at runtime:
+                它还在运行时需要MicroProfile API的实现、smallrye-config：
             </p>
             
             <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -532,16 +503,15 @@ String value = ConfigProvider.getConfig().getOptionalValue("prop_name", String.c
             </pre>
         </div>
        
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="classic_config"/>3.4.5. RESTEasy's classic configuration mechanism</h3></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="classic_config"/>3.4.5. RESTEasy 的经典配置机制 </h3></div></div></div>
     
     
     <p>
-    Prior to the incorporation of MicroProfile Config, nearly all of RESTEasy's parameters were retrieved from
-    servlet init-params and context-params. Which ones are available depends on how a web application invokes RESTEasy.
+    在加入 MicroProfile Config 之前，几乎所有 RESTEasy 的参数都是从 servlet init-params 和 context-params 中检索到的。哪些是可用的取决于 web 应用程序如何调用 RESTEasy。
     </p>
     
     <p>
-    If RESTEasy is invoked as a servlet, as in
+    如果 RESTEasy 被作为 servlet 调用，如
     </p>
     
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -573,13 +543,11 @@ String value = ConfigProvider.getConfig().getOptionalValue("prop_name", String.c
 </pre>
 
    <p>
-   then the servlet specific init-params and the general context-params are available,
-   with the former taking precedence over the latter. For example, the property "system" would
-   have the value "system-init".
+   然后可以使用 servlet 特定的 init-params 和一般的 context-params，前者优先于后者。例如，属性"system"的值为"system-init"。
    </p>
 
    <p>
-   If RESTEasy is invoked by way of a filter (see <a class="xref" href="Installation_Configuration.html#filter" title="3.8. RESTEasy as a Servlet Filter">第 3.8 节 “RESTEasy as a Servlet Filter”</a>), as in
+   如果通过过滤器调用 RESTEasy (参见 <a class="xref" href="Installation_Configuration.html#filter" title="3.8. RESTEasy 作为 Servlet Filter">第 3.8 节 “RESTEasy 作为 Servlet Filter”</a>) ，如下所示
    </p>
    
    <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -612,13 +580,11 @@ String value = ConfigProvider.getConfig().getOptionalValue("prop_name", String.c
    </pre>
 
    <p>
-   then the filter specific init-params and the general context-params are available,
-   with the former taking precedence over the latter. For example, the property "system" would
-   have the value "system-filter".
+   然后可以使用筛选器特定的 init-params 和一般的 context-params，前者优先于后者。例如，属性"system"的值为"system-filter"。
    </p>
 
    <p>
-   Finally, if RESTEasy is invoked by way of a ServletContextListener (see <a class="xref" href="Installation_Configuration.html#listener" title="3.7. RESTEasy as a ServletContextListener">第 3.7 节 “RESTEasy as a ServletContextListener”</a>), as in
+   最后，如果 RESTEasy 是通过 ServletContextListener 调用的(参见 <a class="xref" href="Installation_Configuration.html#listener" title="3.7. RESTEasy 作为 ServletContextListener">第 3.7 节 “RESTEasy 作为 ServletContextListener”</a>) ，如下所示
    </p>
 
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -640,39 +606,32 @@ String value = ConfigProvider.getConfig().getOptionalValue("prop_name", String.c
 </pre>
  
     <p>
-    where <code class="classname">ResteasyBootstrap</code> is a <code class="classname">ServletContextListener</code>,
-    then the context-params are available.
+    其中 <code class="classname">ResteasyBootstrap</code> 是一个 <code class="classname">ServletContextListener</code>，那么 context-params 是可用的。
     </p>
     </div>
    
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="overriding_config"/>3.4.6. Overriding RESTEasy's configuration mechanism</h3></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="overriding_config"/>3.4.6. 覆盖 RESTEasy 的配置机制</h3></div></div></div>
     
     
     <p>
-    Before adopting the default behavior, with or without MicroProfile Config, as described in 
-    previous sections, RESTEasy will use service loading to look for one or more implementations of
-    the interface <code class="classname">org.jboss.resteasy.spi.config.ConfigurationFactory</code>, selecting one
-    with the highest priority as determined by the value returned by 
-    <code class="methodname">ConfigurationFactory.priority()</code>. Smaller numbers indicate higher priority.
-    The default <code class="classname">ConfigurationFactory</code> is
-    <code class="classname">org.jboss.resteasy.core.config.DefaultConfigurationFactory</code> with a priority of 500.
+    在采用默认行为之前，无论是否使用 MicroProfile Config (如前面几节所述) ，RESTEasy 将使用服务加载来查找接口 <code class="classname">org.jboss.resteasy.spi.config.ConfigurationFactory</code> 的一个或多个实现。选择由 <code class="methodname">ConfigurationFactory.priority()</code> 返回的值确定的优先级最高的一个。较小的数字意味着更高的优先级。默认的 <code class="classname">ConfigurationFactory</code> 是 <code class="classname">org.jboss.resteasy.core.config.DefaultConfigurationFactory</code> 其优先级为500。
     </p>
     </div>
     </div>
      
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="configuration_switches"/>3.5. Configuration switches</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="configuration_switches"/>3.5. 配置开关</h2></div></div></div>
         
-        <p>RESTEasy can receive the following configuration options from any <code class="classname">ConfigSource</code>s
-        that are available at runtime:
+        <p>
+        运行时可以从可用的任何 <code class="classname">ConfigSource</code> 接收以下配置选项:
         </p>
         <p>
-            </p><div class="table"><a id="d4e311"/><p class="title"><b>表 3.2. </b></p><div class="table-contents">
+            </p><div class="table"><a id="d4e312"/><p class="title"><b>表 3.2. </b></p><div class="table-contents">
                 <table border="1"><colgroup><col/><col/><col/></colgroup><thead><tr><th>
-                                Option Name
+                                配置选项
                             </th><th>
-                                Default Value
+                                默认值
                             </th><th>
-                                Description
+                                描述
                             </th></tr></thead><tbody><tr><td>
                                 resteasy.servlet.mapping.prefix
                             </td><td>
@@ -845,8 +804,7 @@ String value = ConfigProvider.getConfig().getOptionalValue("prop_name", String.c
         </p>
         <p>
             <span class="bold"><strong>Note. </strong></span>
-            The resteasy.servlet.mapping.prefix &lt;context param&gt; variable must be set if your servlet-mapping for
-            the RESTEasy servlet has a url-pattern other than /*. For example, if the url-pattern is
+            如果你的 RESTEasy servlet 设置的 servlet-mapping 有一个除 /* 外的 url-pattern，你必须设置 resteasy.servlet.mapping.prefix &lt;context param&gt; 变量。如下：
         </p>
         <p>
             </p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -856,7 +814,7 @@ String value = ConfigProvider.getConfig().getOptionalValue("prop_name", String.c
 &lt;/servlet-mapping&gt;</pre><p>
         </p>
         <p>
-            Then the value of resteasy.servlet.mapping.prefix must be:
+            那么 resteasy.servlet.mapping.prefix 的值必须是:
         </p>
         <p>
             </p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -870,9 +828,7 @@ String value = ConfigProvider.getConfig().getOptionalValue("prop_name", String.c
         
 
         <p>
-
-            The <code class="classname">javax.ws.rs.core.Application</code> class is a standard JAX-RS class that you may implement to provide
-            information on your deployment. It is simply a class the lists all JAX-RS root resources and providers.
+            <code class="classname">javax.ws.rs.core.Application</code> 类是一个标准的 JAX-RS 类，您可以用它来提供有关部署的信息。它只是一个列出所有 JAX-RS 根资源和提供程序的类。
         </p>
         <p>
 
@@ -934,27 +890,16 @@ public abstract class Application
 
         </p>
         <p>
-            <span class="bold"><strong>Note. </strong></span>If your web.xml file does not have a
-            &lt;servlet-mapping&gt; element, you must use an <code class="classname">Application</code> class
-            annotated with <code class="classname">@ApplicationPath</code>.
-
+            <span class="bold"><strong>Note. </strong></span>
+            如果 web.xml 文件没有 &lt;servlet-mapping&gt; 元素，则必须使用带有<code class="classname">@ApplicationPath</code> 注解的 <code class="classname">Application</code> 类。
         </p>
     </div>
 
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="listener"/>3.7. RESTEasy as a ServletContextListener</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="listener"/>3.7. RESTEasy 作为 ServletContextListener</h2></div></div></div>
         
 
         <p>
-            This section is pretty much deprecated if you are using a Servlet 3.0 container or higher.  Skip it if
-            you are and read the configuration section above on installing in Servlet 3.0.
-            The initialization of RESTEasy can be performed within a ServletContextListener instead of within the
-            Servlet. You may need this if you are writing custom Listeners that need to interact with RESTEasy at boot
-            time. An example of this is the RESTEasy Spring integration that requires a Spring ServletContextListener.
-            The org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap class is a ServletContextListener that
-            configures an instance of an ResteasyProviderFactory and Registry. You can obtain instances of a
-            ResteasyProviderFactory and Registry from the ServletContext attributes
-            org.jboss.resteasy.spi.ResteasyProviderFactory and org.jboss.resteasy.spi.Registry. From these instances you
-            can programmatically interact with RESTEasy registration interfaces.
+            如果您使用的是 Servlet 3.0 或更高版本的容器，那么这一部分几乎是不推荐的。如果是，并且阅读了上面关于在 Servlet 3.0 中安装的配置部分，那请跳过这一小节。RESTEasy 的初始化可以在 ServletContextListener 中执行，而不是在 Servlet 中执行。如果您正在编写需要在启动时与 RESTEasy 进行交互的自定义 Listeners，那么您可能需要这个。这方面的一个例子是 RESTEasy 与 Spring 框架的集成，org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap 类是一个 ServletContextListener，它配置 ResteasyProviderFactory 和 Registry 的实例。可以从 ServletContext 属性 org.jboss.resteasy.spi.ResteasyProviderFactory 和 org.jboss.resteasy.spi.Registry 获取 ResteasyProviderFactory 和 Registry 的实例。从这些实例中，您可以通过编程方式与 RESTEasy 注册接口交互。
         </p>
 
         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -981,17 +926,11 @@ public abstract class Application
 
 &lt;/web-app&gt;</pre>
     </div>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="filter"/>3.8. RESTEasy as a Servlet Filter</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="filter"/>3.8. RESTEasy 作为 Servlet Filter</h2></div></div></div>
         
 
         <p>
-            This section is pretty much deprecated if you are using a Servlet 3.0 container or higher.  Skip it if
-            you are and read the configuration section above on installing in Servlet 3.0.
-            The downside of running RESTEasy as a Servlet is that you cannot have static resources like .html and .jpeg
-            files in the
-            same path as your JAX-RS services. RESTEasy allows you to run as a Filter instead. If a JAX-RS resource is
-            not
-            found under the URL requested, RESTEasy will delegate back to the base servlet container to resolve URLs.
+            如果您使用的是 Servlet 3.0 或更高版本的容器，那么这一部分几乎是不推荐的。如果是，并且阅读了上面关于在 Servlet 3.0 中安装的配置部分，那请跳过这一小节。作为一个 Servlet 运行 RESTEasy 的缺点是，您不能在JAX-RS 服务相同路径下放置静态资源如 .html 和 .jpeg 文件。RESTEasy 允许您以 Filter 的形式运行。如果在请求的 URL 下面没有找到 JAX-RS 资源，RESTEasy 将委托回 servlet 容器以解析 URL。
         </p>
 
         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -1015,13 +954,11 @@ public abstract class Application
 &lt;/web-app&gt;</pre>
     </div>
 
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e445"/>3.9. Client side</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e446"/>3.9. 客户端</h2></div></div></div>
     
 
     <p>
-        JAX-RS 2.0 conforming implementations such as RESTEasy support a client side framework which simplifies
-        communicating with restful applications. In RESTEasy, the minimal set of modules needed for the client framework
-        consists of resteasy-core and resteasy-client. You can access them by way of maven:
+        基于 JAX-RS 2.0 的 RESTEasy 等实现支持客户端框架，简化了与 restful 应用程序的通信。在 RESTEasy 中，客户机框架所需的最小模块集由 resteasy-core 和 resteasy-client 组成。你可以通过 maven 访问它们:
     </p>
 
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -1038,8 +975,8 @@ public abstract class Application
 </pre>
 
     <p>
-        Other modules, such as resteasy-jaxb-provider, may be brought in as needed.
+        其他模块，如 resteasy-jaxb-provider ，可以根据需要引入。
     </p>
 
     </div>
-</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="license.html"><strong>上一页</strong>第 2 章 开源许可</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="Using_Path.html"><strong>下一页</strong>第 4 章 Using @Path and @GET, @POST, etc.</a></li></ul></body></html>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="license.html"><strong>上一页</strong>第 2 章 开源许可</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="Using_Path.html"><strong>下一页</strong>第 4 章 使用 @Path 和 @GET, @POST 等注解</a></li></ul></body></html>

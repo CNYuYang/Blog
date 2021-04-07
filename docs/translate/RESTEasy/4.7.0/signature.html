@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 45 章 Doseta Digital Signature Framework</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="ch44.html" title="第 44 章 JSON Web Signature and Encryption (JOSE-JWT)"/><link rel="next" href="ch46.html" title="第 46 章 Body Encryption and Signing via SMIME"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="ch44.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="ch46.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="signature"/>第 45 章 Doseta Digital Signature Framework</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="signature.html#d4e3047">45.1. Maven settings</a></span></dt><dt><span class="section"><a href="signature.html#d4e3052">45.2. Signing API</a></span></dt><dd><dl><dt><span class="section"><a href="signature.html#d4e3058">45.2.1. @Signed annotation</a></span></dt></dl></dd><dt><span class="section"><a href="signature.html#d4e3066">45.3. Signature Verification API</a></span></dt><dd><dl><dt><span class="section"><a href="signature.html#d4e3075">45.3.1. Annotation-based verification</a></span></dt></dl></dd><dt><span class="section"><a href="signature.html#d4e3083">45.4. Managing Keys via a KeyRepository</a></span></dt><dd><dl><dt><span class="section"><a href="signature.html#d4e3086">45.4.1. Create a KeyStore</a></span></dt><dt><span class="section"><a href="signature.html#d4e3093">45.4.2. Configure Restreasy to use the KeyRepository</a></span></dt><dt><span class="section"><a href="signature.html#d4e3107">45.4.3. Using DNS to Discover Public Keys</a></span></dt></dl></dd></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 45 章 Doseta Digital Signature Framework</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="ch44.html" title="第 44 章 JSON Web Signature and Encryption (JOSE-JWT)"/><link rel="next" href="ch46.html" title="第 46 章 Body Encryption and Signing via SMIME"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="ch44.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="ch46.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="signature"/>第 45 章 Doseta Digital Signature Framework</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="signature.html#d4e3049">45.1. Maven settings</a></span></dt><dt><span class="section"><a href="signature.html#d4e3054">45.2. Signing API</a></span></dt><dd><dl><dt><span class="section"><a href="signature.html#d4e3060">45.2.1. @Signed annotation</a></span></dt></dl></dd><dt><span class="section"><a href="signature.html#d4e3068">45.3. Signature Verification API</a></span></dt><dd><dl><dt><span class="section"><a href="signature.html#d4e3077">45.3.1. Annotation-based verification</a></span></dt></dl></dd><dt><span class="section"><a href="signature.html#d4e3085">45.4. Managing Keys via a KeyRepository</a></span></dt><dd><dl><dt><span class="section"><a href="signature.html#d4e3088">45.4.1. Create a KeyStore</a></span></dt><dt><span class="section"><a href="signature.html#d4e3095">45.4.2. Configure Restreasy to use the KeyRepository</a></span></dt><dt><span class="section"><a href="signature.html#d4e3109">45.4.3. Using DNS to Discover Public Keys</a></span></dt></dl></dd></dl></div>
   
 
   <p>Digital signatures allow you to protect the integrity of a message.
@@ -103,7 +103,7 @@
   signatures, here's a <a class="ulink" href="http://bill.burkecentral.com/2011/02/21/multiple-uses-for-content-signature/">blog</a>
   you might find interesting.</p>
 
-  <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3047"/>45.1. Maven settings</h2></div></div></div>
+  <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3049"/>45.1. Maven settings</h2></div></div></div>
     
 
     <p>You must include the resteasy-crypto project to use the digital
@@ -118,7 +118,7 @@
 </pre>
   </div>
 
-  <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3052"/>45.2. Signing API</h2></div></div></div>
+  <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3054"/>45.2. Signing API</h2></div></div></div>
     
 
     <p>To sign a request or response using the RESTEasy client or server
@@ -176,7 +176,7 @@ ClientResponse response = request.put();
     additional DKIMSignature instances to the headers of the request or
     response.</p>
 
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e3058"/>45.2.1. @Signed annotation</h3></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e3060"/>45.2.1. @Signed annotation</h3></div></div></div>
       
 
       <p>Instead of using the API, RESTEasy also provides you an
@@ -214,7 +214,7 @@ ClientResponse response = request.put();
     </div>
   </div>
 
-  <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3066"/>45.3. Signature Verification API</h2></div></div></div>
+  <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3068"/>45.3. Signature Verification API</h2></div></div></div>
     
 
     <p>If you want fine grain control over verification, this is an API to
@@ -269,7 +269,7 @@ String entity = response.getEntity();
     it as a property to the ClientResponse. This will trigger the verification
     interceptors.</code></em></p>
 
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e3075"/>45.3.1. Annotation-based verification</h3></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e3077"/>45.3.1. Annotation-based verification</h3></div></div></div>
       
 
       <p>The easiest way to verify a signature sent in a HTTP request on
@@ -310,7 +310,7 @@ public void post(String input) {...}
     </div>
   </div>
 
-  <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3083"/>45.4. Managing Keys via a KeyRepository</h2></div></div></div>
+  <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3085"/>45.4. Managing Keys via a KeyRepository</h2></div></div></div>
     
 
     <p>RESTEasy manages keys for you through a
@@ -321,7 +321,7 @@ public void post(String input) {...}
     can also implement and plug in your own implementation of
     KeyRepository.</p>
 
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e3086"/>45.4.1. Create a KeyStore</h3></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e3088"/>45.4.1. Create a KeyStore</h3></div></div></div>
       
 
       <p>Use the Java keytool to generate RSA key pairs. Key aliases MUST
@@ -336,7 +336,7 @@ public void post(String input) {...}
       documentation for more details.</p>
     </div>
 
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e3093"/>45.4.2. Configure Restreasy to use the KeyRepository</h3></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e3095"/>45.4.2. Configure Restreasy to use the KeyRepository</h3></div></div></div>
       
 
       <p>Next you need to configure the KeyRepository in your web.xml file
@@ -424,7 +424,7 @@ request.header("DKIM-Signature", signatures);
 </pre>
     </div>
 
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e3107"/>45.4.3. Using DNS to Discover Public Keys</h3></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e3109"/>45.4.3. Using DNS to Discover Public Keys</h3></div></div></div>
       
 
       <p>Public keys can also be discover by a DNS text record lookup. You
@@ -443,7 +443,7 @@ request.header("DKIM-Signature", signatures);
       allows you to point to a specific DNS server to locate text
       records.</p>
 
-      <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h4 class="title"><a id="d4e3112"/>45.4.3.1. Configuring DNS TXT Records</h4></div></div></div>
+      <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h4 class="title"><a id="d4e3114"/>45.4.3.1. Configuring DNS TXT Records</h4></div></div></div>
         
 
         <p>DNS TXT Records are stored via a format described by the DOSETA

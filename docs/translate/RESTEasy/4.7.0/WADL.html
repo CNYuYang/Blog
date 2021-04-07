@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 54 章 RESTEasy WADL Support</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="AJAX_Client.html" title="第 53 章 AJAX Client"/><link rel="next" href="Tracing_Feature.html" title="第 55 章 RESTEasy Tracing Feature"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="AJAX_Client.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Tracing_Feature.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="WADL"/>第 54 章 RESTEasy WADL Support</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="WADL.html#d4e4313">54.1. RESTEasy WADL Support for Servlet Container(Deprecated)</a></span></dt><dt><span class="section"><a href="WADL.html#d4e4323">54.2. RESTEasy WADL Support for Servlet Container(Updated)</a></span></dt><dt><span class="section"><a href="WADL.html#d4e4337">54.3. RESTEasy WADL support for Sun JDK HTTP Server</a></span></dt><dt><span class="section"><a href="WADL.html#d4e4347">54.4. RESTEasy WADL support for Netty Container</a></span></dt><dt><span class="section"><a href="WADL.html#d4e4352">54.5. RESTEasy WADL Support for Undertow Container</a></span></dt></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 54 章 RESTEasy WADL Support</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="AJAX_Client.html" title="第 53 章 AJAX Client"/><link rel="next" href="Tracing_Feature.html" title="第 55 章 RESTEasy Tracing Feature"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="AJAX_Client.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Tracing_Feature.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="WADL"/>第 54 章 RESTEasy WADL Support</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="WADL.html#d4e4315">54.1. RESTEasy WADL Support for Servlet Container(Deprecated)</a></span></dt><dt><span class="section"><a href="WADL.html#d4e4325">54.2. RESTEasy WADL Support for Servlet Container(Updated)</a></span></dt><dt><span class="section"><a href="WADL.html#d4e4339">54.3. RESTEasy WADL support for Sun JDK HTTP Server</a></span></dt><dt><span class="section"><a href="WADL.html#d4e4349">54.4. RESTEasy WADL support for Netty Container</a></span></dt><dt><span class="section"><a href="WADL.html#d4e4354">54.5. RESTEasy WADL Support for Undertow Container</a></span></dt></dl></div>
     
     <p>RESTEasy has its own support to generate WADL for its resources, and it supports several different containers. The following text will show you how to use this feature in different containers.
     </p>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4313"/>54.1. RESTEasy WADL Support for Servlet Container(Deprecated)</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4315"/>54.1. RESTEasy WADL Support for Servlet Container(Deprecated)</h2></div></div></div>
         
         <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="note"><h2>注意</h2>
             <p>
@@ -30,7 +30,7 @@
         </p>
         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">/application.xml</pre>
     </div>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4323"/>54.2. RESTEasy WADL Support for Servlet Container(Updated)</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4325"/>54.2. RESTEasy WADL Support for Servlet Container(Updated)</h2></div></div></div>
     
         <p>
             This section introduces the recommended way to enable WADL support under Servlet Container situation. Firstly, you need to add a class then extends the <code class="code">ResteasyWadlDefaultResource</code> to serve a resource path. Here is an example:
@@ -63,7 +63,7 @@ public class MyWadlResource extends ResteasyWadlDefaultResource {
         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">/wadl-extended/xsd0.xsd</pre>
         <p>Above is the basic usage of WADL module under servlet container deployment.</p>
     </div>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4337"/>54.3. RESTEasy WADL support for Sun JDK HTTP Server</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4339"/>54.3. RESTEasy WADL support for Sun JDK HTTP Server</h2></div></div></div>
         
         <p>
             RESTEasy has provided a ResteasyWadlDefaultResource to generate WADL info for its embedded containers. Here is and example to show how to use it with RESTEasy's Sun JDK HTTP Server container:
@@ -101,7 +101,7 @@ httpServer.start();</pre>
         <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">@Path("/application.xml")
 public class ResteasyWadlDefaultResource</pre>
     </div>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4347"/>54.4. RESTEasy WADL support for Netty Container</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4349"/>54.4. RESTEasy WADL support for Netty Container</h2></div></div></div>
         
         <p>RESTEasy WADL support for Netty Container is simliar to the support for JDK HTTP Server. It also uses ResteasyWadlDefaultResource to serve '/application.xml' and ResteasyWadlGenerator to generate WADL info for resources. Here is the sample code:
         </p>
@@ -122,7 +122,7 @@ ResteasyWadlDefaultResource.getServices()
             Please note for all the embedded containers like JDK HTTP Server and Netty Container, if the resources in the deployment changes at runtime, the ResteasyWadlGenerator.generateServiceRegistry() need to be re-run to refresh the WADL info.
         </p>
     </div>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4352"/>54.5. RESTEasy WADL Support for Undertow Container</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4354"/>54.5. RESTEasy WADL Support for Undertow Container</h2></div></div></div>
         
         <p>
             The RESTEasy Undertow Container is a embedded Servlet Container, and RESTEasy WADL provides a connector to it. To use RESTEasy Undertow Container together with WADL support, you need to add these three components into your maven dependencies:

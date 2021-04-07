@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 28 章 String marshalling for String based @*Param</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="JAX-RS_2.1_additions.html" title="第 27 章 JAX-RS 2.1 Additions"/><link rel="next" href="Responses_using_javax.ws.rs.core.Response.html" title="第 29 章 Responses using javax.ws.rs.core.Response"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="JAX-RS_2.1_additions.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Responses_using_javax.ws.rs.core.Response.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="StringConverter"/>第 28 章 String marshalling for String based @*Param</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="StringConverter.html#d4e1797">28.1. Simple conversion</a></span></dt><dt><span class="sect1"><a href="StringConverter.html#d4e1810">28.2. ParamConverter</a></span></dt><dt><span class="sect1"><a href="StringConverter.html#d4e1828">28.3. StringParameterUnmarshaller</a></span></dt><dt><span class="sect1"><a href="StringConverter.html#d4e1854">28.4. Collections</a></span></dt><dd><dl><dt><span class="sect2"><a href="StringConverter.html#d4e1878">28.4.1. @QueryParam</a></span></dt><dt><span class="sect2"><a href="StringConverter.html#d4e1886">28.4.2. @MatrixParam</a></span></dt><dt><span class="sect2"><a href="StringConverter.html#d4e1898">28.4.3. @HeaderParam</a></span></dt><dt><span class="sect2"><a href="StringConverter.html#d4e1907">28.4.4. @CookieParam</a></span></dt><dt><span class="sect2"><a href="StringConverter.html#d4e1915">28.4.5. @PathParam</a></span></dt></dl></dd><dt><span class="sect1"><a href="StringConverter.html#d4e1931">28.5. Extension to ParamConverter semantics</a></span></dt><dt><span class="sect1"><a href="StringConverter.html#d4e1967">28.6. Default multiple valued ParamConverter</a></span></dt></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 28 章 String marshalling for String based @*Param</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="JAX-RS_2.1_additions.html" title="第 27 章 JAX-RS 2.1 Additions"/><link rel="next" href="Responses_using_javax.ws.rs.core.Response.html" title="第 29 章 Responses using javax.ws.rs.core.Response"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="JAX-RS_2.1_additions.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Responses_using_javax.ws.rs.core.Response.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="StringConverter"/>第 28 章 String marshalling for String based @*Param</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="StringConverter.html#d4e1799">28.1. Simple conversion</a></span></dt><dt><span class="sect1"><a href="StringConverter.html#d4e1812">28.2. ParamConverter</a></span></dt><dt><span class="sect1"><a href="StringConverter.html#d4e1830">28.3. StringParameterUnmarshaller</a></span></dt><dt><span class="sect1"><a href="StringConverter.html#d4e1856">28.4. Collections</a></span></dt><dd><dl><dt><span class="sect2"><a href="StringConverter.html#d4e1880">28.4.1. @QueryParam</a></span></dt><dt><span class="sect2"><a href="StringConverter.html#d4e1888">28.4.2. @MatrixParam</a></span></dt><dt><span class="sect2"><a href="StringConverter.html#d4e1900">28.4.3. @HeaderParam</a></span></dt><dt><span class="sect2"><a href="StringConverter.html#d4e1909">28.4.4. @CookieParam</a></span></dt><dt><span class="sect2"><a href="StringConverter.html#d4e1917">28.4.5. @PathParam</a></span></dt></dl></dd><dt><span class="sect1"><a href="StringConverter.html#d4e1933">28.5. Extension to ParamConverter semantics</a></span></dt><dt><span class="sect1"><a href="StringConverter.html#d4e1969">28.6. Default multiple valued ParamConverter</a></span></dt></dl></div>
    
    
-   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1797"/>28.1. Simple conversion</h2></div></div></div>
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1799"/>28.1. Simple conversion</h2></div></div></div>
    
    
    <p>
@@ -51,7 +51,7 @@ public void testQuery() throws Exception {
    </p>
    </div>
    
-   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1810"/>28.2. ParamConverter</h2></div></div></div>
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1812"/>28.2. ParamConverter</h2></div></div></div>
    
    
    <p>
@@ -127,7 +127,7 @@ public class DateParamConverter implements ParamConverter&lt;Date&gt; {
    </p>
    </div>
    
-   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1828"/>28.3. StringParameterUnmarshaller</h2></div></div></div>
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1830"/>28.3. StringParameterUnmarshaller</h2></div></div></div>
    
    
    <p>
@@ -210,7 +210,7 @@ public @interface StringParameterUnmarshallerBinder
    </p>
    </div>
    
-   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1854"/>28.4. Collections</h2></div></div></div>
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1856"/>28.4. Collections</h2></div></div></div>
    
    
    <p>
@@ -244,7 +244,7 @@ public @interface StringParameterUnmarshallerBinder
    on convention rather than a specification.
    </p>
    
-   <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e1878"/>28.4.1. @QueryParam</h3></div></div></div>
+   <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e1880"/>28.4.1. @QueryParam</h3></div></div></div>
    
    
    <p>
@@ -269,7 +269,7 @@ public MultivaluedMap&lt;String, String&gt; getQueryParameters();
    </p>
    </div>
    
-   <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e1886"/>28.4.2. @MatrixParam</h3></div></div></div>
+   <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e1888"/>28.4.2. @MatrixParam</h3></div></div></div>
    
    
    <p>
@@ -301,7 +301,7 @@ http://bluemonkeydiamond.com/sippycup;m=1;m=2;m=3
    </p>
    </div>
    
-   <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e1898"/>28.4.3. @HeaderParam</h3></div></div></div>
+   <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e1900"/>28.4.3. @HeaderParam</h3></div></div></div>
    
    
    <p>
@@ -328,7 +328,7 @@ x-header: a, b, c
    </p>
    </div>
    
-   <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e1907"/>28.4.4. @CookieParam</h3></div></div></div>
+   <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e1909"/>28.4.4. @CookieParam</h3></div></div></div>
    
    
    <p>
@@ -351,7 +351,7 @@ public Map&lt;String, Cookie&gt; getCookies();
    
    </div>
    
-   <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e1915"/>28.4.5. @PathParam</h3></div></div></div>
+   <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e1917"/>28.4.5. @PathParam</h3></div></div></div>
    
    
    <p>
@@ -457,7 +457,7 @@ list segments: 3
    </div>
    </div>
    
-   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1931"/>28.5. Extension to <code class="classname">ParamConverter</code> semantics</h2></div></div></div>
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1933"/>28.5. Extension to <code class="classname">ParamConverter</code> semantics</h2></div></div></div>
    
    
    <p>
@@ -656,7 +656,7 @@ public static class TestResource {
    </pre>
    </div>
  
-    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1967"/>28.6. Default multiple valued <code class="classname">ParamConverter</code></h2></div></div></div>
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1969"/>28.6. Default multiple valued <code class="classname">ParamConverter</code></h2></div></div></div>
    
    
    <p>

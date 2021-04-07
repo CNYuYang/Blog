@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 12 章 @Form</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="_FormParam.html" title="第 11 章 @FormParam"/><link rel="next" href="_NewParam.html" title="第 13 章 Improved @…Param annotations"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_FormParam.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="_NewParam.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="_Form"/>第 12 章 @Form</h2></div></div></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 12 章 @Form</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="_FormParam.html" title="第 11 章 @FormParam"/><link rel="next" href="_NewParam.html" title="第 13 章 改进的 @…Param 注解"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_FormParam.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="_NewParam.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="_Form"/>第 12 章 @Form</h2></div></div></div>
 
 
 <p>
 
-This is a RESTEasy specific annotation that allows you to re-use any @*Param annotation within an injected class.  RESTEasy will instantiate the class and inject values into any annotated @*Param or @Context property.  This is useful if you have a lot of parameters on your method and you want to condense them into a value object.
+这是一个 RESTEasy 特有的注解，允许您在注入的类中重用任何 @*Param 注释。RESTEasy 将实例化该类并将值注入任何带注解的 @*Param 或 @Context 属性。如果您的方法中有很多参数，并且希望将它们压缩为一个值对象，那么这种方法很有用。
 </p>
 <p>
 
@@ -34,14 +34,13 @@ public void post(@Form MyForm form) {...}
 </p>
 <p>
 
-When somebody posts to /myservice, RESTEasy will instantiate an instance of MyForm and inject the form parameter "stuff" into the "stuff" field, the header "myheader" into the header field, and call the setFoo method with the path param variable of "foo".
+当有人向 /myservice 发起POST请求时，RESTEasy 将实例化 MyForm 的一个实例，并将表单参数"stuff"注入"stuff"字段，将头信息中的"myheader"注入"myheader"字段，并使用路径参数"foo"调用 setFoo 方法。
 </p>
 <p>
 
 </p>
 <p>
-Also, @Form has some expanded @FormParam features.  If you specify a prefix within the Form param, this will prepend a prefix to any form parameter lookup.  For example,
-    let's say you have one Address class, but want to reference invoice and shipping addresses from the same set of form parameters:
+另外,@Form 有一些扩展的@FormParam 特性。如果在 Form 参数中指定前缀，则将为任何form参数查找预先设置前缀。例如，假设您有一个 Address 类，但是希望从同一组表单参数中引用 invoice 和 shipping addresses:
 </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 public static class Person
@@ -75,7 +74,7 @@ public static class MyResource
 }
 </pre>
     <p>
-        In this example, the client could send the following form parameters:
+        在这个例子中，客户端可以发送以下表单参数:
     </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 name=bill
@@ -83,7 +82,7 @@ invoice.street=xxx
 shipping.street=yyy
 </pre>
     <p>
-        The Person.invoice and Person.shipping fields would be populated appropriately. Also, prefix mappings also support lists and maps:
+    将填充 Person.invoice 和 Person.shipping 字段。此外，前缀映射还支持列表和映射:
     </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 public static class Person {
@@ -108,7 +107,9 @@ public static class MyResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public void post (@Form Person p) {} 
 </pre>
-    <p>The following form params could be submitted and the Person.telephoneNumbers and Person.addresses fields would be populated appropriately</p>
+    <p>
+    可以提交下列表单参数，程序将填充 Person.telephoneNumbers 和 Person.addresses 字段
+    </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 request.addFormHeader("telephoneNumbers[0].countryCode", "31");
 request.addFormHeader("telephoneNumbers[0].number", "0612345678");
@@ -120,4 +121,4 @@ request.addFormHeader("address[SHIPPING].street", "Square One");
 request.addFormHeader("address[SHIPPING].houseNumber", "13");
 </pre>
 
-</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_FormParam.html"><strong>上一页</strong>第 11 章 @FormParam</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="_NewParam.html"><strong>下一页</strong>第 13 章 Improved @…Param annotations</a></li></ul></body></html>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_FormParam.html"><strong>上一页</strong>第 11 章 @FormParam</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="_NewParam.html"><strong>下一页</strong>第 13 章 改进的 @…Param 注解</a></li></ul></body></html>

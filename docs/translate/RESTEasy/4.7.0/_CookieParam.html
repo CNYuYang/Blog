@@ -6,13 +6,13 @@
 
 <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="note"><h2>注意</h2>
    <p>
-      RESTEasy <a class="link" href="_NewParam.html" title="第 13 章 Improved @…Param annotations">supports <code class="code">@CookieParam</code> annotations with no parameter name.</a>.
+      RESTEasy <a class="link" href="_NewParam.html" title="第 13 章 改进的 @…Param 注解"><code class="code">@CookieParam</code> 注解支持不直接指定参数名</a>。
    </p>
 </div>
 
 <p>
 
-The @CookieParam annotation allows you to inject the value of a cookie or an object representation of an HTTP request cookie into your method invocation
+@CookieParam 注释允许您将 cookie 的值或 HTTP 请求 cookie 的对象表示注入到方法调用中
 </p>
 <p>
 
@@ -32,7 +32,7 @@ public String getBooks(@CookieParam("sessionid") javax.ws.rs.core.Cookie id) {..
 </p>
 <p>
 
-Like PathParam, your parameter type can be an String, primitive, or class that has a String constructor or static valueOf() method.  You can also get an object representation of the cookie via the javax.ws.rs.core.Cookie class.
+与 PathParam 类似，您的参数类型可以是任何基元类型、 String 或任何具有接受 String 参数的构造函数的任何 Java 对象，或者接受 String 作为参数的静态 valueOf 方法。还可以通过 javax.ws.rs.core.Cookie 类获得 cookie 的对象表示。
 </p>
 <p>
 

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 16 章 @Encoded and encoding</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="_DefaultValue.html" title="第 15 章 @DefaultValue"/><link rel="next" href="_Context.html" title="第 17 章 @Context"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_DefaultValue.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="_Context.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="_Encoded_and_encoding"/>第 16 章 @Encoded and encoding</h2></div></div></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 16 章 @Encoded 和编码</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="_DefaultValue.html" title="第 15 章 @DefaultValue"/><link rel="next" href="_Context.html" title="第 17 章 @Context"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_DefaultValue.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="_Context.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="_Encoded_and_encoding"/>第 16 章 @Encoded 和编码</h2></div></div></div>
 
 
 <p>
 
-JAX-RS allows you to get encoded or decoded @*Params and specify path definitions and parameter names using encoded or decoded strings.
+JAX-RS 允许您对 @*Params 进行编码或解码，并使用已编码或解码的字符串指定路径定义和参数名称。
 </p>
 <p>
 
@@ -14,7 +14,8 @@ JAX-RS allows you to get encoded or decoded @*Params and specify path definition
 </p>
 <p>
 
-The @javax.ws.rs.Encoded annotation can be used on a class, method, or param.  By default, inject @PathParam and @QueryParams are decoded.  By additionally adding the @Encoded annotation, the value of these params will be provided in encoded form.
+@javax.ws.rs.Encoded 可以在类、方法或参数上使用该注解。默认情况下，对注入的 @PathParam 和@QueryParams 进行解码。通过添加 @Encoded 注释，这些参数的值将以编码形式提供。
+
 </p>
 <p>
 
@@ -30,11 +31,11 @@ public class MyResource {
 </p>
 <p>
 
-In the above example, the value of the @PathParam injected into the param of the get() method will be URL encoded.  Adding the @Encoded annotation as a paramater annotation triggers this affect.
+在上面的示例中，注入到 get() 方法参数中的 @PathParam 的值将被 URL 编码。添加 @Encoded 注释作为参数注释触发此影响。
 </p>
 <p>
 
-You may also use the @Encoded annotation on the entire method and any combination of @QueryParam or @PathParam's values will be encoded.
+您还可以在整个方法上使用@encoded 注释，并对 @QueryParam 或 @PathParam 的值分别进行编码。
 </p>
 <p>
 
@@ -51,11 +52,12 @@ public class MyResource {
 </p>
 <p>
 
-In the above example, the values of the "foo" query param and "param" path param will be injected as encoded values.
+在上面的示例中，将注入"foo"查询参数和"param"路径参数的编码后的值注入。
 </p>
 <p>
 
-You can also set the default to be encoded for the entire class.
+您还可以为整个类设置编码。
+
 </p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 @Path("/")
 @Encoded
@@ -72,7 +74,7 @@ public class ClassEncoded {
 </p>
 <p>
 
-The @Path annotation has an attribute called encode.  Controls whether the literal part of the supplied value (those characters that are not part of a template variable) are URL encoded. If true, any characters in the URI template that are not valid URI character will be automatically encoded. If false then all characters must be valid URI characters.  By default this is set to true.  If you want to encoded the characters yourself, you may.
+@Path 注释有一个名为 encode 的属性。控制所提供值的文字部分(那些不属于模板变量的字符)是否为 URL 编码。如果为 true，则将自动对 URI 模板中的任何无效 URI 字符进行编码。如果为 false，则所有字符都必须是有效的 URI 字符。默认情况下，这个值设置为 true。如果您想自己对字符进行编码，可以:
 </p>
 <p>
 
@@ -86,7 +88,7 @@ The @Path annotation has an attribute called encode.  Controls whether the liter
 </p>
 <p>
 
-Much like @Path.encode(), this controls whether the specified query param name should be encoded by the container before it tries to find the query param in the request.
+和 @Path.encode()类似 ，它控制在容器尝试在请求中查找查询参数之前是否应该对指定的查询参数名称进行编码。
 </p>
 <p>
 

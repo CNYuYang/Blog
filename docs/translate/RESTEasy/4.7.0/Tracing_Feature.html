@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 55 章 RESTEasy Tracing Feature</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="WADL.html" title="第 54 章 RESTEasy WADL Support"/><link rel="next" href="Validation.html" title="第 56 章 Validation"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="WADL.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Validation.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Tracing_Feature"/>第 55 章 RESTEasy Tracing Feature</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="Tracing_Feature.html#d4e4365">55.1. Overview</a></span></dt><dt><span class="section"><a href="Tracing_Feature.html#d4e4370">55.2. Tracing Info Mode</a></span></dt><dt><span class="section"><a href="Tracing_Feature.html#d4e4378">55.3. Tracing Info Level</a></span></dt><dt><span class="section"><a href="Tracing_Feature.html#d4e4387">55.4. Basic Usages</a></span></dt><dt><span class="section"><a href="Tracing_Feature.html#d4e4413">55.5. Client Side Tracing Info</a></span></dt><dt><span class="section"><a href="Tracing_Feature.html#d4e4418">55.6. Json Formatted Response</a></span></dt><dt><span class="section"><a href="Tracing_Feature.html#d4e4429">55.7. List Of Tracing Events</a></span></dt><dt><span class="section"><a href="Tracing_Feature.html#d4e4497">55.8. Tracing Example</a></span></dt></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 55 章 RESTEasy Tracing Feature</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="WADL.html" title="第 54 章 RESTEasy WADL Support"/><link rel="next" href="Validation.html" title="第 56 章 Validation"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="WADL.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Validation.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Tracing_Feature"/>第 55 章 RESTEasy Tracing Feature</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="Tracing_Feature.html#d4e4367">55.1. Overview</a></span></dt><dt><span class="section"><a href="Tracing_Feature.html#d4e4372">55.2. Tracing Info Mode</a></span></dt><dt><span class="section"><a href="Tracing_Feature.html#d4e4380">55.3. Tracing Info Level</a></span></dt><dt><span class="section"><a href="Tracing_Feature.html#d4e4389">55.4. Basic Usages</a></span></dt><dt><span class="section"><a href="Tracing_Feature.html#d4e4415">55.5. Client Side Tracing Info</a></span></dt><dt><span class="section"><a href="Tracing_Feature.html#d4e4420">55.6. Json Formatted Response</a></span></dt><dt><span class="section"><a href="Tracing_Feature.html#d4e4431">55.7. List Of Tracing Events</a></span></dt><dt><span class="section"><a href="Tracing_Feature.html#d4e4499">55.8. Tracing Example</a></span></dt></dl></div>
     
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4365"/>55.1. Overview</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4367"/>55.1. Overview</h2></div></div></div>
         
         <p>
             Tracing feature is a way for the users of the RESTEasy to understand what's going on internally in the
@@ -21,7 +21,7 @@
             usage of the tracing feature.
         </p>
     </div>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4370"/>55.2. Tracing Info Mode</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4372"/>55.2. Tracing Info Mode</h2></div></div></div>
         
         <p>The RESTEasy tracing feature supports three logging mode:
         </p>
@@ -34,7 +34,7 @@
             the tracing feature, and this is the default mode.
         </p>
     </div>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4378"/>55.3. Tracing Info Level</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4380"/>55.3. Tracing Info Level</h2></div></div></div>
         
         <p>The tracing info has three levels:
         </p>
@@ -50,7 +50,7 @@
             that controls the logging threshold of the tracing info.
         </p>
     </div>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4387"/>55.4. Basic Usages</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4389"/>55.4. Basic Usages</h2></div></div></div>
         
         <p>By default, the tracing feature is turned off. If you want to enable the tracing feature, you need to
             add the following dependency in your project:
@@ -152,7 +152,7 @@ org.jboss.resteasy.plugins.server.servlet.Servlet3AsyncHttpRequest@721299ff</pre
             In next section let's see how do we fetch the tracing info from client side.
         </p>
     </div>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4413"/>55.5. Client Side Tracing Info</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4415"/>55.5. Client Side Tracing Info</h2></div></div></div>
         
         <p>
             From client side, we can send request to the server side as usual, and if the server side is configured
@@ -177,7 +177,7 @@ X-RESTEasy-Tracing-025: org.jboss.resteasy.plugins.server.servlet.Servlet3AsyncH
             form of "X-RESTEasy-Tracing-nnn".
         </p>
     </div>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4418"/>55.6. Json Formatted Response</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4420"/>55.6. Json Formatted Response</h2></div></div></div>
         
         <p>The tracing log can be returned to client side in JSON format. To use
             this feature, we need to choose a JSON provider for tracing module to
@@ -251,7 +251,7 @@ X-RESTEasy-Tracing-000: [{"event":"START","duration":0,"timestamp":1952866945099
             From above we can see the tracing info is returned as JSON text.
         </p>
     </div>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4429"/>55.7. List Of Tracing Events</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4431"/>55.7. List Of Tracing Events</h2></div></div></div>
         
         <p>
             The tracing events are defined in <a class="ulink" href="https://github.com/resteasy/resteasy-extensions/blob/master/tracing/src/main/java/org/jboss/resteasy/tracing/api/RESTEasyServerTracingEvent.java">RESTEasyServerTracingEvent</a>. Here is a complete list of the tracing events and its descriptions:
@@ -406,7 +406,7 @@ X-RESTEasy-Tracing-000: [{"event":"START","duration":0,"timestamp":1952866945099
                 </li></ul></div><p>
         </p>
     </div>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4497"/>55.8. Tracing Example</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4499"/>55.8. Tracing Example</h2></div></div></div>
         
         <p>
             In the "resteasy-example" project, it contains a <a class="ulink" href="https://github.com/resteasy/resteasy-examples/tree/master/tracing-example">RESTEasy Tracing

@@ -1,31 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 13 章 Improved @…Param annotations</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="_Form.html" title="第 12 章 @Form"/><link rel="next" href="_OptionalParam.html" title="第 14 章 Optional parameter types"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_Form.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="_OptionalParam.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="_NewParam"/>第 13 章 Improved <code class="code">@…Param</code> annotations</h2></div></div></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 13 章 改进的 @…Param 注解</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="_Form.html" title="第 12 章 @Form"/><link rel="next" href="_OptionalParam.html" title="第 14 章 Optional参数类型"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_Form.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="_OptionalParam.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="_NewParam"/>第 13 章 改进的 <code class="code">@…Param</code> 注解</h2></div></div></div>
 
 
 <p>
-With the addition of parameter names in the bytecode since Java 8, it is no longer necessary to require users to specify parameter names
-in the following annotations: <a class="link" href="_PathParam.html" title="第 5 章 @PathParam"><code class="code">@PathParam</code></a>, 
+自从 Java 8以来，字节码中增加了参数名称，不再需要用户在以下注解中指定参数名称:<a class="link" href="_PathParam.html" title="第 5 章 @PathParam"><code class="code">@PathParam</code></a>, 
 <a class="link" href="_QueryParam.html" title="第 6 章 @QueryParam"><code class="code">@QueryParam</code></a>, <a class="link" href="_FormParam.html" title="第 11 章 @FormParam"><code class="code">@FormParam</code></a>,
 <a class="link" href="_CookieParam.html" title="第 10 章 @CookieParam"><code class="code">@CookieParam</code></a>, <a class="link" href="_HeaderParam.html" title="第 7 章 @HeaderParam"><code class="code">@HeaderParam</code></a>
-and <a class="link" href="_MatrixParam.html" title="第 9 章 @MatrixParam"><code class="code">@MatrixParam</code></a>. In order to benefit from this feature, you have to switch to new annotations
-with the same name, in a different package, which have an optional value parameter. To use this, follow these steps:
+和 <a class="link" href="_MatrixParam.html" title="第 9 章 @MatrixParam"><code class="code">@MatrixParam</code></a>。为了从这个特性中获益，您必须切换到具有相同名称的不同包中的新注解，这些注解有一个可选的值参数。要使用它，请遵循以下步骤:
+
 </p>
-<div class="itemizedlist"><ul><li>Import the <code class="code">org.jboss.resteasy.annotations.jaxrs</code> package to replace annotations from the JAX-RS spec.</li><li>Tell your build system to record method parameter names in the bytecode.</li><li>Remove the annotation value if the name matches the name of the annotated variable.</li></ul></div>
+<div class="itemizedlist"><ul><li>导入 <code class="code">org.jboss.resteasy.annotations.jaxrs</code> 包来替换 JAX-RS 规范中的定义。</li><li> 告诉构建系统在字节码中记录方法参数名。</li><li>如果名称与注解变量的名称匹配，则删除注解显式指定的值。</li></ul></div>
 <p>
-Note that you can omit the annotation name for annotated method parameters as well as annotated fields or JavaBean properties.
+注意，可以省略带注解的方法参数以及带注解的字段或 JavaBean 属性的注解名称。
 </p>
 <p>
-For Maven users, recording method parameter names in the bytecode can be enabled by setting the <code class="code">maven.compiler.parameters</code> 
-to <code class="code">true</code>:
+对于 Maven 用户，可以通过将 <code class="code">maven.compiler.parameters</code> 设置为 <code class="code">true</code> 来启用字节码中的记录方法参数名称:
 </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
     &lt;properties&gt;
         &lt;maven.compiler.parameters&gt;true&lt;/maven.compiler.parameters&gt;
     &lt;/properties&gt;
 </pre>
-<p>Usage:</p>
+<p>用例:</p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 import org.jboss.resteasy.annotations.jaxrs.*;
 
@@ -40,8 +38,10 @@ public class Library {
 }
 </pre>
 
-<p>If your annotated variable does not have the same name as the path parameter, you can still
-specify the name:</p>
+<p>
+
+如果带注解的变量与 path 参数的名称不同，仍然可以指定名称:
+</p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 import org.jboss.resteasy.annotations.jaxrs.*;
 
@@ -55,4 +55,4 @@ public class Library {
    }
 }
 </pre>
-</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_Form.html"><strong>上一页</strong>第 12 章 @Form</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="_OptionalParam.html"><strong>下一页</strong>第 14 章 Optional parameter types</a></li></ul></body></html>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_Form.html"><strong>上一页</strong>第 12 章 @Form</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="_OptionalParam.html"><strong>下一页</strong>第 14 章 Optional参数类型</a></li></ul></body></html>

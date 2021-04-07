@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 24 章 JSON Support via Jackson</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Atom.html" title="第 23 章 RESTEasy Atom Support"/><link rel="next" href="json-p.html" title="第 25 章 JSON Support via Java EE 7 JSON-P API"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Atom.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="json-p.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="json"/>第 24 章 JSON Support via Jackson</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="json.html#d4e1412">24.1. Using Jackson 1.9.x Outside of WildFly</a></span></dt><dt><span class="sect1"><a href="json.html#d4e1416">24.2. Using Jackson 1.9.x Inside WildFly 8</a></span></dt><dt><span class="sect1"><a href="json.html#d4e1420">24.3. Using Jackson 2 Outside of WildFly</a></span></dt><dt><span class="sect1"><a href="json.html#d4e1424">24.4. Using Jackson 2 Inside WildFly 9 and above</a></span></dt><dt><span class="sect1"><a href="json.html#d4e1428">24.5. Additional RESTEasy Specifics</a></span></dt><dt><span class="sect1"><a href="json.html#JSONP_Support">24.6. JSONP Support</a></span></dt><dt><span class="sect1"><a href="json.html#Jackson_JSON_Decorator">24.7. Jackson JSON Decorator</a></span></dt><dt><span class="sect1"><a href="json.html#JSON_Filter_Support">24.8. JSON Filter Support</a></span></dt><dt><span class="sect1"><a href="json.html#Polymorphic_Typing_deserialization">24.9. Polymorphic Typing deserialization</a></span></dt></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 24 章 JSON Support via Jackson</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Atom.html" title="第 23 章 RESTEasy Atom Support"/><link rel="next" href="json-p.html" title="第 25 章 JSON Support via Java EE 7 JSON-P API"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Atom.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="json-p.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="json"/>第 24 章 JSON Support via Jackson</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="json.html#d4e1414">24.1. Using Jackson 1.9.x Outside of WildFly</a></span></dt><dt><span class="sect1"><a href="json.html#d4e1418">24.2. Using Jackson 1.9.x Inside WildFly 8</a></span></dt><dt><span class="sect1"><a href="json.html#d4e1422">24.3. Using Jackson 2 Outside of WildFly</a></span></dt><dt><span class="sect1"><a href="json.html#d4e1426">24.4. Using Jackson 2 Inside WildFly 9 and above</a></span></dt><dt><span class="sect1"><a href="json.html#d4e1430">24.5. Additional RESTEasy Specifics</a></span></dt><dt><span class="sect1"><a href="json.html#JSONP_Support">24.6. JSONP Support</a></span></dt><dt><span class="sect1"><a href="json.html#Jackson_JSON_Decorator">24.7. Jackson JSON Decorator</a></span></dt><dt><span class="sect1"><a href="json.html#JSON_Filter_Support">24.8. JSON Filter Support</a></span></dt><dt><span class="sect1"><a href="json.html#Polymorphic_Typing_deserialization">24.9. Polymorphic Typing deserialization</a></span></dt></dl></div>
     
     <p>RESTEasy supports integration with the Jackson project.
         For more on Jackson 2, see <a class="ulink" href="http://wiki.fasterxml.com/JacksonHome">http://wiki.fasterxml.com/JacksonHome</a>.
@@ -17,7 +17,7 @@
     module is based on Jackson 2.
     </p>
 
-    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1412"/>24.1. Using Jackson 1.9.x Outside of WildFly</h2></div></div></div>
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1414"/>24.1. Using Jackson 1.9.x Outside of WildFly</h2></div></div></div>
         
         <p>If you're deploying RESTEasy outside of WildFly,
         add the RESTEasy Jackson provder to your WAR pom.xml build:</p>
@@ -29,7 +29,7 @@
 &lt;/dependency&gt;
 </pre>
     </div>
-    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1416"/>24.2. Using Jackson 1.9.x Inside WildFly 8</h2></div></div></div>
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1418"/>24.2. Using Jackson 1.9.x Inside WildFly 8</h2></div></div></div>
         
         <p>If you're deploying RESTEasy with WildFly 8,
         there's nothing you need to do except to make sure
@@ -37,7 +37,7 @@
         <a class="link" href="Installation_Configuration.html" title="第 3 章 安装/配置">Installation/Configuration</a> section
         of this documentation for more details.</p>
     </div>
-    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1420"/>24.3. Using Jackson 2 Outside of WildFly</h2></div></div></div>
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1422"/>24.3. Using Jackson 2 Outside of WildFly</h2></div></div></div>
         
         <p>If you're deploying RESTEasy outside of WildFly,
         add the RESTEasy Jackson provder to your WAR pom.xml build:</p>
@@ -49,7 +49,7 @@
 &lt;/dependency&gt;
 </pre>
     </div>
-    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1424"/>24.4. Using Jackson 2 Inside WildFly 9 and above</h2></div></div></div>
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1426"/>24.4. Using Jackson 2 Inside WildFly 9 and above</h2></div></div></div>
         
         <p>If you're deploying RESTEasy with WildFly 9 or above,
         there's nothing you need to do except to make sure
@@ -57,7 +57,7 @@
         <a class="link" href="Installation_Configuration.html" title="第 3 章 安装/配置">Installation/Configuration</a> section
         of this documentation for more details.</p>
     </div>
-    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1428"/>24.5. Additional RESTEasy Specifics</h2></div></div></div>
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1430"/>24.5. Additional RESTEasy Specifics</h2></div></div></div>
         
 
     <p>The first extra piece that RESTEasy added to the integration was
@@ -253,7 +253,7 @@ public class ObjectWriterModifierFilter implements Filter {
         <p>
            Due to numerous CVEs for a specific kind of Polymorphic Deserialization (see details in FasterXML Jackson documentation), starting from Jackson 2.10 users have a mean to allow only specified classes to be deserialized. RESTEasy enables this feature by default and allows controlling the contents of whitelist of allowed classes/packages using MicroProfile Config.
 
-</p><div class="table"><a id="d4e1473"/><p class="title"><b>表 24.1. </b></p><div class="table-contents">
+</p><div class="table"><a id="d4e1475"/><p class="title"><b>表 24.1. </b></p><div class="table-contents">
                 <table border="1"><colgroup><col/><col/><col/></colgroup><thead><tr><th>
                                 Property
                             </th><th>

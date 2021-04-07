@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 18 章 JAX-RS Resource Locators and Sub Resources</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="_Context.html" title="第 17 章 @Context"/><link rel="next" href="Resources_Metadata.html" title="第 19 章 Resources metadata configuration"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_Context.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Resources_Metadata.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="JAX-RS_Resource_Locators_and_Sub_Resources"/>第 18 章 JAX-RS Resource Locators and Sub Resources</h2></div></div></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 18 章 JAX-RS Resources定位器和子Resources</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="_Context.html" title="第 17 章 @Context"/><link rel="next" href="Resources_Metadata.html" title="第 19 章 Resources 元数据配置"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_Context.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Resources_Metadata.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="JAX-RS_Resource_Locators_and_Sub_Resources"/>第 18 章 JAX-RS Resources定位器和子Resources</h2></div></div></div>
 
 
 <p>
 
-Resource classes are able to partially process a request and provide another "sub" resource object that can process the remainder of the request.  For example:
+Resources类能够处理请求的一部分，并提供另一个"sub"Resources对象来处理请求的其余部分。例如:
+
 </p>
 <p>
 
@@ -36,11 +37,11 @@ public class Customer {
 </p>
 <p>
 
-Resource methods that have a @Path annotation, but no HTTP method are considered sub-resource locators.  Their job is to provide an object that can process the request.  In the above example ShoppingStore is a root resource because its class is annotated with @Path.  The getCustomer() method is a sub-resource locator method.
+具有 @Path 注释但没有 HTTP 方法的Resources方法被视为子Resources定位器。他们的工作是提供一个可以处理请求的对象。在上面的示例中，ShoppingStore 是一个根Resources，因为它的类带有 @Path 注释。getCustomer() 方法是子Resources定位器方法。
 </p>
 <p>
 
-If the client invoked:
+如果客户端调用:
 </p>
 <p>
 
@@ -48,7 +49,7 @@ If the client invoked:
 </p>
 <p>
 
-The ShoppingStore.getCustomer() method would be invoked first.  This method provides a Customer object that can service the request.  The http request will be dispatched to the Customer.get() method.  Another example is:
+ShoppingStore.getCustomer() 方法将首先被调用。此方法提供了一个 Customer 对象，可以为请求提供服务。Http 请求将被分派给 Customer.get() 方法。另一个例子是:
 </p>
 <p>
 
@@ -56,7 +57,7 @@ The ShoppingStore.getCustomer() method would be invoked first.  This method prov
 </p>
 <p>
 
-In this request, again, first the ShoppingStore.getCustomer() method is invoked.  A customer object is returned, and the rest of the request is dispatched to the Customer.getAddress() method.
+在这个请求中，首先调用 ShoppingStore.getCustomer() 方法。返回一个 customer 对象，并将请求的其余部分分派给 Customer.getAddress() 方法。
 </p>
 <p>
 
@@ -64,7 +65,7 @@ In this request, again, first the ShoppingStore.getCustomer() method is invoked.
 </p>
 <p>
 
-Another interesting feature of Sub-resource locators is that the locator method result is dynamically processed at runtime to figure out how to dispatch the request.  So, the ShoppingStore.getCustomer() method does not have to declare any specific type.
+子Resources定位器的另一个有趣特性是定位器方法结果在运行时动态处理，以确定如何分派请求。因此，ShoppingStore.getCustomer() 方法不必声明任何特定类型。
 </p>
 <p>
 
@@ -91,7 +92,7 @@ public class Customer {
 </p>
 <p>
 
-In the above example, getCustomer() returns a java.lang.Object.  Per request, at runtime, the JAX-RS server will figure out how to dispatch the request based on the object returned by getCustomer().  What are the uses of this?  Well, maybe you have a class hierarchy for your customers.  Customer is the abstract base, CorporateCustomer and IndividualCustomer are subclasses.  Your getCustomer() method might be doing a Hibernate polymorphic query and doesn't know, or care, what concrete class is it querying for, or what it returns.
+在上面的示例中，getCustomer() 返回一个 java.lang.Object 。在运行时，根据每个请求，JAX-RS 服务器将根据 getCustomer() 返回的对象确定如何分派请求。这有什么用呢？好吧，也许你为你的客户有一个类层次结构。Customer 是抽象基，CorporateCustomer 和 IndividualCustomer 是子类。您的 getCustomer() 方法可能正在执行 Hibernate 多态查询，并且不知道或不关心它查询的具体类是什么，或者它返回什么。
 </p>
 <p>
 
@@ -129,4 +130,4 @@ public class CorporateCustomer extends Customer {
 
 
 </p>
-</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_Context.html"><strong>上一页</strong>第 17 章 @Context</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="Resources_Metadata.html"><strong>下一页</strong>第 19 章 Resources metadata configuration</a></li></ul></body></html>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_Context.html"><strong>上一页</strong>第 17 章 @Context</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="Resources_Metadata.html"><strong>下一页</strong>第 19 章 Resources 元数据配置</a></li></ul></body></html>

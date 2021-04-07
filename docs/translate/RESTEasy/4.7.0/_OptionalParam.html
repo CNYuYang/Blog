@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 14 章 Optional parameter types</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="_NewParam.html" title="第 13 章 Improved @…Param annotations"/><link rel="next" href="_DefaultValue.html" title="第 15 章 @DefaultValue"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_NewParam.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="_DefaultValue.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="_OptionalParam"/>第 14 章 Optional parameter types</h2></div></div></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 14 章 Optional参数类型</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="_NewParam.html" title="第 13 章 改进的 @…Param 注解"/><link rel="next" href="_DefaultValue.html" title="第 15 章 @DefaultValue"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_NewParam.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="_DefaultValue.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="_OptionalParam"/>第 14 章 Optional参数类型</h2></div></div></div>
     
-    <p>RESTEasy offers a mechanism to support a series of <code class="code">java.util.Optional</code> types as a wrapper object types. This
-        will give users the ability to use optional typed parameters, and eliminate all null checks by using methods
-        like <code class="code">Optional.orElse()</code>.
+    <p>
+    RESTEasy 提供了一种机制来支持一系列 <code class="code">java.util.Optional</code> 类型作为包装器对象类型。这将使用户能够使用optional类型参数，并通过使用 <code class="code">Optional.orElse()</code> 之类的方法代替所有null检查。
     </p>
-    <p>Here is the sample:</p>
+    <p>下面是一个例子:</p>
     <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">@Path("/double")
 @GET
 public String optDouble(@QueryParam("value") OptionalDouble value) {
@@ -15,11 +14,11 @@ public String optDouble(@QueryParam("value") OptionalDouble value) {
 }
 </pre>
     <p>
-        From the above sample code we can see that the <code class="code">OptionalDouble</code> can be used as parameter type, and when users
-        don't provide a value in <code class="code">@QueryParam</code>, then the default value will be returned.
+    从上面的示例代码我们可以看到 OptionalDouble 可以用作参数类型，当用户没有在<code class="code">@QueryParam</code> 中提供值时，将返回默认值。
+
     </p>
     <p>
-        Here is the list of supported optional parameter types:
+        下面是支持的Optional参数类型列表:
         </p><div class="itemizedlist"><ul><li>
                 <p>@QueryParam</p>
             </li><li>
@@ -33,14 +32,14 @@ public String optDouble(@QueryParam("value") OptionalDouble value) {
             </li></ul></div><p>
     </p>
     <p>
-        As the list shown above, those parameter types support the Java-provided <code class="code">Optional</code> types. Please note that the <code class="code">@PathParam</code> is an exception for which <code class="code">Optional</code> is not available. The reason is that <code class="code">Optional</code> for the <code class="code">@PathParam</code> use case would just be a NO-OP, since an element of the path cannot be omitted.
+        如上所示，这些参数类型支持 java 提供的 <code class="code">Optional</code> 类型。请注意,<code class="code">@PathParam</code> 会抛出一个异常，当 <code class="code">Optional</code> 不可用时。原因是 <code class="code">@PathParam</code> 用例的 <code class="code">Optional</code> 只是一个 NO-OP，因为不能省略 path 的元素。
     </p>
 
     <p>
-      The <code class="code">Optional</code> types can also be used as type of the fields of a <code class="code">@BeanParam</code>'s class.
+      <code class="code">Optional</code> 类型还可以用作 <code class="code">@BeanParam</code> 类的字段的类型。
     </p>
 
-    <p>Here is an example of endpoint with a <code class="code">@BeanParam</code>:</p>
+    <p>下面是一个带有 <code class="code">@BeanParam</code> 的示例:</p>
 
     <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">@Path("/double")
 @GET
@@ -48,16 +47,16 @@ public String optDouble(@BeanParam Bean bean) {
     return Double.toString(bean.value.orElse(4242.0));
 }</pre>
 
-  <p>The corresponding class <code class="code">Bean</code>:</p>
+  <p>相应的类 <code class="code">Bean</code> 类:</p>
 
   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">public class Bean {
     @QueryParam("value")
     OptionalDouble value;
 }</pre>
 
-  <p> Finally, the <code class="code">Optional</code> types can be used directly as type of the fields of a JAX-RS resource class.</p>
+  <p> 最后，<code class="code">Optional</code> 类型可以直接用作 JAX-RS 资源类的字段类型。</p>
 
-  <p>Here is an example of a JAX-RS resource class with an <code class="code">Optional</code> type:</p>
+  <p>下面是一个带有 <code class="code">Optional</code> 类型的 JAX-RS 资源类的例子: </p>
 
   <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">@RequestScoped
 public class OptionalResource {
@@ -65,4 +64,4 @@ public class OptionalResource {
     Optional&lt;String&gt; value;
     ...
 }</pre>
-</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_NewParam.html"><strong>上一页</strong>第 13 章 Improved @…Param annotations</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="_DefaultValue.html"><strong>下一页</strong>第 15 章 @DefaultValue</a></li></ul></body></html>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="_NewParam.html"><strong>上一页</strong>第 13 章 改进的 @…Param 注解</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="_DefaultValue.html"><strong>下一页</strong>第 15 章 @DefaultValue</a></li></ul></body></html>

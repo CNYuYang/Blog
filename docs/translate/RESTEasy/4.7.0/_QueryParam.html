@@ -6,13 +6,13 @@
 
 <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="note"><h2>注意</h2>
    <p>
-      RESTEasy <a class="link" href="_NewParam.html" title="第 13 章 Improved @…Param annotations">supports <code class="code">@QueryParam</code> annotations with no parameter name.</a>.
+      RESTEasy <a class="link" href="_NewParam.html" title="第 13 章 改进的 @…Param 注解"><code class="code">@QueryParam</code> 注解支持不直接指定参数名</a>。
    </p>
 </div>
 
 <p>
 
-The @QueryParam annotation allows you to map a URI query string parameter or url form encoded parameter to your method invocation.
+@QueryParam 注解允许您将URI查询字符串参数或url表单编码的参数映射到您的方法调用。
 </p>
 <p>
 
@@ -28,8 +28,7 @@ public String getBooks(@QueryParam("num") int num) {
 </pre><p>
 </p>
 <p>
-
-Currently since RESTEasy is built on top of a Servlet, it does not distinguish between URI query strings or url form encoded parameters. Like PathParam, your parameter type can be an String, primitive, or class that has a String constructor or static valueOf() method.
+当前，由于RESTEasy是基于Servlet构建的，因此无法区分URI查询字符串还是url 表单的编码参数。 与PathParam一样，您的参数类型可以是String，原生类型，String作为输入参数的构造函数或静态 valueOf() 方法。
 </p>
 <p>
 

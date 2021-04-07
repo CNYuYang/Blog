@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 5 章 @PathParam</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Using_Path.html" title="第 4 章 Using @Path and @GET, @POST, etc."/><link rel="next" href="_QueryParam.html" title="第 6 章 @QueryParam"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Using_Path.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="_QueryParam.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="_PathParam"/>第 5 章 @PathParam</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="_PathParam.html#Advanced__PathParam_and_Regular_Expressions">5.1. Advanced @PathParam and Regular Expressions</a></span></dt><dt><span class="sect1"><a href="_PathParam.html#_PathParam_and_PathSegment">5.2. @PathParam and PathSegment</a></span></dt></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 5 章 @PathParam</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Using_Path.html" title="第 4 章 使用 @Path 和 @GET, @POST 等注解"/><link rel="next" href="_QueryParam.html" title="第 6 章 @QueryParam"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Using_Path.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="_QueryParam.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="_PathParam"/>第 5 章 @PathParam</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="_PathParam.html#Advanced__PathParam_and_Regular_Expressions">5.1. @PathParam使用进阶和正则表达式</a></span></dt><dt><span class="sect1"><a href="_PathParam.html#_PathParam_and_PathSegment">5.2. @PathParam 和 PathSegment</a></span></dt></dl></div>
 
 
 <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="note"><h2>注意</h2>
    <p>
-      RESTEasy <a class="link" href="_NewParam.html" title="第 13 章 Improved @…Param annotations">supports <code class="code">@PathParam</code> annotations with no parameter name.</a>.
+      RESTEasy <a class="link" href="_NewParam.html" title="第 13 章 改进的 @…Param 注解"> <code class="code">@PathParam</code> 注解支持不直接指定参数名</a>。
    </p>
 </div>
 
 <p>
 
-@PathParam is a parameter annotation which allows you to map variable URI path fragments into your method call.
+@PathParam 是一个参数注释，它允许您将变量 URI 路径片段映射到方法调用中。
+
 </p>
 <p>
 
@@ -30,9 +31,7 @@ public class Library {
 </p>
 <p>
 
-What this allows you to do is embed variable identification within the URIs of your resources.  In the above example, an isbn URI parameter is used
-to pass information about the book we want to access.  The parameter type you inject into can be any primitive type, a String, or any Java object that has
-a constructor that takes a String parameter, or a static valueOf method that takes a String as a parameter.  For example, lets say we wanted isbn to be a real object.  We could do:
+这允许您在资源的 URIs 中嵌入变量标识。在上面的示例中，使用了一个 isbn URI 参数来传递有关我们想要访问的书的信息。注入的参数类型可以是任何基元类型、 String 或任何具有接受 String 参数的构造函数的任何 Java 对象，或者接受 String 作为参数的静态 valueOf 方法。例如，假设我们希望 isbn 是一个真正的对象。我们可以这样做:
 </p>
 <p>
 
@@ -47,8 +46,7 @@ public class ISBN {
 </pre><p>
 </p>
 <p>
-
-Or instead of a public String constructors, have a valueOf method:
+或者不使用公共字符串构造函数，而使用 valueOf 方法:
 </p>
 <p>
 
@@ -65,12 +63,13 @@ public class ISBN {
 
 
 </p>
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Advanced__PathParam_and_Regular_Expressions"/>5.1. Advanced @PathParam and Regular Expressions</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Advanced__PathParam_and_Regular_Expressions"/>5.1. @PathParam使用进阶和正则表达式</h2></div></div></div>
 
 
 <p>
 
-There are a few more complicated uses of @PathParams not discussed in the previous section.
+@PathParams 的一些更复杂的用法在前面的小节中没有讨论。
+
 </p>
 <p>
 
@@ -80,8 +79,7 @@ There are a few more complicated uses of @PathParams not discussed in the previo
 
 </p>
 <p>
-
-You are allowed to specify one or more path params embedded in one URI segment.  Here are some examples:
+允许在一个 URI 段中指定一个或多个路径参数:
 </p>
 <p>
 
@@ -93,15 +91,14 @@ You are allowed to specify one or more path params embedded in one URI segment. 
 </p>
 <p>
 
-So, a URI of "/aaa111bbb" would match #1.  "/bill-02115" would match #2.  "foobill-02115bar" would match #3.
+因此，"/aaa111bbb" 匹配 #1。"/bill-02115" 匹配 #2。"foobill-02115bar" 匹配 #3。
 </p>
 <p>
 
 
 </p>
 <p>
-
-We discussed before how you can use regular expression patterns within @Path values.
+我们之前讨论过如何在 @Path 值中使用正则表达式模式。
 </p>
 <p>
 
@@ -113,15 +110,15 @@ public String getIt(@PathParam("param") String bs, @PathParam("many") String man
 </p>
 <p>
 
-For the following requests, lets see what the values of the "param" and "many" @PathParams would be:
+对于以下请求，让我们看看 "param" 和 "many" @PathParams 的值是什么:
 </p>
 <p>
 
-</p><div class="table"><a id="d4e521"/><p class="title"><b>表 5.1. </b></p><div class="table-contents">
+</p><div class="table"><a id="d4e522"/><p class="title"><b>表 5.1. </b></p><div class="table-contents">
 <table border="1"><colgroup><col/><col/><col/></colgroup><thead><tr><th>
-Request</th><th>
-param</th><th>
-many</th></tr></thead><tbody><tr><td>
+请求</th><th>
+param变量值</th><th>
+many变量值</th></tr></thead><tbody><tr><td>
 GET /aaabb/some/stuff</td><td>
 bb</td><td>
 some</td></tr><tr><td>
@@ -136,12 +133,11 @@ a/lot/of</td></tr></tbody></table>
 
 </p>
 </div>
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="_PathParam_and_PathSegment"/>5.2. @PathParam and PathSegment</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="_PathParam_and_PathSegment"/>5.2. @PathParam 和 PathSegment</h2></div></div></div>
 
 
 <p>
-
-The specification has a very simple abstraction for examining a fragment of the URI path being invoked on  javax.ws.rs.core.PathSegment:
+该规范有一个非常简单的抽象，用于检查在 javax.ws.rs.core.PathSegment 上调用的 URI 路径的片段:
 </p>
 <p>
 
@@ -165,8 +161,7 @@ public interface PathSegment {
 </pre><p>
 </p>
 <p>
-
-You can have RESTEasy inject a PathSegment instead of a value with your @PathParam.
+你可以用 RESTEasy 注入一个 PathSegment，而不是用 @PathParam 注入一个值。
 </p>
 <p>
 
@@ -177,22 +172,19 @@ public String getBook(@PathParam("id") PathSegment id) {...}
 </pre><p>
 </p>
 <p>
-
-This is very useful if you have a bunch of @PathParams that use matrix parameters.  The idea of matrix parameters is
-    that they are an arbitrary set of name-value pairs embedded in a uri path segment.  The PathSegment object gives you
-    access to these parameters. See also MatrixParam.
+如果你有一大堆使用矩阵参数的 @PathParams，这是非常有用的。矩阵参数的思想是，它们是嵌入在 uri 路径段中的任意一组名值对。PathSegment 对象提供对这些参数的访问。参见 MatrixParam。
 </p>
 <p>
 
-A matrix parameter example is:
+一个矩阵参数的例子是:
+
 </p>
 <p>
 
 GET http://host.com/library/book;name=EJB 3.0;author=Bill Burke
 </p>
 <p>
-
-The basic idea of matrix parameters is that it represents resources that are addressable by their attributes as well as their raw id.
+矩阵参数的基本思想是，它表示可通过其属性及其原始 id 寻址的资源。
 </p>
 <p>
 
@@ -229,4 +221,4 @@ The basic idea of matrix parameters is that it represents resources that are add
 
 </p>
 </div>
-</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Using_Path.html"><strong>上一页</strong>第 4 章 Using @Path and @GET, @POST, etc.</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="_QueryParam.html"><strong>下一页</strong>第 6 章 @QueryParam</a></li></ul></body></html>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Using_Path.html"><strong>上一页</strong>第 4 章 使用 @Path 和 @GET, @POST 等注解</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="_QueryParam.html"><strong>下一页</strong>第 6 章 @QueryParam</a></li></ul></body></html>

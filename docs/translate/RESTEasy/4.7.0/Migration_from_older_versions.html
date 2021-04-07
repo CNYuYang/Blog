@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 59 章 Migration from older versions</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Maven_and_RESTEasy.html" title="第 58 章 Maven and RESTEasy"/><link rel="next" href="REST_BOOKS.html" title="第 60 章 Books You Can Read"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Maven_and_RESTEasy.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="REST_BOOKS.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Migration_from_older_versions"/>第 59 章 Migration from older versions</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="Migration_from_older_versions.html#d4e4720">59.1. Migration to RESTEasy 3.0 series</a></span></dt><dt><span class="sect1"><a href="Migration_from_older_versions.html#Migration_to_RESTEasy_3.1">59.2. Migration to RESTEasy 3.1 series</a></span></dt><dt><span class="sect1"><a href="Migration_from_older_versions.html#d4e4819">59.3. Migration to RESTEasy 3.5+ series</a></span></dt><dt><span class="sect1"><a href="Migration_from_older_versions.html#d4e4824">59.4. Migration to RESTEasy 4 series</a></span></dt></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 59 章 Migration from older versions</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Maven_and_RESTEasy.html" title="第 58 章 Maven and RESTEasy"/><link rel="next" href="REST_BOOKS.html" title="第 60 章 Books You Can Read"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Maven_and_RESTEasy.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="REST_BOOKS.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Migration_from_older_versions"/>第 59 章 Migration from older versions</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="Migration_from_older_versions.html#d4e4722">59.1. Migration to RESTEasy 3.0 series</a></span></dt><dt><span class="sect1"><a href="Migration_from_older_versions.html#Migration_to_RESTEasy_3.1">59.2. Migration to RESTEasy 3.1 series</a></span></dt><dt><span class="sect1"><a href="Migration_from_older_versions.html#d4e4821">59.3. Migration to RESTEasy 3.5+ series</a></span></dt><dt><span class="sect1"><a href="Migration_from_older_versions.html#d4e4826">59.4. Migration to RESTEasy 4 series</a></span></dt></dl></div>
 
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4720"/>59.1. Migration to RESTEasy 3.0 series</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4722"/>59.1. Migration to RESTEasy 3.0 series</h2></div></div></div>
     
     
     <p>
@@ -78,7 +78,7 @@
     are a few changes that they should be aware of.
     </p>
     
-    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4753"/>1. Upgrading with RESTEasy 3 API</h2></div></div></div>
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4755"/>1. Upgrading with RESTEasy 3 API</h2></div></div></div>
     
     
     <p>
@@ -144,7 +144,7 @@ URI uri = uriInfo.getBaseUriBuilder().path("test").build();
 	  </li></ul></div>
     </div>
 
-    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4801"/>2. Upgrading with RESTEasy 2 API</h2></div></div></div>
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4803"/>2. Upgrading with RESTEasy 2 API</h2></div></div></div>
     
     
     <p>
@@ -183,7 +183,7 @@ URI uri = uriInfo.getBaseUriBuilder().path("test").build();
 </div>
 
 
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4819"/>59.3. Migration to RESTEasy 3.5+ series</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4821"/>59.3. Migration to RESTEasy 3.5+ series</h2></div></div></div>
     
     <p>
       RESTEasy 3.5 series is a spin-off of the old RESTEasy 3.0 series, featuring JAX-RS 2.1 implementation.
@@ -199,14 +199,14 @@ URI uri = uriInfo.getBaseUriBuilder().path("test").build();
     </p>
 </div>
 
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4824"/>59.4. Migration to RESTEasy 4 series</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4826"/>59.4. Migration to RESTEasy 4 series</h2></div></div></div>
     
     <p>
       User migrating from RESTEasy 3.0 and 3.5+ series should be aware of the changes mentioned in the
       <a class="xref" href="Migration_from_older_versions.html#Migration_to_RESTEasy_3.1" title="59.2. Migration to RESTEasy 3.1 series">第 59.2 节 “Migration to RESTEasy 3.1 series”</a>. In addition to that,
       the aspects from the following sections are to be considered.
     </p>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4828"/>1. Public / private API</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4830"/>1. Public / private API</h2></div></div></div>
         
         <p>
             The <code class="classname">resteasy-jaxrs</code> and <code class="classname">resteasy-client</code> modules
@@ -217,7 +217,7 @@ URI uri = uriInfo.getBaseUriBuilder().path("test").build();
             to allow for easier project evolution and maintenance, in RESTEasy 4.0.0.Final those big components
             have been split as follows: 
         </p>
-        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4833"/>1.1. resteasy-core-spi</h3></div></div></div>
+        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4835"/>1.1. resteasy-core-spi</h3></div></div></div>
           
           <p>
             The public classes of the former <code class="classname">resteasy-jaxrs</code> module; the following packages
@@ -225,7 +225,7 @@ URI uri = uriInfo.getBaseUriBuilder().path("test").build();
           </p>
           <div class="itemizedlist"><ul><li><code class="classname">org.jboss.resteasy.annotations</code></li><li><code class="classname">org.jboss.resteasy.api.validation</code></li><li><code class="classname">org.jboss.resteasy.spi</code></li><li><code class="classname">org.jboss.resteasy.plugins.providers.validation</code></li></ul></div>
         </div>
-        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4846"/>1.2. resteasy-core</h3></div></div></div>
+        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4848"/>1.2. resteasy-core</h3></div></div></div>
           
           <p>
             The internal details of the former <code class="classname">resteasy-jaxrs</code> module, including classes
@@ -233,7 +233,7 @@ URI uri = uriInfo.getBaseUriBuilder().path("test").build();
           </p>
           <div class="itemizedlist"><ul><li><code class="classname">org.jboss.resteasy.core</code></li><li><code class="classname">org.jboss.resteasy.mock</code></li><li><code class="classname">org.jboss.resteasy.plugins</code></li><li><code class="classname">org.jboss.resteasy.specimpl</code></li><li><code class="classname">org.jboss.resteasy.tracing</code></li><li><code class="classname">org.jboss.resteasy.util</code></li></ul></div>
         </div>
-        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4863"/>1.3. resteasy-client-api</h3></div></div></div>
+        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4865"/>1.3. resteasy-client-api</h3></div></div></div>
           
           <p>
             The public classes from the former <code class="classname">resteasy-client</code> module, basically whatever
@@ -241,7 +241,7 @@ URI uri = uriInfo.getBaseUriBuilder().path("test").build();
           </p>
           <div class="itemizedlist"><ul><li><code class="classname">ClientHttpEngine</code> and <code class="classname">ClientHttpEngineBuilder</code></li><li><code class="classname">ProxyBuilder</code> and <code class="classname">ProxyConfig</code></li><li><code class="classname">ResteasyClient</code></li><li><code class="classname">ResteasyClientBuilder</code></li><li><code class="classname">ResteasyWebTarget</code></li></ul></div>
         </div>
-        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4880"/>1.4. resteasy-client</h3></div></div></div>
+        <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4882"/>1.4. resteasy-client</h3></div></div></div>
           
           <p>
             The remainings of the former <code class="classname">resteasy-client</code> module, internal details.
@@ -259,7 +259,7 @@ URI uri = uriInfo.getBaseUriBuilder().path("test").build();
           <a class="ulink" href="https://github.com/resteasy/Resteasy/pull/1697">refactoring PR</a>.
         </p>
     </div>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4889"/>2. Deprecated classes and modules removal</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4891"/>2. Deprecated classes and modules removal</h2></div></div></div>
         
         <p>
           All classes and modules that were deprecated in RESTEasy 3 have been dropped in 4. In particular, this
@@ -276,7 +276,7 @@ URI uri = uriInfo.getBaseUriBuilder().path("test").build();
           <code class="classname">resteasy-validator-provider</code> one now supporting Bean Validation 2.0.
         </p>
     </div>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4914"/>3. Behavior changes</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4916"/>3. Behavior changes</h2></div></div></div>
         
         <p>
           With the <code class="classname">ClientHttpEngine</code> based on Apache HTTP Client 4.0 having gone (it
@@ -290,7 +290,7 @@ URI uri = uriInfo.getBaseUriBuilder().path("test").build();
           <code class="classname">org.jboss.resteasy.max_mediatype_cache_size</code> system property.
         </p>
     </div>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4923"/>4. Other changes</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4925"/>4. Other changes</h2></div></div></div>
         
         <div class="itemizedlist"><ul><li>
                 In releases 3.x, when bean validation (<a class="xref" href="Validation.html" title="第 56 章 Validation">第 56 章 <i>Validation</i></a>) threw instances of exceptions

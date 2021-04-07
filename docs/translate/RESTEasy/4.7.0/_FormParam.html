@@ -6,13 +6,13 @@
 
 <div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="note"><h2>注意</h2>
    <p>
-      RESTEasy <a class="link" href="_NewParam.html" title="第 13 章 Improved @…Param annotations">supports <code class="code">@FormParam</code> annotations with no parameter name.</a>.
+      RESTEasy <a class="link" href="_NewParam.html" title="第 13 章 改进的 @…Param 注解"><code class="code">@FormParam</code> 注解支持不直接指定参数名</a>。
    </p>
 </div>
 
 <p>
 
-When the input request body is of the type "application/x-www-form-urlencoded", a.k.a. an HTML Form, you can inject individual form parameters from the request body into method parameter values.
+当输入请求体的类型为"application/x-www-form-urlencoded"，也就是 HTML 表单时，可以将请求体中的单个表单参数注入到方法参数值中。
 </p>
 <p>
 
@@ -28,7 +28,7 @@ Last name:
 </p>
 <p>
 
-If you post through that form, this is what the service might look like:
+如果你通过这个表单发送post请求，这个service可能是这个样子的:
 </p>
 <p>
 
@@ -44,7 +44,7 @@ public class NameRegistry {
 </p>
 <p>
 
-You cannot combine @FormParam with the default "application/x-www-form-urlencoded" that unmarshalls to a MultivaluedMap&lt;String, String&gt;.  i.e. This is illegal:
+您不能将@FormParam 与默认的"application/x-www-form-urlencoded"组合起来，后者将解包为MultivaluedMap&lt;String, String&gt; 。 即这是非法的:
 </p>
 <p>
 
