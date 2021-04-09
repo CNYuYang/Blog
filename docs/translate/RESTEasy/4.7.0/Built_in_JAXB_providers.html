@@ -1,25 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 22 章 JAXB providers</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Content_Marshalling_Providers.html" title="第 21 章 Content Marshalling/Providers"/><link rel="next" href="Atom.html" title="第 23 章 RESTEasy Atom Support"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Content_Marshalling_Providers.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Atom.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Built_in_JAXB_providers"/>第 22 章 JAXB providers</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="Built_in_JAXB_providers.html#decorators">22.1. JAXB Decorators</a></span></dt><dt><span class="sect1"><a href="Built_in_JAXB_providers.html#Pluggable_JAXBContext_s_with_ContextResolvers">22.2. Pluggable JAXBContext's with ContextResolvers</a></span></dt><dt><span class="sect1"><a href="Built_in_JAXB_providers.html#JAXB_+_XML_provider">22.3. JAXB + XML provider</a></span></dt><dd><dl><dt><span class="sect2"><a href="Built_in_JAXB_providers.html#XmlHeader">22.3.1. @XmlHeader and @Stylesheet</a></span></dt></dl></dd><dt><span class="sect1"><a href="Built_in_JAXB_providers.html#JAXB_+_JSON_provider">22.4. JAXB + JSON provider</a></span></dt><dt><span class="sect1"><a href="Built_in_JAXB_providers.html#JAXB_+_FastinfoSet_provider">22.5. JAXB + FastinfoSet provider</a></span></dt><dt><span class="sect1"><a href="Built_in_JAXB_providers.html#JAXB_Collections">22.6. Arrays and Collections of JAXB Objects</a></span></dt><dd><dl><dt><span class="sect2"><a href="Built_in_JAXB_providers.html#collections_on_client">22.6.1. Retrieving Collections on the client side</a></span></dt><dt><span class="sect2"><a href="Built_in_JAXB_providers.html#json_list">22.6.2. JSON and JAXB Collections/arrays</a></span></dt></dl></dd><dt><span class="sect1"><a href="Built_in_JAXB_providers.html#JAXB_Map">22.7. Maps of JAXB Objects</a></span></dt><dd><dl><dt><span class="sect2"><a href="Built_in_JAXB_providers.html#maps_client_side">22.7.1. Retrieving Maps on the client side</a></span></dt><dt><span class="sect2"><a href="Built_in_JAXB_providers.html#json_map">22.7.2. JSON and JAXB maps</a></span></dt></dl></dd><dt><span class="sect1"><a href="Built_in_JAXB_providers.html#JAXB_INTERFACES">22.8. Interfaces, Abstract Classes, and JAXB</a></span></dt><dt><span class="sect1"><a href="Built_in_JAXB_providers.html#configuration">22.9. Configurating JAXB Marshalling</a></span></dt></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 22 章 JAXB providers</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Content_Marshalling_Providers.html" title="第 21 章 Content Marshalling/Providers"/><link rel="next" href="Atom.html" title="第 23 章 RESTEasy 对 Atom 的支持"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Content_Marshalling_Providers.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Atom.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Built_in_JAXB_providers"/>第 22 章 JAXB providers</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="Built_in_JAXB_providers.html#decorators">22.1. JAXB 装饰者</a></span></dt><dt><span class="sect1"><a href="Built_in_JAXB_providers.html#Pluggable_JAXBContext_s_with_ContextResolvers">22.2. ContextResolvers 提供插件式 JAXBContext</a></span></dt><dt><span class="sect1"><a href="Built_in_JAXB_providers.html#JAXB_+_XML_provider">22.3. JAXB + XML provider</a></span></dt><dd><dl><dt><span class="sect2"><a href="Built_in_JAXB_providers.html#XmlHeader">22.3.1. @XmlHeader 和 @Stylesheet</a></span></dt></dl></dd><dt><span class="sect1"><a href="Built_in_JAXB_providers.html#JAXB_+_JSON_provider">22.4. JAXB + JSON provider</a></span></dt><dt><span class="sect1"><a href="Built_in_JAXB_providers.html#JAXB_+_FastinfoSet_provider">22.5. JAXB + FastinfoSet provider</a></span></dt><dt><span class="sect1"><a href="Built_in_JAXB_providers.html#JAXB_Collections">22.6. JAXB 对象的数组和集合</a></span></dt><dd><dl><dt><span class="sect2"><a href="Built_in_JAXB_providers.html#collections_on_client">22.6.1. 在客户端检索集合</a></span></dt><dt><span class="sect2"><a href="Built_in_JAXB_providers.html#json_list">22.6.2. JSON and JAXB 集合/数组</a></span></dt></dl></dd><dt><span class="sect1"><a href="Built_in_JAXB_providers.html#JAXB_Map">22.7. JAXB 对象的 Maps</a></span></dt><dd><dl><dt><span class="sect2"><a href="Built_in_JAXB_providers.html#maps_client_side">22.7.1. 客户端检索Maps</a></span></dt><dt><span class="sect2"><a href="Built_in_JAXB_providers.html#json_map">22.7.2. JSON and JAXB maps</a></span></dt></dl></dd><dt><span class="sect1"><a href="Built_in_JAXB_providers.html#JAXB_INTERFACES">22.8. 接口、抽象类和 JAXB</a></span></dt><dt><span class="sect1"><a href="Built_in_JAXB_providers.html#configuration">22.9. 配置 JAXB 编组</a></span></dt></dl></div>
    
 
    <p>
-      As required by the specification, RESTEasy JAX-RS includes support for (un)marshalling JAXB annotated classes.
-      RESTEasy provides multiple JAXB Providers to address some subtle differences between classes generated by XJC
-      and classes which are simply annotated with @XmlRootElement, or working with JAXBElement classes directly.
+      根据规范的要求，RESTEasy JAX-RS 包括对(取消)编组 JAXB 类的支持。RESTEasy 提供了多个 JAXB 提供程序，以解决 XJC 生成的类与简单地用 @XmlRootElement 注解或直接使用 JAXBElement 之间的一些细微差别。
    </p>
    <p>
 
-      For the most part, developers using the JAX-RS API, the selection of which provider is invoked will be
-      completely transparent. For developers wishing to access the providers directly (which most folks won't need to
-      do), this document describes which provider is best suited for different configurations.
+      在大多数情况下，使用 JAX-RS API 的开发人员将完全透明地选择调用哪个提供程序。对于希望直接访问提供程序的开发人员(大多数人不需要这样做) ，本文档描述了对于不同的配置如何选择最适合的提供程序。
    </p>
    <p>
-      A JAXB Provider is selected by RESTEasy when a parameter or return type is an object that is annotated with
-      JAXB annotations (such as @XmlRootEntity or @XmlType) or if the type is a JAXBElement. Additionally, the
-      resource class or resource method will be annotated with either a @Consumes or @Produces annotation and
-      contain one or more of the following values:
+      RESTEasy 选择 JAXB 提供程序是通过判断参数或返回类型是否用 JAXB 注解(比如 @XmlRootEntity 或 @XmlType)的对象，或者类型是否是 JAXBElement。此外，resource 类或 resource 方法将使用@Consumes 或@Produces 注解并包含以下一个或多个值:
    </p>
    <p>
 
@@ -38,47 +31,33 @@
 
    </p>
    <p>
-
-      RESTEasy will select a different provider based on the return type or parameter type used in the resource. This
-      section describes how the selection process works.
+      RESTEasy 将根据 resource 中使用的返回类型或参数类型选择不同的提供程序。本节描述选择过程是如何工作的。
+   </p>
+   <p>
+      当用 @XmlRootEntity 注解一个类时，RESTEasy 将选择 JAXBXmlRootElementProvider。此提供程序处理自定义 JAXB 实体的基本编组和反编组处理。
    </p>
    <p>
 
-      @XmlRootEntity
-      When a class is annotated with a @XmlRootElement annotation, RESTEasy will select the
-      JAXBXmlRootElementProvider. This provider handles basic marshaling and unmarshalling of custom JAXB
-      entities.
+      由 XJC 生成的 @XmlType 类很可能不包含 @XmlRootEntity 注解。为了编组这些类，必须将它们封装在 JAXBElement 实例中。这通常通过在类上调用一个方法来实现，该方法由 XmlRegistry 类提供，并命名方法为 ObjectFactory。
+
    </p>
    <p>
 
-      @XmlType
-      Classes which have been generated by XJC will most likely not contain an @XmlRootEntity annotation. In order
-      for these classes to marshalled, they must be wrapped within a JAXBElement instance. This is typically
-      accomplished by invoking a method on the class which serves as the XmlRegistry and is named ObjectFactory.
+      当使用 XmlType 注解而不是 XmlRootElement 注解对类进行注解时，就会选择 JAXBXmlTypeProvider 提供程序。
+
    </p>
    <p>
 
-      The JAXBXmlTypeProvider provider is selected when the class is annotated with an XmlType annotation and not an
-      XmlRootElement annotation.
-   </p>
-   <p>
+      提供程序通过尝试定位目标类的 XmlRegistry 来简化这个任务。默认情况下，JAXB 实现将创建一个名为 ObjectFactory 的类，该类与目标类位于同一个包中。当找到这个类时，它将包含一个"create"方法，该方法将对象实例作为参数。例如，如果目标类型被称为"Contact"，那么 ObjectFactory 类将有一个方法:
 
-      This provider simplifies this task by attempting to locate the XmlRegistry for the target class. By default, a
-      JAXB implementation will create a class called ObjectFactory and is located in the same package as the target
-      class. When this class is located, it will contain a "create" method that takes the object instance
-      as a parameter. For example, if the target type is called "Contact", then the ObjectFactory class
-      will have a method:
    </p>
    <p>
 
       public JAXBElement createContact(Contact value) {..
    </p>
    <p>
+      JAXBElement&lt;?&gt; 如果您的资源直接使用 JAXBElement 类，RESTEasy 运行时将选择 JAXBElementProvider。此提供程序检查 JAXBElement 的 ParameterizedType 值，以选择适当的 JAXBContext。
 
-      JAXBElement&lt;?&gt;
-      If your resource works with the JAXBElement class directly, the RESTEasy runtime will select the
-      JAXBElementProvider. This provider examines the ParameterizedType value of the JAXBElement in order to select
-      the appropriate JAXBContext.
    </p>
    <p>
 
@@ -87,16 +66,12 @@
 
 
    </p>
-    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="decorators"/>22.1. JAXB Decorators</h2></div></div></div>
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="decorators"/>22.1. JAXB 装饰者</h2></div></div></div>
         
-        <p>Resteasy's JAXB providers have a pluggable way to decorate Marshaller and Unmarshaller instances.
-        The way it works is that you can write an annotation that can trigger the decoration of a
-        Marshaller or Unmarshaller.  Your decorators can do things like set Marshaller or Unmarshaller properties,
-        set up validation, stuff like that.  Here's an example.  Let's say we want to have an annotation
-        that will trigger pretty-printing, nice formatting, of an XML document.  If we were doing raw
-        JAXB, we would set a property on the Marshaller of Marshaller.JAXB_FORMATTED_OUTPUT.  Let's
-        write a Marshaller decorator.</p>
-        <p>First we define a annotation:</p>
+        <p>
+        Resteasy 的 JAXB 提供程序有一种可插入的方式来装饰 Marshaller 和 Unmarshaller 实例。它的工作方式是，您可以编写一个注解，这个注解可以触发装饰 Marshaller 或 Unmarshaller。装饰器可以执行设置 Marshaller 或 Unmarshaller 属性、设置validation,stuff之类的操作。这里有一个例子。假设我们希望有一个能够触发 XML 文档的pretty-printing、nice formatting 的注解。如果我们使用原始 JAXB，我们将在 Marshaller 的 Marshaller 上设置一个属性(JAXB_FORMATTED_OUTPUT)。让我们编写一个 Marshaller 装饰器。
+        </p>
+        <p>首先我们定义一个注解:</p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 import org.jboss.resteasy.annotations.Decorator;
 
@@ -105,9 +80,9 @@ import org.jboss.resteasy.annotations.Decorator;
 @Decorator(processor = PrettyProcessor.class, target = Marshaller.class)
 public @interface Pretty {}
 </pre>
-        <p>To get this to work, we must annotate our @Pretty annotation with a meta-annotation called
-        @Decorator.  The target() attribute must be the JAXB Marshaller class.  The processor()
-        attribute is a class we will write next.</p>
+        <p>
+        为了实现这一点，我们必须使用一个名为 @Decorator 的元注解来注解我们定义的 @Pretty 注解。target() 属性必须是 JAXB Marshaller 类。processor() 属性是我们接下来要编写的类。
+        </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 import org.jboss.resteasy.core.interception.DecoratorProcessor;
 import org.jboss.resteasy.annotations.DecorateTypes;
@@ -133,10 +108,7 @@ public class PrettyProcessor implements DecoratorProcessor&lt;Marshaller, Pretty
 }
 </pre>
     <p>
-        The processor implementation must implement the DecoratorProcessor interface and should also be annotated
-        with @DecorateTypes.  This annotation specifies what media types the processor can be used with. Now that
-        we've defined our annotation and our Processor, we can use it on our JAX-RS resource methods
-        or JAXB types as follows:
+        processor 实现类必须实现 DecoratorProcessor 接口，并且还应该使用 @DecorateTypes 注解。此注解指定processor 可以使用的媒体类型。现在我们已经定义了注解和processor，我们可以在 JAX-RS 资源方法或 JAXB 类型上使用它，如下所示:
     </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 @GET
@@ -144,20 +116,19 @@ public class PrettyProcessor implements DecoratorProcessor&lt;Marshaller, Pretty
 @Produces("application/xml")
 public SomeJAXBObject get() {...}
 </pre>
-        <p>If you are confused, check the RESTEasy source code for the implementation of @XmlHeader</p>
+        <p>
+        如果您感到困惑，请查看 RESTEasy 源代码以了解 @XmlHeader 的实现
+        </p>
     </div>
-   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Pluggable_JAXBContext_s_with_ContextResolvers"/>22.2. Pluggable JAXBContext's with ContextResolvers</h2></div></div></div>
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Pluggable_JAXBContext_s_with_ContextResolvers"/>22.2. ContextResolvers 提供插件式 JAXBContext</h2></div></div></div>
       
 
       <p>
-
-         You should not use this feature unless you know what you're doing.
+         除非你知道你在做什么，否则你不应该使用这个功能。
       </p>
       <p>
 
-         Based on the class you are marshalling/unmarshalling, RESTEasy will, by default create and cache JAXBContext
-         instances per class type. If you do not want RESTEasy to create JAXBContexts, you can plug-in your own by
-         implementing an instance of javax.ws.rs.ext.ContextResolver
+         根据要编组/反编组的类，RESTEasy 将默认为每个类的类型创建和缓存 JAXBContext 实例。如果不希望 RESTEasy 创建 JAXBContexts，可以通过实现 javax.ws.rs.ext.ContextResolver 实例插入自己的实例。
       </p>
       <p>
 
@@ -179,25 +150,22 @@ public class MyJAXBContextResolver implements ContextResolver&lt;JAXBContext&gt;
 </pre><p>
       </p>
       <p>
-
-         You must provide a @Produces annotation to specify the media type the context is meant for. You must also
-         make sure to implement ContextResolver&lt;JAXBContext&gt;. This helps the runtime match to the correct
-         context resolver. You must also annotate the ContextResolver class with @Provider.
+         您必须提供 @Produces 注解来指定上下文所针对的媒体类型。您还必须确保实现 ContextResolver&lt;JAXBContext&gt; 。这有助于运行时与正确的上下文解析器匹配。您还必须使用 @Provider 注解 ContextResolver 类。
       </p>
       <p>
 
-         There are multiple ways to make this ContextResolver available.
+         有多种方法使用这个 ContextResolver 。
       </p>
       <p>
 
          </p><div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="orderedlist"><ol><li>
-               Return it as a class or instance from a javax.ws.rs.core.Application implementation
+               从 javax.ws.rs.core.Application 返回该类的实例
             </li><li>
-               List it as a provider with resteasy.providers
+               作为resteasy.providers中的一个provider
             </li><li>
-               Let RESTEasy automatically scan for it within your WAR file. See Configuration Guide
+               让 RESTEasy 在您的 WAR 文件中自动扫描它。参见配置指南
             </li><li>
-               Manually add it via ResteasyProviderFactory.getInstance().registerProvider(Class) or
+            手动添加它通过 ResteasyProviderFactory.getInstance().registerProvider(Class) 或者
                registerProviderInstance(Object)
             </li></ol></div><p>
 
@@ -210,13 +178,12 @@ public class MyJAXBContextResolver implements ContextResolver&lt;JAXBContext&gt;
    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="JAXB_+_XML_provider"/>22.3. JAXB + XML provider</h2></div></div></div>
       
        <p>
-           RESTEasy is required to provide JAXB provider support for XML.  It has a few extra annotations
-           that can help code your app.
+           RESTEasy 需要为 XML 提供 JAXB 提供者。它有一些额外的注解，可以帮助编写你的应用程序。
        </p>
-       <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="XmlHeader"/>22.3.1. @XmlHeader and @Stylesheet</h3></div></div></div>
+       <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="XmlHeader"/>22.3.1. @XmlHeader 和 @Stylesheet</h3></div></div></div>
            
-           <p>Sometimes when outputting XML documents you may want to set an XML header. RESTEasy provides
-           the @org.jboss.resteasy.annotations.providers.jaxb.XmlHeader annotation for this.  For example:</p>
+           <p>
+           有时在输出 XML 文档时，您可能需要设置 XML 标头。提供 @org.jboss.resteasy.annotations.providers.jaxb.XmlHeader 注解。例如:</p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 @XmlRootElement
 public static class Thing
@@ -250,12 +217,10 @@ public static class TestService
 }
 </pre>
            <p>
-               The @XmlHeader here forces the XML output to have an xml-stylesheet header.  This header
-               could also have been put on the Thing class to get the same result.  See the javadocs for more
-               details on how you can use substitution values provided by resteasy.
+           这里的 @XmlHeader 强制 XML 输出具有一个 xml-stylesheet 头信息。这个头信息也可以放在 Thing 类上以获得相同的结果。有关如何使用 resteasy 提供的替换值的更多细节，请参见 javadocs。
                </p>
            <p>
-               RESTEasy also has a convenience annotation for stylesheet headers.  For example:
+            RESTEasy 还为stylesheet 头信息提供了方便的注解，例如:
            </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 @XmlRootElement
@@ -296,13 +261,13 @@ public static class TestService
       
 
       <p>
-         RESTEasy allows you to marshall JAXB annotated POJOs to and from JSON. This provider wraps the Jackson2 library to accomplish this.
+      RESTEasy 允许您将带有 JAXB 注解的 POJOs 与 JSON 进行交互。这个提供者包装了 Jackson2 库来完成这个任务。
       </p>
       <p>
-           To use this integration with Jackson you need to import the resteasy-jackson2-provider Maven module.
+      要集成Jackson，您需要导入 resteasy-jackson2-provider Maven 模块。
        </p>
       <p>
-         For example, consider this JAXB class:
+         例如，考虑下面这个 JAXB 类:
       </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 @XmlRootElement(name = "book")
@@ -358,7 +323,7 @@ public class Book
 }
 </pre>
        <p>
-           And we can write a method to use the above entity:
+           我们可以写一个方法来使用上面的实体:
        </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 @Path("/test_json")
@@ -373,7 +338,7 @@ public Book test_json() {
 }
 </pre>
        <p>
-           Requesting from the above method, and we can see the default Jackson2 marshaller would return JSON that looked like this:
+           从上面的方法请求，我们可以看到默认的 Jackson2 编组将返回如下的 JSON:
        </p>
        <p>
 </p><pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -393,26 +358,20 @@ Content-Type: application/json
       
 
       <p>
-
-         RESTEasy supports the FastinfoSet mime type with JAXB annotated classes. Fast infoset documents are faster
-         to serialize and parse, and smaller in size, than logically equivalent XML documents. Thus, fast infoset
-         documents may be used whenever the size and processing time of XML documents is an issue. It is configured
-         the same way the XML JAXB provider is so really no other documentation is needed here.
+         RESTEasy 使用带 JAXB 注解的类支持转换成 FastinfoSet 类型。与逻辑上等价的 XML 文档相比，FastinfoSet 文档的序列化和解析速度更快，体积更小。因此，只要 XML 文档的大小和处理时间存在问题，就可以使用 FastinfoSet 文档。它的配置方式与 XML JAXB 提供程序相同，因此实际上不需要其他文档。
       </p>
        <p>
-           To use this integration with Fastinfoset you need to import the resteasy-fastinfoset-provider Maven module.  Older versions
-           of RESTEasy used to include this within the resteasy-jaxb-provider but we decided to modularize it more.
+           要使用与 Fastinfoset 的集成，您需要导入 resteasy-fastinfoset-provider Maven 模块。RESTEasy 的旧版本过去常常在 resteasy-jaxb-provider 中包含这一内容，但我们决定将其更模块化。
        </p>
       <p>
 
 
       </p>
    </div>
-   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="JAXB_Collections"/>22.6. Arrays and Collections of JAXB Objects</h2></div></div></div>
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="JAXB_Collections"/>22.6. JAXB 对象的数组和集合</h2></div></div></div>
       
       <p>
-         RESTEasy will automatically
-         marshal arrays, java.util.Set's, and java.util.List's of JAXB objects to and from XML, JSON, Fastinfoset (or any other new JAXB mapper Restasy comes up with).
+         RESTEasy 将 数组 、java.util.Set's 和 java.util.List's 的JAXB对象转换(反序列化)成 XML、 JSON、 Fastinfoset (或 Restasy 提供的任何其他新的 JAXB 映射器)之间的 JAXB 对象列表。
       </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 @XmlRootElement(name = "customer")
@@ -472,7 +431,7 @@ public class MyResource
 }
 </pre>
    <p>
-      The above resource can publish and receive JAXB objects.  It is assumed that are wrapped in a collection element
+      上面的资源可以发布和接收 JAXB 对象
    </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 &lt;collection&gt;
@@ -480,7 +439,9 @@ public class MyResource
     &lt;customer&gt;&lt;name&gt;monica&lt;/name&gt;&lt;/customer&gt;
 &lt;collection&gt;
 </pre>
-   <p>You can change the namespace URI, namespace tag, and collection element name by using the @org.jboss.resteasy.annotations.providers.jaxb.Wrapped annotation on a parameter or method</p>
+   <p>
+   可以使用 @org.jboss.resteasy.annotations.providers.jaxb.Wrapped 更改namespace URI、namespace tag 和集合元素名称。
+</p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 @Target({ElementType.PARAMETER, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
@@ -493,14 +454,14 @@ public @interface Wrapped
     String prefix() default "resteasy";
 }
 </pre>
-<p>So, if we wanted to output this XML</p>
+<p>所以，如果我们想输出这个 XML</p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 &lt;foo:list xmlns:foo="http://foo.org"&gt;
     &lt;customer&gt;&lt;name&gt;bill&lt;/name&gt;&lt;/customer&gt;
     &lt;customer&gt;&lt;name&gt;monica&lt;/name&gt;&lt;/customer&gt;
 &lt;/foo:list&gt;
 </pre>
-<p>We would use the @Wrapped annotation as follows: </p>
+<p>我们将使用 @Wrapped 注解如下: </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 @GET
 @Path("list")
@@ -516,11 +477,10 @@ public List&lt;Customer&gt; getCustomerSet()
 }
 </pre>
 
-  <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="collections_on_client"/>22.6.1. Retrieving Collections on the client side</h3></div></div></div>
+  <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="collections_on_client"/>22.6.1. 在客户端检索集合</h3></div></div></div>
   
   <p>
-  If you try to retrieve a <code class="classname">List</code>
-  or <code class="classname">Set</code> of JAXB objects in the obvious way on the client side:
+  如果您试图以客户端显而易见的方式检索一个 <code class="classname">List</code> 或 <code class="classname">Set</code>JAXB 对象:
   </p>
 
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -529,9 +489,7 @@ public List&lt;Customer&gt; getCustomerSet()
 </pre>
 
   <p>
-  the call to <code class="methodname">readEntity()</code> will fail because it has no way of knowing the
-  element type <code class="classname">Customer</code>. The trick is to use an instance of
-  <code class="classname">javax.ws.rs.core.GenericType</code>:
+  对 <code class="methodname">readEntity()</code> 的调用将失败，因为它无法知道元素类型 Customer。诀窍是使用  <code class="classname">javax.ws.rs.core.GenericType</code> :
   </p>
 
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -541,11 +499,11 @@ public List&lt;Customer&gt; getCustomerSet()
 </pre>
 
   <p>
-  For more information about <code class="classname">GenericType</code>, please see its javadoc.
+  有关 <code class="classname">GenericType</code> 的更多信息，请参见其 javadoc。
   </p>
 
   <p>
-  The same trick applies to retrieving a <code class="classname">Set</code>:
+  同样的技巧也适用于检索<code class="classname">Set</code>:
   </p>
 
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -555,7 +513,7 @@ public List&lt;Customer&gt; getCustomerSet()
 </pre>
 
   <p>
-  On the other hand, <code class="classname">GenericType</code> is not necessary to retrieve an array of JAXB objects:
+  另一方面，<code class="classname">GenericType</code> 并不是检索 JAXB 对象数组所必需的:
   </p>
 
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -564,10 +522,11 @@ public List&lt;Customer&gt; getCustomerSet()
 </pre>
   </div>
 
-  <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="json_list"/>22.6.2. JSON and JAXB Collections/arrays</h3></div></div></div>
+  <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="json_list"/>22.6.2. JSON and JAXB 集合/数组</h3></div></div></div>
     
-    <p>RESTEasy supports using collections with JSON.  It encloses lists, sets, or arrays of returned JAXB objects within a simple
-    JSON array.  For example:</p>
+    <p>
+    RESTEasy 支持使用 JSON 集合。它将返回的 JAXB 对象的列表、集或数组封装在一个简单的 JSON 数组中。例如:
+    </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -596,19 +555,17 @@ public static class Foo
     }
 }
 </pre>
- <p>This a List or array of this Foo class would be represented in JSON like this:</p>
+ <p>这个 Foo 类的 List 或者数组在 JSON 中表示如下: </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 [{"foo":{"@test":"bill"}},{"foo":{"@test":"monica}"}}]
 </pre>
- <p>It also expects this format for input</p>
+ <p>它还希望输入采用这种格式</p>
   </div>
 </div>
-   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="JAXB_Map"/>22.7. Maps of JAXB Objects</h2></div></div></div>
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="JAXB_Map"/>22.7. JAXB 对象的 Maps</h2></div></div></div>
       
       <p>
-         RESTEasy will automatically
-         marshal maps of JAXB objects to and from XML, JSON, Fastinfoset (or any other new JAXB mapper Restasy comes up with).
-         Your parameter or method return type must be a generic with a String as the key and the JAXB object's type.
+         RESTEasy 将自动将 JAXB 对象的映射编组到 XML、 JSON、 Fastinfoset (或 Restasy 提供的任何其他新的 JAXB 映射)。您的参数或方法返回类型必须是一个泛型，其中 String 为键，类型为 JAXB 对象。
      </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 @XmlRootElement(namespace = "http://foo.com")
@@ -650,8 +607,7 @@ public static class MyResource
 }
 </pre>
    <p>
-      The above resource can publish and receive JAXB objects within a map.  By default, they are wrapped in a "map" element in the
-      default namespace.  Also, each "map" element has zero or more "entry" elements with a "key" attribute.
+      上面的 resource 可以在一个 map 中发布和接收 JAXB 对象。默认情况下，它们包装在默认名称空间中的"map"元素中。此外，每个"map"元素都有零个或多个带有"key"属性的"entry"元素。
    </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 &lt;map&gt;
@@ -663,7 +619,9 @@ public static class MyResource
     &lt;/entry&gt;
 &lt;/map&gt;
 </pre>
-   <p>You can change the namespace URI, namespace prefix and map, entry, and key element and attribute names by using the @org.jboss.resteasy.annotations.providers.jaxb.WrappedMap annotation on a parameter or method</p>
+   <p>
+   可以使用 @org.jboss.resteasy.annotations.providers.jaxb.WrappedMap 更改namespace  URI、名称空间前缀和映射、条目以及关键元素和属性名称。
+   </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 @Target({ElementType.PARAMETER, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
@@ -689,7 +647,7 @@ public @interface WrappedMap
     String prefix() default "";
 }
 </pre>
-<p>So, if we wanted to output this XML</p>
+<p>所以，如果我们想输出这个 XML</p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 &lt;hashmap&gt;
     &lt;hashentry hashkey="bill" xmlns:foo="http://foo.com"&gt;
@@ -697,7 +655,7 @@ public @interface WrappedMap
     &lt;/hashentry&gt;
 &lt;/map&gt;
 </pre>
-<p>We would use the @WrappedMap annotation as follows: </p>
+<p>我们将使用 @WrappedMap 注解如下: </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 @Path("/map")
 public static class MyResource
@@ -713,11 +671,10 @@ public static class MyResource
 }
 </pre>
 
-  <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="maps_client_side"/>22.7.1. Retrieving Maps on the client side</h3></div></div></div>
+  <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="maps_client_side"/>22.7.1. 客户端检索Maps</h3></div></div></div>
   
   <p>
-  If you try to retrieve a <code class="classname">Map</code>
-  of JAXB objects in the obvious way on the client side:
+  如果您尝试在客户端以显而易见的方式检索 JAXB 对象的 <code class="classname">Map</code>:
   </p>
 
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -726,9 +683,7 @@ public static class MyResource
 </pre>
 
   <p>
-  the call to <code class="methodname">readEntity()</code> will fail because it has no way of knowing the
-  element type <code class="classname">Customer</code>. The trick is to use an instance of
-  <code class="classname">javax.ws.rs.core.GenericType</code>:
+  对 <code class="methodname">readEntity()</code> 的调用将失败，因为它无法知道元素类型 <code class="classname">Customer</code> 。诀窍是使用 <code class="classname">javax.ws.rs.core.GenericType</code> 的实例:
   </p>
 
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -738,14 +693,14 @@ public static class MyResource
 </pre>
 
   <p>
-  For more information about <code class="classname">GenericType</code>, please see its javadoc.
+  有关 <code class="classname">GenericType</code> 的更多信息，请参见其 javadoc。
   </p>
   </div>
 
   <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="json_map"/>22.7.2. JSON and JAXB maps</h3></div></div></div>
     
-    <p>RESTEasy supports using maps with JSON.  It encloses maps returned JAXB objects within a simple
-    JSON map.  For example:</p>
+    <p>RESTEasy 支持使用 JSON 映射，它将返回的 JAXB 对象封装在一个简单的 JSON 映射中:
+    </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -774,19 +729,17 @@ public static class Foo
     }
 }
 </pre>
- <p>This a List or array of this Foo class would be represented in JSON like this:</p>
+ <p>这个 Foo 类的 List 或者数组在 JSON 中表示如下: </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 { "entry1" : {"foo":{"@test":"bill"}}, "entry2" : {"foo":{"@test":"monica}"}}}
 </pre>
- <p>It also expects this format for input</p>
+ <p>它还希望输入采用这种格式</p>
   </div>
 </div>
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="JAXB_INTERFACES"/>22.8. Interfaces, Abstract Classes, and JAXB</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="JAXB_INTERFACES"/>22.8. 接口、抽象类和 JAXB</h2></div></div></div>
    
    <p>
-    Some objects models use abstract classes and interfaces heavily.  Unfortunately, JAXB doesn't work with interfaces
-    that are root elements and RESTEasy can't unmarshal parameters that are interfaces or raw abstract classes because
-    it doesn't have enough information to create a JAXBContext.  For example:
+    有些对象模型大量使用抽象类和接口。不幸的是，JAXB 无法处理作为根元素的接口，而 RESTEasy 无法解封作为接口或原始抽象类的参数，因为它没有足够的信息来创建 JAXBContext。例如:
    </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 public interface IFoo {}
@@ -803,54 +756,46 @@ public class MyResource {
 }
 </pre>
 <p>
-  In this example, you would get an error from RESTEasy of something like "Cannot find a MessageBodyReader for...".  This is because
-  RESTEasy does not know that implementations of IFoo are JAXB classes and doesn't know how to create a JAXBContext for it.  As a workaround,
- RESTEasy allows you to use the JAXB annotation @XmlSeeAlso on the interface to correct the problem.  (NOTE, this will not work with manual, hand-coded JAXB).
+在这个例子中，您将从 RESTEasy 中得到一个错误，例如"Cannot find a MessageBodyReader for..."。这是因为 RESTEasy 不知道 IFoo 的实现是 JAXB 类，也不知道如何为它创建 JAXBContext。作为一种解决方案，RESTEasy 允许您在接口上使用 JAXB 注解 @XmlSeeAlso 来纠正问题。(注意，这不适用于手动的、手工编码的 JAXB)。
 </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 @XmlSeeAlso(RealFoo.class)
 public interface IFoo {}
 </pre>
 <p>
-The extra @XmlSeeAlso on IFoo allows RESTEasy to create a JAXBContext that knows how to unmarshal RealFoo instances.
+IFoo 上的额外 @XmlSeeAlso 允许 RESTEasy 创建一个 JAXBContext，它知道如何编组 RealFoo 实例。
 </p>
 </div>
 
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="configuration"/>22.9. Configurating JAXB Marshalling</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="configuration"/>22.9. 配置 JAXB 编组</h2></div></div></div>
    
    <p>
-     As a consumer of XML datasets, JAXB is subject to a form of attack
-     known as the XXE (Xml eXternal Entity) Attack
-     (<a class="ulink" href="http://www.securiteam.com/securitynews/6D0100A5PU.html">http://www.securiteam.com/securitynews/6D0100A5PU.html</a>),
-     in which expanding an external entity causes an unsafe file to be loaded.  Preventing the expansion of
-     external entities is discussed in <a class="xref" href="Content_Marshalling_Providers.html#Configuring_Document_Marshalling" title="21.4. Configuring Document Marshalling">第 21.4 节 “Configuring Document Marshalling”</a>.  The same
-     parameter,
+     作为 XML 数据集的消费者，JAXB 受到一种称为 XXE (XML eXternal Entity) Attack (<a class="ulink" href="http://www.securiteam.com/securitynews/6D0100A5PU.html">http://www.securiteam.com/securitynews/6D0100A5PU.html</a> )的攻击，在这种攻击中，展开外部实体会导致加载不安全的文件。在<a class="xref" href="Content_Marshalling_Providers.html#Configuring_Document_Marshalling" title="21.4. 配置文档编排">第 21.4 节 “配置文档编排”</a>中讨论了如何防止外部实体的扩展。同样的参数,
    </p>
 
    <div class="blockquote"><blockquote class="blockquote">
      resteasy.document.expand.entity.references
    </blockquote></div>
 
-   <p>applies to JAXB unmarshallers as well.</p>
+   <p>也适用于 JAXB 解组器。</p>
 
 
    <p>
-     <a class="xref" href="Content_Marshalling_Providers.html#Configuring_Document_Marshalling" title="21.4. Configuring Document Marshalling">第 21.4 节 “Configuring Document Marshalling”</a> also discusses the prohibition of DTDs and the
-     imposition of limits on entity expansion and the number of attributes per element. The parameters
+     <a class="xref" href="Content_Marshalling_Providers.html#Configuring_Document_Marshalling" title="21.4. 配置文档编排">第 21.4 节 “配置文档编排”</a>还讨论了禁止 dtd 和对实体扩展的限制以及每个元素的属性数。
    </p>
 
    <div class="blockquote"><blockquote class="blockquote">
      resteasy.document.secure.disableDTDs
    </blockquote></div>
 
-   <p>and</p>
+   <p>和</p>
 
    <div class="blockquote"><blockquote class="blockquote">
      resteasy.document.secure.processing.feature
    </blockquote></div>
 
    <p>
-     discussed there, and their default values, also apply to the representation of JAXB objects.
+   以及它们的默认值，也适用于 JAXB 对象的表示。
    </p>
 </div>
-</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Content_Marshalling_Providers.html"><strong>上一页</strong>第 21 章 Content Marshalling/Providers</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="Atom.html"><strong>下一页</strong>第 23 章 RESTEasy Atom Support</a></li></ul></body></html>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Content_Marshalling_Providers.html"><strong>上一页</strong>第 21 章 Content Marshalling/Providers</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="Atom.html"><strong>下一页</strong>第 23 章 RESTEasy 对 Atom 的支持</a></li></ul></body></html>

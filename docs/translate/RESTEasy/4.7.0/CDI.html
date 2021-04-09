@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 49 章 CDI Integration</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="RESTEasy_Spring_Integration.html" title="第 48 章 Spring Integration"/><link rel="next" href="Guice1.html" title="第 50 章 Guice 3.0 Integration"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="RESTEasy_Spring_Integration.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Guice1.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="CDI"/>第 49 章 CDI Integration</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="CDI.html#d4e3391">49.1. Using CDI beans as JAX-RS components</a></span></dt><dt><span class="section"><a href="CDI.html#d4e3398">49.2. Default scopes</a></span></dt><dt><span class="section"><a href="CDI.html#d4e3410">49.3. Configuration within WildFly</a></span></dt><dt><span class="section"><a href="CDI.html#d4e3413">49.4. Configuration with different distributions</a></span></dt></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 49 章 CDI Integration</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="RESTEasy_Spring_Integration.html" title="第 48 章 Spring Integration"/><link rel="next" href="Guice1.html" title="第 50 章 Guice 3.0 Integration"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="RESTEasy_Spring_Integration.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Guice1.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="CDI"/>第 49 章 CDI Integration</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="CDI.html#d4e3393">49.1. Using CDI beans as JAX-RS components</a></span></dt><dt><span class="section"><a href="CDI.html#d4e3400">49.2. Default scopes</a></span></dt><dt><span class="section"><a href="CDI.html#d4e3412">49.3. Configuration within WildFly</a></span></dt><dt><span class="section"><a href="CDI.html#d4e3415">49.4. Configuration with different distributions</a></span></dt></dl></div>
     
     <p>This module provides integration with JSR-299 (Contexts and
         Dependency Injection for the Java EE platform)
     </p>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3391"/>49.1. Using CDI beans as JAX-RS components</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3393"/>49.1. Using CDI beans as JAX-RS components</h2></div></div></div>
         
         <p>
             Both the JAX-RS and CDI specifications introduce their own
@@ -64,7 +64,7 @@
             components.
         </p>
     </div>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3398"/>49.2. Default scopes</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3400"/>49.2. Default scopes</h2></div></div></div>
         
         <p>
             A CDI bean that does not explicitly define a scope is
@@ -118,13 +118,13 @@
             </p>
         </div>
     </div>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3410"/>49.3. Configuration within WildFly</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3412"/>49.3. Configuration within WildFly</h2></div></div></div>
         
         <p>
             CDI integration is provided with no additional configuration with WildFly.
         </p>
     </div>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3413"/>49.4. Configuration with different distributions</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3415"/>49.4. Configuration with different distributions</h2></div></div></div>
         
         <p>
             Provided you have an

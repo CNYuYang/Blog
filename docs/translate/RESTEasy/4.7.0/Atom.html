@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 23 章 RESTEasy Atom Support</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Built_in_JAXB_providers.html" title="第 22 章 JAXB providers"/><link rel="next" href="json.html" title="第 24 章 JSON Support via Jackson"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Built_in_JAXB_providers.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="json.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Atom"/>第 23 章 RESTEasy Atom Support</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="Atom.html#resteasy_atom">23.1. RESTEasy Atom API and Provider</a></span></dt><dt><span class="sect1"><a href="Atom.html#jaxb_atom">23.2. Using JAXB with the Atom Provider</a></span></dt></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 23 章 RESTEasy 对 Atom 的支持</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Built_in_JAXB_providers.html" title="第 22 章 JAXB providers"/><link rel="next" href="json.html" title="第 24 章 通过Jackson提供对JSON的支持"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Built_in_JAXB_providers.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="json.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Atom"/>第 23 章 RESTEasy 对 Atom 的支持</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="Atom.html#resteasy_atom">23.1. RESTEasy Atom API and Provider</a></span></dt><dt><span class="sect1"><a href="Atom.html#jaxb_atom">23.2. 使用 JAXB 和 Atom 提供程序</a></span></dt></dl></div>
    
    <p>
-      From W3.org (http://tools.ietf.org/html/rfc4287):
+      阅读 W3.org (http://tools.ietf.org/html/rfc4287):
    </p>
    <p>
       "Atom is an XML-based document format that describes lists of related
@@ -16,20 +16,17 @@
       content such as weblogs and news headlines to Web sites as well as
       directly to user agents."
    </p>
+      <p>
+      Atom是一种基于XML的文档格式，它描述了称为"feeds"的相关信息的列表。 Feeds 由许多项（称为"entries"）组成，每个项都带有一组可扩展的附加元数据。 例如，每个Feeds都有一个标题。 Atom解决的主要用例是将Web内容（例如weblogs和新闻标题）联合到网站以及直接联系到用户代理。
+   </p>
+
    <p>
-      Atom is the next-gen RSS feed. Although it is used primarily for the syndication of blogs and news, many
-      are starting to use this format as the envelope for Web Services, for example, distributed notifications, job
-      queues, or simply a nice format for sending or receiving data in bulk from a service.
+      Atom是新一代的RSS提要。虽然它主要用于博客和新闻的联合，但是许多人开始使用这种格式作为Web服务的替代，例如，分散通知，作业方式，或者只是一种从服务批量发送 或接收数据的好格式。
    </p>
    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="resteasy_atom"/>23.1. RESTEasy Atom API and Provider</h2></div></div></div>
       
-      <p>RESTEasy has defined a simple object model in Java to represent Atom and uses JAXB to marshal and unmarshal
-         it. The
-         main classes are in the org.jboss.resteasy.plugins.providers.atom package and are Feed, Entry, Content, and
-         Link. If you
-         look at the source, you'd see that these are annotated with JAXB annotations. The distribution contains
-         the javadocs for this project and are a must to learn the model. Here is a simple example of sending
-         an atom feed using the RESTEasy API.
+      <p>
+      RESTEasy 在 Java 中定义了一个简单的对象模型来表示 Atom，并使用 JAXB 对其进行编组和反编组。主要的类在 org.jboss.resteasy.plugins.providers.atom 包中，它们是 Feed、 Entry、 Content 和 Link。如果查看源代码，就会看到这些文件都带有 JAXB 注解。这个发行版包含了这个项目的 javadocs，是学习这个模型的必修课。下面是一个使用 RESTEasy API 发送atom提要的简单示例。
       </p>
       <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 import org.jboss.resteasy.plugins.providers.atom.Content;
@@ -65,18 +62,14 @@ public class MyAtomService
         return feed;
     }
 }</pre>
-      <p>Because RESTEasy's atom provider is JAXB based, you are not limited to sending atom objects using XML.
-         You can automatically re-use all the other JAXB providers that RESTEasy has like JSON and fastinfoset.
-         All you have to do is have "atom+" in front of the main subtype. i.e. @Produces("application/atom+json") or
-         @Consumes("application/atom+fastinfoset")
+      <p>
+      由于 RESTEasy 的atom提供程序是基于 JAXB 的，因此您不必局限于使用 XML 发送atom对象。您可以自动重用 RESTEasy 拥有的所有其他 JAXB 提供程序，如 JSON 和 fastinfoset。你所要做的就是在主子类型前面加上"atom+"。即@Produces("application/atom+json")或@Consumes("application/atom+fastinfoset")
       </p>
    </div>
-   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="jaxb_atom"/>23.2. Using JAXB with the Atom Provider</h2></div></div></div>
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="jaxb_atom"/>23.2. 使用 JAXB 和 Atom 提供程序</h2></div></div></div>
       
       <p>
-         The org.jboss.resteasy.plugins.providers.atom.Content class allows you to unmarshal and marshal JAXB
-         annotated objects that are the body of the content. Here's an example of sending an Entry with
-         a Customer object attached as the body of the entry's content.
+      org.jboss.resteasy.plugins.providers.atom.Content 类允许您对作为内容主体的 JAXB 注释对象进行编组和反编组。下面是发送一个条目的示例，其中附加了一个 Customer 对象作为条目内容的主体。
       </p>
       <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 @XmlRootElement(namespace = "http://jboss.org/Customer")
@@ -118,15 +111,10 @@ public static class AtomServer
     }
 }</pre>
       <p>
-         The Content.setJAXBObject() method is used to tell the content object you are sending back
-         a Java JAXB object and want it marshalled appropriately. If you are using a different base
-         format other than XML, i.e. "application/atom+json", this attached JAXB object will be marshalled
-         into that same format.
+      Content.setJAXBObject() 方法用于告诉内容对象您正在发送回一个 Java JAXB 对象，并希望它被适当地编组。如果您使用与 XML 不同的基本格式，即"application/atom+json"，那么附加的 JAXB 对象将被编组为相同的格式。
       </p>
       <p>
-         If you have an atom document as your input, you can also extract JAXB objects from Content using the
-         Content.getJAXBObject(Class clazz) method. Here is an example of an input atom document and extracting
-         a Customer object from the content.
+      如果您有一个 atom document 作为输入，还可以使用 Content.getJAXBObject(Class clazz) 方法从 Content 中提取 JAXB 对象。下面是一个输入 atom document 和从内容中提取 Customer 对象的示例。
       </p>
       <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 @Path("atom")
@@ -144,4 +132,4 @@ public static class AtomServer
 </pre>
    </div>
 
-</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Built_in_JAXB_providers.html"><strong>上一页</strong>第 22 章 JAXB providers</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="json.html"><strong>下一页</strong>第 24 章 JSON Support via Jackson</a></li></ul></body></html>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Built_in_JAXB_providers.html"><strong>上一页</strong>第 22 章 JAXB providers</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="json.html"><strong>下一页</strong>第 24 章 通过Jackson提供对JSON的支持</a></li></ul></body></html>

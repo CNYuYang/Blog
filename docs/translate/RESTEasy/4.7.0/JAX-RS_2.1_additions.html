@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 27 章 JAX-RS 2.1 Additions</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Multipart.html" title="第 26 章 Multipart Providers"/><link rel="next" href="StringConverter.html" title="第 28 章 String marshalling for String based @*Param"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Multipart.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="StringConverter.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="JAX-RS_2.1_additions"/>第 27 章 JAX-RS 2.1 Additions</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="JAX-RS_2.1_additions.html#d4e1732">27.1. CompletionStage support</a></span></dt><dt><span class="sect1"><a href="JAX-RS_2.1_additions.html#d4e1742">27.2. Reactive Clients API</a></span></dt><dt><span class="sect1"><a href="JAX-RS_2.1_additions.html#SSE-Server">27.3. Server-Sent Events (SSE)</a></span></dt><dd><dl><dt><span class="sect2"><a href="JAX-RS_2.1_additions.html#d4e1751">27.3.1. SSE Server</a></span></dt><dt><span class="sect2"><a href="JAX-RS_2.1_additions.html#d4e1760">27.3.2. SSE Broadcasting</a></span></dt><dt><span class="sect2"><a href="JAX-RS_2.1_additions.html#d4e1766">27.3.3. SSE Client</a></span></dt></dl></dd><dt><span class="sect1"><a href="JAX-RS_2.1_additions.html#d4e1772">27.4. Java API for JSON Binding</a></span></dt><dt><span class="sect1"><a href="JAX-RS_2.1_additions.html#d4e1783">27.5. JSON Patch and JSON Merge Patch</a></span></dt></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 27 章 JAX-RS 2.1 Additions</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Multipart.html" title="第 26 章 Multipart Providers"/><link rel="next" href="StringConverter.html" title="第 28 章 String marshalling for String based @*Param"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Multipart.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="StringConverter.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="JAX-RS_2.1_additions"/>第 27 章 JAX-RS 2.1 Additions</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="JAX-RS_2.1_additions.html#d4e1734">27.1. CompletionStage support</a></span></dt><dt><span class="sect1"><a href="JAX-RS_2.1_additions.html#d4e1744">27.2. Reactive Clients API</a></span></dt><dt><span class="sect1"><a href="JAX-RS_2.1_additions.html#SSE-Server">27.3. Server-Sent Events (SSE)</a></span></dt><dd><dl><dt><span class="sect2"><a href="JAX-RS_2.1_additions.html#d4e1753">27.3.1. SSE Server</a></span></dt><dt><span class="sect2"><a href="JAX-RS_2.1_additions.html#d4e1762">27.3.2. SSE Broadcasting</a></span></dt><dt><span class="sect2"><a href="JAX-RS_2.1_additions.html#d4e1768">27.3.3. SSE Client</a></span></dt></dl></dd><dt><span class="sect1"><a href="JAX-RS_2.1_additions.html#d4e1774">27.4. Java API for JSON Binding</a></span></dt><dt><span class="sect1"><a href="JAX-RS_2.1_additions.html#d4e1785">27.5. JSON Patch and JSON Merge Patch</a></span></dt></dl></div>
     
     <p>JAX-RS 2.1 adds more asynchronous processing support in both the
         Client and the Server API.  The specification adds a Reactive programming
@@ -9,7 +9,7 @@
         both client and server.
     </p>
 
-    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1732"/>27.1. <code class="code">CompletionStage</code> support</h2></div></div></div>
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1734"/>27.1. <code class="code">CompletionStage</code> support</h2></div></div></div>
         
         <p>
             The specification adds support for declaring <a class="link" href="Asynchronous_HTTP_Request_Processing.html#CompletionStage">asynchronous resource methods by
@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1742"/>27.2. Reactive Clients API</h2></div></div></div>
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1744"/>27.2. Reactive Clients API</h2></div></div></div>
         
         <p>The specification defines a new type of invoker named RxInvoker, and a default
             implementation of this type named CompletionStageRxInvoker.
@@ -53,7 +53,7 @@
         <p>
              From JAX-RS 2.1, Server-sent Events APIs are introduced to support sending, receiving and broadcasting SSE events.
         </p>
-        <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e1751"/>27.3.1. SSE Server</h3></div></div></div>
+        <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e1753"/>27.3.1. SSE Server</h3></div></div></div>
             
             <p>
               As shown in the following example, a SSE resource method has the text/event-stream produce 
@@ -63,7 +63,7 @@
               demonstrate how to send SSE events every 200ms and close the stream after a "done" event.             
             </p>
             <p>
-            </p><div class="example"><a id="d4e1755"/><p class="title"><b>例 27.1. </b></p><div class="example-contents">
+            </p><div class="example"><a id="d4e1757"/><p class="title"><b>例 27.1. </b></p><div class="example-contents">
                <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
    @GET
    @Path("domains/{id}")
@@ -110,7 +110,7 @@
                </p>
             </div>
         </div>
-        <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e1760"/>27.3.2. SSE Broadcasting</h3></div></div></div>
+        <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e1762"/>27.3.2. SSE Broadcasting</h3></div></div></div>
             
             <p>
                With SseBroadcaster, SSE events can be broadcasted to multiple clients simultaneously. 
@@ -121,7 +121,7 @@
                and broadcast events to all subscribed consumers. 
             </p>
             <p>
-            </p><div class="example"><a id="d4e1764"/><p class="title"><b>例 27.2. </b></p><div class="example-contents">
+            </p><div class="example"><a id="d4e1766"/><p class="title"><b>例 27.2. </b></p><div class="example-contents">
                <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
    @GET
    @Path("/subscribe")
@@ -155,7 +155,7 @@
              </div></div><p><br class="example-break"/>
             </p>
         </div>
-        <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e1766"/>27.3.3. SSE Client</h3></div></div></div>
+        <div class="sect2" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e1768"/>27.3.3. SSE Client</h3></div></div></div>
             
             <p>
                 SseEventSource is the entry point to read and process incoming SSE events. 
@@ -172,7 +172,7 @@
                 inbound event data value and error if it happens.
             </p>
           <p>
-            </p><div class="example"><a id="d4e1770"/><p class="title"><b>例 27.3. </b></p><div class="example-contents">
+            </p><div class="example"><a id="d4e1772"/><p class="title"><b>例 27.3. </b></p><div class="example-contents">
                <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
     public void printEvent() throws Exception
     {
@@ -194,7 +194,7 @@
             </p>
         </div>
     </div>
-    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1772"/>27.4. Java API for JSON Binding</h2></div></div></div>
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1774"/>27.4. Java API for JSON Binding</h2></div></div></div>
         
         <p>
             RESTEasy supports both JSON-B and JSON-P.  In accordance with the specification,
@@ -215,7 +215,7 @@
             for Jackson annotations and sets the property to <code class="code">true</code> if any of those annotations is found.
         </p>
     </div>
-    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1783"/>27.5. JSON Patch and JSON Merge Patch</h2></div></div></div>
+    <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e1785"/>27.5. JSON Patch and JSON Merge Patch</h2></div></div></div>
         
         <p>
             RESTEasy supports apply partial modification to target resource with JSON Patch/JSON Merge Patch.

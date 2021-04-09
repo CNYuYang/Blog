@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 53 章 AJAX Client</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="MicroProfile_Rest_Client.html" title="第 52 章 MicroProfile Rest Client"/><link rel="next" href="WADL.html" title="第 54 章 RESTEasy WADL Support"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="MicroProfile_Rest_Client.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="WADL.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="AJAX_Client"/>第 53 章 AJAX Client</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="AJAX_Client.html#d4e4101">53.1. Generated JavaScript API</a></span></dt><dd><dl><dt><span class="section"><a href="AJAX_Client.html#d4e4110">53.1.1. JavaScript API servlet</a></span></dt><dt><span class="section"><a href="AJAX_Client.html#d4e4114">53.1.2. JavaScript API usage</a></span></dt><dt><span class="section"><a href="AJAX_Client.html#d4e4168">53.1.3. Work with @Form</a></span></dt><dt><span class="section"><a href="AJAX_Client.html#d4e4180">53.1.4. MIME types and unmarshalling.</a></span></dt><dt><span class="section"><a href="AJAX_Client.html#d4e4205">53.1.5. MIME types and marshalling.</a></span></dt></dl></dd><dt><span class="section"><a href="AJAX_Client.html#d4e4234">53.2. Using the JavaScript API to build AJAX queries</a></span></dt><dd><dl><dt><span class="section"><a href="AJAX_Client.html#d4e4237">53.2.1. The REST object</a></span></dt><dt><span class="section"><a href="AJAX_Client.html#d4e4257">53.2.2. The REST.Request class</a></span></dt></dl></dd><dt><span class="section"><a href="AJAX_Client.html#d4e4307">53.3. Caching Features</a></span></dt></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 53 章 AJAX Client</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="MicroProfile_Rest_Client.html" title="第 52 章 MicroProfile Rest Client"/><link rel="next" href="WADL.html" title="第 54 章 RESTEasy WADL Support"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="MicroProfile_Rest_Client.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="WADL.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="AJAX_Client"/>第 53 章 AJAX Client</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="AJAX_Client.html#d4e4103">53.1. Generated JavaScript API</a></span></dt><dd><dl><dt><span class="section"><a href="AJAX_Client.html#d4e4112">53.1.1. JavaScript API servlet</a></span></dt><dt><span class="section"><a href="AJAX_Client.html#d4e4116">53.1.2. JavaScript API usage</a></span></dt><dt><span class="section"><a href="AJAX_Client.html#d4e4170">53.1.3. Work with @Form</a></span></dt><dt><span class="section"><a href="AJAX_Client.html#d4e4182">53.1.4. MIME types and unmarshalling.</a></span></dt><dt><span class="section"><a href="AJAX_Client.html#d4e4207">53.1.5. MIME types and marshalling.</a></span></dt></dl></dd><dt><span class="section"><a href="AJAX_Client.html#d4e4236">53.2. Using the JavaScript API to build AJAX queries</a></span></dt><dd><dl><dt><span class="section"><a href="AJAX_Client.html#d4e4239">53.2.1. The REST object</a></span></dt><dt><span class="section"><a href="AJAX_Client.html#d4e4259">53.2.2. The REST.Request class</a></span></dt></dl></dd><dt><span class="section"><a href="AJAX_Client.html#d4e4309">53.3. Caching Features</a></span></dt></dl></div>
     
     <p>RESTEasy resources can be accessed in JavaScript using AJAX using a 
       proxy API generated by RESTEasy.</p>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4101"/>53.1. Generated JavaScript API</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4103"/>53.1. Generated JavaScript API</h2></div></div></div>
     	
     	<p>
     		RESTEasy can generate a JavaScript API that uses AJAX calls to invoke JAX-RS operations.
     	</p>
-   		<div class="example"><a id="d4e4104"/><p class="title"><b>例 53.1. First JAX-RS JavaScript API example</b></p><div class="example-contents">
+   		<div class="example"><a id="d4e4106"/><p class="title"><b>例 53.1. First JAX-RS JavaScript API example</b></p><div class="example-contents">
    			
     		<p>
     			Let's take a simple JAX-RS API:
@@ -28,7 +28,7 @@ public interface Orders {
 	    	</p>
 	    	<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="JAVASCRIPT">var order = Orders.getOrder({id: 23});</pre>
    		</div></div><br class="example-break"/>
-    	<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4110"/>53.1.1. JavaScript API servlet</h3></div></div></div>
+    	<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4112"/>53.1.1. JavaScript API servlet</h3></div></div></div>
     		
     		<p>
     			In order to enable the JavaScript API servlet you must configure it in your
@@ -46,14 +46,14 @@ public interface Orders {
 <span class="xml_tag_symbols">&lt;/</span><span class="xml_tag_name">servlet-mapping</span><span class="xml_tag_symbols">&gt;</span><span class="xml_plain"></span><br />
 </pre>
     	</div>
-    	<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4114"/>53.1.2. JavaScript API usage</h3></div></div></div>
+    	<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4116"/>53.1.2. JavaScript API usage</h3></div></div></div>
     		
     		<p>
     			Each JAX-RS resource class will generate a JavaScript object of the same name
     			as the declaring class (or interface), which will contain every JAX-RS method
     			as properties.
     		</p>
-    		<div class="example"><a id="d4e4117"/><p class="title"><b>例 53.2. Structure of JAX-RS generated JavaScript</b></p><div class="example-contents">
+    		<div class="example"><a id="d4e4119"/><p class="title"><b>例 53.2. Structure of JAX-RS generated JavaScript</b></p><div class="example-contents">
     			
     			<p>For example, if the JAX-RS resource X defines methods Y and Z:
     			</p>
@@ -78,7 +78,7 @@ public interface Orders {
 				by their name, or the following special parameters:
     		</p>
     		<div xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="warning"><h2>警告</h2><p>The following special parameter names are subject to change.</p></div>
-    		<table id="d4e4126">
+    		<table id="d4e4128">
 				<caption>表 53.1. API parameter properties</caption>
 				<thead>
 					<tr>
@@ -128,7 +128,7 @@ public interface Orders {
 					</tr>
 				</tbody>
     		</table>
-    		<div class="example"><a id="d4e4162"/><p class="title"><b>例 53.3. Using the API</b></p><div class="example-contents">
+    		<div class="example"><a id="d4e4164"/><p class="title"><b>例 53.3. Using the API</b></p><div class="example-contents">
     			
     			<p>Here is an example of JAX-RS API:</p>
 	    		<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="JAVA"><!-- <br/> --><span class="java_plain">@</span><!-- <br/> --><span class="java_type">Path</span><!-- <br/> --><span class="java_separator">(</span><!-- <br/> --><span class="java_literal">&quot;foo&quot;</span><!-- <br/> --><span class="java_separator">)</span>
@@ -150,7 +150,7 @@ var text = Foo.get({order: 'desc', 'X-Foo': 'hello',
 Foo.put({$entity: text});</pre>
     		</div></div><br class="example-break"/>
     	</div>
-    	<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4168"/>53.1.3. Work with @Form</h3></div></div></div>
+    	<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4170"/>53.1.3. Work with @Form</h3></div></div></div>
     		
     		<p>
     			@Form is a RESTEasy specific annotation that allows you to re-use any @*Param annotation within an injected class. 
@@ -213,14 +213,14 @@ Foo.put({$entity: text});</pre>
 	]
 });</pre>
     	</div>
-    	<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4180"/>53.1.4. MIME types and unmarshalling.</h3></div></div></div>
+    	<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4182"/>53.1.4. MIME types and unmarshalling.</h3></div></div></div>
     		
     		<p>
     			The Accept header sent by any client JavaScript function is controlled by the $accepts parameter, which overrides
     			the @Produces annotation on the JAX-RS endpoint. The returned value however is controlled by the Content-Type header
     			sent in the response as follows:
     		</p>
-    		<table id="d4e4183">
+    		<table id="d4e4185">
 				<caption>表 53.2. Return values by MIME type</caption>
 				<thead>
 					<tr>
@@ -247,7 +247,7 @@ Foo.put({$entity: text});</pre>
 					</tr>
 				</tbody>
 			</table>
-	   		<div class="example"><a id="d4e4199"/><p class="title"><b>例 53.4. Unmarshalling example</b></p><div class="example-contents">
+	   		<div class="example"><a id="d4e4201"/><p class="title"><b>例 53.4. Unmarshalling example</b></p><div class="example-contents">
    				
     			<p>
 	    			The RESTEasy JavaScript client API can automatically unmarshall JSON and XML:
@@ -294,14 +294,14 @@ var orderXML = Orders.getOrderXML({id: "23"});
 orderXML.documentElement.childNodes[0].childNodes[0].nodeValue == "23";</pre>
    			</div></div><br class="example-break"/>
     	</div>
-    	<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4205"/>53.1.5. MIME types and marshalling.</h3></div></div></div>
+    	<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4207"/>53.1.5. MIME types and marshalling.</h3></div></div></div>
     		
     		<p>
     			The Content-Type header sent in the request is controlled by the $contentType parameter which overrides the
     			@Consumes annotation on the JAX-RS endpoint. The value passed as entity body using the $entity parameter is marshalled
     			according to both its type and content type:
     		</p>
-    		<table id="d4e4208">
+    		<table id="d4e4210">
 				<caption>表 53.3. Controlling sent entities</caption>
 				<thead>
 					<tr>
@@ -330,7 +330,7 @@ orderXML.documentElement.childNodes[0].childNodes[0].nodeValue == "23";</pre>
 					</tr>
 				</tbody>
 			</table>
-	   		<div class="example"><a id="d4e4228"/><p class="title"><b>例 53.5. Marshalling example</b></p><div class="example-contents">
+	   		<div class="example"><a id="d4e4230"/><p class="title"><b>例 53.5. Marshalling example</b></p><div class="example-contents">
    				
     			<p>
 	    			The RESTEasy JavaScript client API can automatically marshall JSON and XML:
@@ -379,17 +379,17 @@ Orders.putOrderXML({$entity: order});</pre>
    			</div></div><br class="example-break"/>
     	</div>
    	</div>
-   	<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4234"/>53.2. Using the JavaScript API to build AJAX queries</h2></div></div></div>
+   	<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4236"/>53.2. Using the JavaScript API to build AJAX queries</h2></div></div></div>
    		
    		<p>
    			The RESTEasy JavaScript API can also be used to manually construct your requests.
    		</p>
-   		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4237"/>53.2.1. The REST object</h3></div></div></div>
+   		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4239"/>53.2.1. The REST object</h3></div></div></div>
    			
    			<p>
    				The REST object contains the following read-write properties:
    			</p>
-    		<table id="d4e4240">
+    		<table id="d4e4242">
 				<caption>表 53.4. The REST object</caption>
 				<thead>
 					<tr>
@@ -414,7 +414,7 @@ Orders.putOrderXML({$entity: order});</pre>
 					</tr>
 				</tbody>
 			</table>
-	   		<div class="example"><a id="d4e4253"/><p class="title"><b>例 53.6. Using the REST object</b></p><div class="example-contents">
+	   		<div class="example"><a id="d4e4255"/><p class="title"><b>例 53.6. Using the REST object</b></p><div class="example-contents">
    				
     			<p>
 	    			The REST object can be used to override RESTEasy JavaScript API client behaviour:
@@ -428,12 +428,12 @@ REST.log = function(text){
 };</pre>
    			</div></div><br class="example-break"/>
    		</div>
-   		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4257"/>53.2.2. The REST.Request class</h3></div></div></div>
+   		<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h3 class="title"><a id="d4e4259"/>53.2.2. The REST.Request class</h3></div></div></div>
    			
    			<p>
    				The REST.Request class is used to build custom requests. It has the following members: 
    			</p>
-    		<table id="d4e4260">
+    		<table id="d4e4262">
 				<caption>表 53.5. The REST.Request class</caption>
 				<thead>
 					<tr>
@@ -518,7 +518,7 @@ REST.log = function(text){
 					</tr>
 				</tbody>
 			</table>
-	   		<div class="example"><a id="d4e4303"/><p class="title"><b>例 53.7. Using the REST.Request class</b></p><div class="example-contents">
+	   		<div class="example"><a id="d4e4305"/><p class="title"><b>例 53.7. Using the REST.Request class</b></p><div class="example-contents">
    				
     			<p>
 	    			The REST.Request class can be used to build custom requests:
@@ -535,7 +535,7 @@ r.execute(function(status, request, entity){
    			</div></div><br class="example-break"/>
    		</div>
    	</div>
-   	<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4307"/>53.3. Caching Features</h2></div></div></div>
+   	<div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e4309"/>53.3. Caching Features</h2></div></div></div>
    		
    		<p>
    			RESTEasy AJAX Client works well with server side caching features. But the buggy browsers cache will 

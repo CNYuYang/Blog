@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 46 章 Body Encryption and Signing via SMIME</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="signature.html" title="第 45 章 Doseta Digital Signature Framework"/><link rel="next" href="RESTEasy_EJB_Integration.html" title="第 47 章 EJB Integration"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="signature.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="RESTEasy_EJB_Integration.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3123"/>第 46 章 Body Encryption and Signing via SMIME</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="ch46.html#d4e3126">46.1. Maven settings</a></span></dt><dt><span class="section"><a href="ch46.html#d4e3131">46.2. Message Body Encryption</a></span></dt><dt><span class="section"><a href="ch46.html#d4e3142">46.3. Message Body Signing</a></span></dt><dt><span class="section"><a href="ch46.html#d4e3153">46.4. application/pkcs7-signature</a></span></dt></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 46 章 Body Encryption and Signing via SMIME</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="signature.html" title="第 45 章 Doseta Digital Signature Framework"/><link rel="next" href="RESTEasy_EJB_Integration.html" title="第 47 章 EJB Integration"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="signature.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="RESTEasy_EJB_Integration.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3125"/>第 46 章 Body Encryption and Signing via SMIME</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="ch46.html#d4e3128">46.1. Maven settings</a></span></dt><dt><span class="section"><a href="ch46.html#d4e3133">46.2. Message Body Encryption</a></span></dt><dt><span class="section"><a href="ch46.html#d4e3144">46.3. Message Body Signing</a></span></dt><dt><span class="section"><a href="ch46.html#d4e3155">46.4. application/pkcs7-signature</a></span></dt></dl></div>
   
 
   <p>S/MIME (Secure/Multipurpose Internet Mail Extensions) is a standard
@@ -16,7 +16,7 @@
   Python clients exchanging S/MIME formatted messages with a JAX-RS
   service.</p>
 
-  <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3126"/>46.1. Maven settings</h2></div></div></div>
+  <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3128"/>46.1. Maven settings</h2></div></div></div>
     
 
     <p>You must include the resteasy-crypto project to use the smime framework.</p>
@@ -30,7 +30,7 @@
 </pre>
   </div>
 
-  <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3131"/>46.2. Message Body Encryption</h2></div></div></div>
+  <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3133"/>46.2. Message Body Encryption</h2></div></div></div>
     
 
     <p>While HTTPS is used to encrypt the entire HTTP message, S/MIME
@@ -127,7 +127,7 @@ Customer cust = (Customer)input.getEntity(Customer.class, privateKey, cert);
     to know to both decrypt and unmarshall the entity. </p>
   </div>
 
-  <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3142"/>46.3. Message Body Signing</h2></div></div></div>
+  <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3144"/>46.3. Message Body Signing</h2></div></div></div>
     
 
     <p>S/MIME also allows you to digitally sign a message. It is a bit
@@ -237,7 +237,7 @@ AAA=
 
 </pre>
   </div>
-    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3153"/>46.4. application/pkcs7-signature</h2></div></div></div>
+    <div class="section" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e3155"/>46.4. application/pkcs7-signature</h2></div></div></div>
         
         <p>
             application/pkcs7-signature is a data format that includes both the data and the signature in one ASN.1

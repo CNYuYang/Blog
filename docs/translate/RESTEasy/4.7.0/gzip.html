@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 32 章 Content encoding</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Configuring_Individual_JAX-RS_Resource_Beans.html" title="第 31 章 Configuring Individual JAX-RS Resource Beans"/><link rel="next" href="ch33.html" title="第 33 章 CORS"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Configuring_Individual_JAX-RS_Resource_Beans.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="ch33.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="gzip"/>第 32 章 Content encoding</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="gzip.html#d4e2160">32.1. GZIP Compression/Decompression</a></span></dt><dd><dl><dt><span class="sect2"><a href="gzip.html#configuring">32.1.1. Configuring GZIP compression / decompression</a></span></dt></dl></dd><dt><span class="sect1"><a href="gzip.html#d4e2204">32.2. General content encoding</a></span></dt></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 32 章 Content encoding</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Configuring_Individual_JAX-RS_Resource_Beans.html" title="第 31 章 Configuring Individual JAX-RS Resource Beans"/><link rel="next" href="ch33.html" title="第 33 章 CORS"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Configuring_Individual_JAX-RS_Resource_Beans.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="ch33.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="gzip"/>第 32 章 Content encoding</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="gzip.html#d4e2162">32.1. GZIP Compression/Decompression</a></span></dt><dd><dl><dt><span class="sect2"><a href="gzip.html#configuring">32.1.1. Configuring GZIP compression / decompression</a></span></dt></dl></dd><dt><span class="sect1"><a href="gzip.html#d4e2206">32.2. General content encoding</a></span></dt></dl></div>
    
    
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2160"/>32.1. GZIP Compression/Decompression</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2162"/>32.1. GZIP Compression/Decompression</h2></div></div></div>
    
    <p>
     RESTEasy supports (though not by default - see below)
@@ -81,7 +81,7 @@ public class MyService {
    The default limit is 10,000,000, but a different value can be configured. See below.
    </p>
    
-   <div class="sect3" lang="zh-CN"><div class="titlepage"><div><div><h4 class="title"><a id="d4e2184"/>32.1.1.1. Server side configuration</h4></div></div></div>
+   <div class="sect3" lang="zh-CN"><div class="titlepage"><div><div><h4 class="title"><a id="d4e2186"/>32.1.1.1. Server side configuration</h4></div></div></div>
    
    
    <p>
@@ -104,7 +104,7 @@ public class MyService {
 
    </div>
    
-   <div class="sect3" lang="zh-CN"><div class="titlepage"><div><div><h4 class="title"><a id="d4e2193"/>32.1.1.2. Client side configuration</h4></div></div></div>
+   <div class="sect3" lang="zh-CN"><div class="titlepage"><div><div><h4 class="title"><a id="d4e2195"/>32.1.1.2. Client side configuration</h4></div></div></div>
    
    
    <p>
@@ -141,7 +141,7 @@ Client client = ClientBuilder.newBuilder() // Activate gzip compression on clien
 </div>
 </div>
 
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2204"/>32.2. General content encoding</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2206"/>32.2. General content encoding</h2></div></div></div>
    
    
    <p>

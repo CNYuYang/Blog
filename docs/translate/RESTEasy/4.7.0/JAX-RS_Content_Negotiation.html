@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 20 章 JAX-RS Content Negotiation</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Resources_Metadata.html" title="第 19 章 Resources 元数据配置"/><link rel="next" href="Content_Marshalling_Providers.html" title="第 21 章 Content Marshalling/Providers"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Resources_Metadata.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Content_Marshalling_Providers.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="JAX-RS_Content_Negotiation"/>第 20 章 JAX-RS Content Negotiation</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="JAX-RS_Content_Negotiation.html#media_mappings">20.1. URL-based negotiation</a></span></dt><dt><span class="sect1"><a href="JAX-RS_Content_Negotiation.html#param_media_mappings">20.2. Query String Parameter-based negotiation</a></span></dt></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 20 章 JAX-RS 内容协商</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Resources_Metadata.html" title="第 19 章 Resources 元数据配置"/><link rel="next" href="Content_Marshalling_Providers.html" title="第 21 章 Content Marshalling/Providers"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Resources_Metadata.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Content_Marshalling_Providers.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="JAX-RS_Content_Negotiation"/>第 20 章 JAX-RS 内容协商</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="JAX-RS_Content_Negotiation.html#media_mappings">20.1. URL-based 协商</a></span></dt><dt><span class="sect1"><a href="JAX-RS_Content_Negotiation.html#param_media_mappings">20.2. 基于查询字符串参数的协商</a></span></dt></dl></div>
    
 
    <p>
-
-      The HTTP protocol has built in content negotiation headers that allow the client and server to specify what
-      content they are transferring and what content they would prefer to get. The server declares content preferences
-      via the @Produces and @Consumes headers.
+      HTTP 协议内置了内容协商头，允许客户端和服务器指定他们传输的内容和他们希望得到的内容。服务器通过 @Produces 和 @Consumes 头声明内容类型。
    </p>
    <p>
 
-
-      @Consumes is an array of media types that a particular resource or resource method consumes. For example:
+      @Consumes 是特定资源或资源方法使用的媒体类型数组。例如:
    </p>
    <p>
 
@@ -33,9 +29,7 @@ public class Library {
    </p>
    <p>
 
-      When a client makes a request, JAX-RS first finds all methods that match the path, then, it sorts things based on
-      the content-type header sent by the client.
-      So, if a client sent:
+      当客户端发出请求时，JAX-RS 首先找到与路径匹配的所有方法，然后根据客户机发送的内容类型标头对方法进行选择。因此，如果一个客户端发送:
    </p>
    <p>
 
@@ -48,8 +42,8 @@ This is a nice book
    </p>
    <p>
 
-      The stringBook() method would be invoked because it matches to the default "text/*" media type. Now, if
-      the client instead sends XML:
+      将调用 stringBook() 方法，因为它匹配默认的"text/*"媒体类型。现在，如果客户端发送 XML:
+
    </p>
    <p>
 
@@ -61,14 +55,11 @@ Content-Type: text/xml
 </pre><p>
    </p>
    <p>
-
-      The jaxbBook() method would be invoked.
+      将调用 jaxbBook() 方法。
    </p>
    <p>
 
-
-      The @Produces is used to map a client request and match it up to the client's Accept header. The Accept HTTP
-      header is sent by the client and defines the media types the client prefers to receive from the server.
+      @Produces 用于映射客户端请求并将其与客户端的 Accept 头匹配。接受 HTTP 标头由客户端发送，并定义客户端希望从服务端接收的媒体类型。
    </p>
    <p>
 
@@ -87,8 +78,7 @@ public String get() {...}
 </pre><p>
    </p>
    <p>
-
-      So, if the client sends:
+      因此，如果客户端发送:
    </p>
    <p>
 
@@ -98,17 +88,12 @@ Accept: application/json
 </pre><p>
    </p>
    <p>
-
-      The getJSON() method would be invoked.
+      将调用 getJSON() 方法。
    </p>
    <p>
 
+      @Consumes 和 @Produces 可以列出它们支持的多种媒体类型。客户端的 Accept 头信息还可以发送它可能希望接收的多个类型。首先选择更具体的媒体类型。客户端 Accept 头信息或@Produces @Consumes 也可以指定用于匹配请求和资源方法的加权首选项。这在 RFC 2616第14.1节中得到了最好的解释。RESTEasy 支持这种复杂的内容协商方式。
 
-      @Consumes and @Produces can list multiple media types that they support. The client's Accept header can also send
-      multiple types it might like to receive. More specific media types are chosen first. The client Accept header or
-      @Produces @Consumes can also specify weighted preferences that are used to match up requests with resource
-      methods. This is best explained by RFC 2616 section 14.1 . RESTEasy supports this complex way of doing content
-      negotiation.
    </p>
    <p>
 
@@ -116,18 +101,14 @@ Accept: application/json
    </p>
    <p>
 
-      A variant in JAX-RS is a combination of media type, content-language, and content encoding as well as etags, last
-      modified headers, and other preconditions. This is a more complex form of content negotiation that is done
-      programmatically by the application developer using the javax.ws.rs.Variant, VarianListBuilder, and Request
-      objects. Request is injected via @Context. Read the javadoc for more info on these.
+      JAX-RS 中的一个变体是媒体类型、内容语言、内容编码以及标签、最后修改的头和其他先决条件的组合。这是一种更复杂的内容协商形式，由应用程序开发人员使用 javax.ws.rs.Variant、VarianListBuilder 和 Request 对象以编程方式完成。通过 @Context 注入请求。阅读 javadoc 以获得更多关于这些的信息。
    </p>
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="media_mappings"/>20.1. URL-based negotiation</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="media_mappings"/>20.1. URL-based 协商</h2></div></div></div>
 
 <p>
-Some clients, like browsers, cannot use the Accept and Accept-Language headers to negotiation the representation's media type
-or language.  RESTEasy allows you to map file name suffixes like (.xml, .txt, .en, .fr) to media types and languages.  These file name suffixes
-take the place and override any Accept header sent by the client.  You configure this using the resteasy.media.type.mappings and resteasy.language.mappings
-parameters. If configured within your web.xml, it would look like:
+
+有些客户端(如浏览器)不能使用 Accept 和 Accept-Language 头信息来协商表示的媒体类型或语言。RESTEasy 允许映射文件名后缀，如(.xml, .txt, .en, .fr)到媒体类型和语言。这些文件名后缀取代并覆盖客户端发送的任何 Accept 头信息。您可以使用 resteasy.media.type.mappings 和 resteasy.language.mappings 参数来配置这个属性。如果在 web.xml 中配置，它看起来像:
+
 </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 &lt;web-app&gt;
@@ -146,10 +127,12 @@ parameters. If configured within your web.xml, it would look like:
 &lt;/web-app&gt;
 </pre>
 
-<p>See <a class="xref" href="Installation_Configuration.html#microprofile_config" title="3.4. 配置">第 3.4 节 “配置”</a> for more information about application configuration. </p>
+<p>
+有关应用程序配置的更多信息，请参见<a class="xref" href="Installation_Configuration.html#microprofile_config" title="3.4. 配置">第 3.4 节 “配置”</a>。
+</p>
 
 <p>
-Mappings are a comma delimited list of suffix/mediatype or suffix/language mappings.  Each mapping is delimited by a ':'.  So, if you invoked GET /foo/bar.xml.en, this would be equivalent to invoking the following request:
+映射是"后缀/媒体类型"或"后缀/语言" 映射的逗号分隔列表。每个映射都由一个’:’分隔。因此，如果调用 GET /foo/bar.xml.en ，这相当于调用以下请求:
 </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 GET /foo/bar
@@ -157,15 +140,14 @@ Accept: application/xml
 Accept-Language: en-US
 </pre>
 <p>
-The mapped file suffixes are stripped from the target URL path before the request is dispatched to a corresponding JAX-RS resource.
+在将请求分派到相应的 JAX-RS resource之前，从目标 URL 路径剥离映射的文件后缀。
 </p>
 </div>
 
-<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="param_media_mappings"/>20.2. Query String Parameter-based negotiation</h2></div></div></div>
+<div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="param_media_mappings"/>20.2. 基于查询字符串参数的协商</h2></div></div></div>
 
 <p>
-RESTEasy can do content negotiation based in a parameter in query string. To enable this, the parameter resteasy.media.type.param.mapping
-can be configured. In web.xml, it would look like the following:
+RESTEasy 可以基于查询字符串中的参数进行内容协商。要实现这一点，可以配置 resteasy.media.type.param.mapping 参数。在 web.xml 中，它看起来如下所示:
 </p>
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 &lt;web-app&gt;
@@ -179,12 +161,24 @@ can be configured. In web.xml, it would look like the following:
 &lt;/web-app&gt;
 </pre>
 
-<p>See <a class="xref" href="Installation_Configuration.html#microprofile_config" title="3.4. 配置">第 3.4 节 “配置”</a> for more information about application configuration. </p>
+<p> 
+有关应用程序配置的更多信息，请参见<a class="xref" href="Installation_Configuration.html#microprofile_config" title="3.4. 配置">第 3.4 节 “配置”</a>。
+</p>
 
-<p>The param-value is the name of the query string parameter that RESTEasy will use in the place of the Accept header.</p>
-<p>Invoking http://service.foo.com/resouce?someName=application/xml, will give the application/xml media type the highest priority in the content negotiation.</p>
-<p>In cases where the request contains both the parameter and the Accept header, the parameter will be more relevant.</p>
-<p>It is possible to left the param-value empty, what will cause the processor to look for a parameter named 'accept'.</p>
+<p>
+param-value 是 RESTEasy 将在 Accept 头信息使用的查询字符串参数的名称。
+</p>
+
+<p>
+通过内容协商，在调用 http://service.foo.com/resouce?somename=application/xml 时，application/xml 媒体类型将被赋予最高优先级。
+</p>
+<p>
+在请求同时包含参数和 Accept 头信息的情况下，参数将更具相关性。
+</p>
+
+<p>
+可以将 param-value 保留为空，这将导致处理器查找名为'accept'的参数。
+</p>
 </div>
 
 </div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Resources_Metadata.html"><strong>上一页</strong>第 19 章 Resources 元数据配置</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="Content_Marshalling_Providers.html"><strong>下一页</strong>第 21 章 Content Marshalling/Providers</a></li></ul></body></html>

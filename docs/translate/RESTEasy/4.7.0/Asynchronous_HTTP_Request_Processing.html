@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 37 章 Asynchronous HTTP Request Processing</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Interceptors.html" title="第 36 章 Filters and Interceptors"/><link rel="next" href="async_job_service.html" title="第 38 章 Asynchronous Job Service"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Interceptors.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="async_job_service.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Asynchronous_HTTP_Request_Processing"/>第 37 章 Asynchronous HTTP Request Processing</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="Asynchronous_HTTP_Request_Processing.html#d4e2360">37.1. Using the @Suspended annotation</a></span></dt><dt><span class="sect1"><a href="Asynchronous_HTTP_Request_Processing.html#d4e2375">37.2. Using Reactive return types</a></span></dt><dt><span class="sect1"><a href="Asynchronous_HTTP_Request_Processing.html#d4e2389">37.3. Asynchronous filters</a></span></dt><dt><span class="sect1"><a href="Asynchronous_HTTP_Request_Processing.html#Asynchronous_IO">37.4. Asynchronous IO</a></span></dt></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 37 章 Asynchronous HTTP Request Processing</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="Interceptors.html" title="第 36 章 Filters and Interceptors"/><link rel="next" href="async_job_service.html" title="第 38 章 Asynchronous Job Service"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="Interceptors.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="async_job_service.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Asynchronous_HTTP_Request_Processing"/>第 37 章 Asynchronous HTTP Request Processing</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="Asynchronous_HTTP_Request_Processing.html#d4e2362">37.1. Using the @Suspended annotation</a></span></dt><dt><span class="sect1"><a href="Asynchronous_HTTP_Request_Processing.html#d4e2377">37.2. Using Reactive return types</a></span></dt><dt><span class="sect1"><a href="Asynchronous_HTTP_Request_Processing.html#d4e2391">37.3. Asynchronous filters</a></span></dt><dt><span class="sect1"><a href="Asynchronous_HTTP_Request_Processing.html#Asynchronous_IO">37.4. Asynchronous IO</a></span></dt></dl></div>
    
    <p>
       Asynchronous HTTP Request Processing is a relatively new technique that allows you to process a single HTTP
@@ -16,7 +16,7 @@
       getting a lot of concurrent clients that are blocking like this, there’s a lot of wasted resources and your
       server does not scale that well.
    </p>
-   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2360"/>37.1. Using the <code class="code">@Suspended</code> annotation</h2></div></div></div>
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2362"/>37.1. Using the <code class="code">@Suspended</code> annotation</h2></div></div></div>
       
       <p>
          The JAX-RS 2.0 specification has added asynchronous HTTP support via two classes.  The <code class="code">@Suspended</code> annotation,
@@ -76,7 +76,7 @@ public class SimpleResource
          which represented a timeout limit. Instead, <code class="methodname">AsyncResponse.setTimeout()</code> may be called.
       </p>
    </div>
-   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2375"/>37.2. Using Reactive return types</h2></div></div></div>
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2377"/>37.2. Using Reactive return types</h2></div></div></div>
       
       <p><a id="CompletionStage"/>
           The JAX-RS 2.1 specification adds support for declaring asynchronous resource methods by
@@ -134,7 +134,7 @@ public class SimpleResource
         </p>
      </div>
    </div>
-   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2389"/>37.3. Asynchronous filters</h2></div></div></div>
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="d4e2391"/>37.3. Asynchronous filters</h2></div></div></div>
       
       <p>
          It is possible to write <a class="link" href="Interceptors.html#Asynchronous_Filter">filters that also turn the request asynchronous</a>. 

@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 21 章 Content Marshalling/Providers</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="JAX-RS_Content_Negotiation.html" title="第 20 章 JAX-RS Content Negotiation"/><link rel="next" href="Built_in_JAXB_providers.html" title="第 22 章 JAXB providers"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="JAX-RS_Content_Negotiation.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Built_in_JAXB_providers.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Content_Marshalling_Providers"/>第 21 章 Content Marshalling/Providers</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="Content_Marshalling_Providers.html#Default_Providers_and_default_JAX-RS_Content_Marshalling">21.1. Default Providers and default JAX-RS Content Marshalling</a></span></dt><dt><span class="sect1"><a href="Content_Marshalling_Providers.html#Content_Marshalling_with__Provider_classes">21.2. Content Marshalling with @Provider classes</a></span></dt><dt><span class="sect1"><a href="Content_Marshalling_Providers.html#MessageBodyWorkers">21.3. Providers Utility Class</a></span></dt><dt><span class="sect1"><a href="Content_Marshalling_Providers.html#Configuring_Document_Marshalling">21.4. Configuring Document Marshalling</a></span></dt><dt><span class="sect1"><a href="Content_Marshalling_Providers.html#Text_media_types">21.5. Text media types and character sets</a></span></dt></dl></div>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory">第 21 章 Content Marshalling/Providers</title><link rel="stylesheet" href="css/jbossorg.css" type="text/css"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" name="generator" content="DocBook XSL-NS Stylesheets V1.74.0"/><meta xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" http-equiv="Content-Type" content="text/html; charset=UTF-8"/><link rel="home" href="index.html" title="RESTEasy JAX-RS"/><link rel="up" href="index.html" title="RESTEasy JAX-RS"/><link rel="prev" href="JAX-RS_Content_Negotiation.html" title="第 20 章 JAX-RS 内容协商"/><link rel="next" href="Built_in_JAXB_providers.html" title="第 22 章 JAXB providers"/></head><body><p xmlns:d="http://docbook.org/ns/docbook" id="title"><a href="http://www.jboss.org" class="site_href"><strong>JBoss.org</strong></a><a href="http://docs.jboss.org/" class="doc_href"><strong>Community Documentation</strong></a></p><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="JAX-RS_Content_Negotiation.html"><strong>上一页</strong></a></li><li class="next"><a accesskey="n" href="Built_in_JAXB_providers.html"><strong>下一页</strong></a></li></ul><div class="chapter" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Content_Marshalling_Providers"/>第 21 章 Content Marshalling/Providers</h2></div></div></div><div class="toc"><dl><dt><span class="sect1"><a href="Content_Marshalling_Providers.html#Default_Providers_and_default_JAX-RS_Content_Marshalling">21.1. 默认提供程序和默认 JAX-RS 内容编组</a></span></dt><dt><span class="sect1"><a href="Content_Marshalling_Providers.html#Content_Marshalling_with__Provider_classes">21.2. 使用 @Provider 类进行内容编排</a></span></dt><dt><span class="sect1"><a href="Content_Marshalling_Providers.html#MessageBodyWorkers">21.3. Providers Utility Class</a></span></dt><dt><span class="sect1"><a href="Content_Marshalling_Providers.html#Configuring_Document_Marshalling">21.4. 配置文档编排</a></span></dt><dt><span class="sect1"><a href="Content_Marshalling_Providers.html#Text_media_types">21.5. 文本媒体类型和字符集</a></span></dt></dl></div>
    
-   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Default_Providers_and_default_JAX-RS_Content_Marshalling"/>21.1. Default Providers and default JAX-RS Content Marshalling</h2></div></div></div>
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Default_Providers_and_default_JAX-RS_Content_Marshalling"/>21.1. 默认提供程序和默认 JAX-RS 内容编组</h2></div></div></div>
       
 
       <p>
-
-         RESTEasy can automatically marshal and unmarshal a few different message bodies.
+         RESTEasy 可以自动封送和解封几个不同的消息主体。
       </p>
       <p>
 
@@ -59,7 +58,8 @@
 
       </p>
       <p>
-          <span class="bold"><strong>Note. </strong></span> When a <code class="classname">java.io.File</code> is created, as in
+          <span class="bold"><strong>Note. </strong></span> 
+          创建 <code class="classname">java.io.File</code> 时，如下所示
       </p>
       
       <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -76,9 +76,7 @@ public class TempFileDeletionResource
       </pre>
 
       <p>
-          a temporary file is created in the file system. On the server side, that temporary file will be deleted
-          at the end of the invocation. On the client side, however, it is the responsibility of the user to 
-          delete the temporary file.
+          在文件系统中创建一个临时文件。在服务器端，临时文件将在调用结束时被删除。但是，在客户端，用户有责任删除临时文件。
       </p>
  
       <p>
@@ -89,16 +87,11 @@ public class TempFileDeletionResource
 
       </p>
    </div>
-   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Content_Marshalling_with__Provider_classes"/>21.2. Content Marshalling with @Provider classes</h2></div></div></div>
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Content_Marshalling_with__Provider_classes"/>21.2. 使用 @Provider 类进行内容编排</h2></div></div></div>
       
 
       <p>
-
-         The JAX-RS specification allows you to plug in your own request/response body reader and writers. To do this,
-         you annotate a class
-         with @Provider and specify the @Produces types for a writer and @Consumes types for a reader. You must
-         also implement
-         a MessageBodyReader/Writer interface respectively. Here is an example:
+         JAX-RS 规范允许您插入自己的请求/响应的reader和writers。为此，您可以使用@Provider 对类进行注解，并为 writer 指定 @Produces 类型，为 reader 指定@Consumes 类型。您还必须分别实现 MessageBodyReader/Writer 接口。下面是一个例子:
       </p>
 
       <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -142,8 +135,7 @@ public class TempFileDeletionResource
          }
       </pre>
       <p>
-        Note that in order to support <a class="link" href="Asynchronous_HTTP_Request_Processing.html#Asynchronous_IO" title="37.4. Asynchronous IO">Async IO</a>, you need to implement the
-        <code class="code">AsyncMessageBodyWriter</code> interface, which requires you to implement this extra method:
+      注意，为了支持 <a class="link" href="Asynchronous_HTTP_Request_Processing.html#Asynchronous_IO" title="37.4. Asynchronous IO">Async IO</a> ，你需要实现 <code class="code">AsyncMessageBodyWriter</code> 接口，这需要你实现这个额外的方法:
       </p>
       <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
          @Provider
@@ -162,9 +154,7 @@ public class TempFileDeletionResource
       </pre>
       <p>
 
-
-         The RESTEasy ServletContextLoader will automatically scan your WEB-INF/lib and classes directories for classes
-         annotated with @Provider or you can manually configure them in web.xml. See Installation/Configuration.
+         RESTEasy ServletContextLoader 将自动扫描 WEB-INF/lib 和 classes 目录，以查找带有 @Provider 注解的类，或者您可以在 web.xml 中手动配置它们。请参阅安装/配置。
       </p>
       <p>
 
@@ -175,11 +165,7 @@ public class TempFileDeletionResource
       
 
       <p>
-
-         javax.ws.rs.ext.Providers is a simple injectable interface that allows you to look up MessageBodyReaders,
-          Writers, ContextResolvers, and ExceptionMappers. It is very useful, for instance, for implementing
-          multipart providers. Content types that embed
-         other random content types.
+         javax.ws.rs.ext.Providers 是一个简单的可注入接口，允许您查找 MessageBodyReaders、 Writers、 ContextResolvers 和 ExceptionMappers。例如，它对于实现多部分提供程序非常有用。嵌入其他随机内容类型的内容类型。
       </p>
       <p>
 
@@ -289,8 +275,7 @@ public interface Providers
 
       </p>
       <p>
-
-         A Providers instance is injectable into MessageBodyReader or Writers:
+         Providers 实例被注入到 MessageBodyReader 或 Writers 中:
       </p>
       <p>
 
@@ -312,14 +297,11 @@ public class MultipartProvider implements MessageBodyReader {
       </p>
    </div>
    
-   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Configuring_Document_Marshalling"/>21.4. Configuring Document Marshalling</h2></div></div></div>
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Configuring_Document_Marshalling"/>21.4. 配置文档编排</h2></div></div></div>
       
 
       <p>
-   
-         XML document parsers are subject to a form of attack known as the XXE (Xml eXternal Entity) Attack
-         (<a class="ulink" href="http://www.securiteam.com/securitynews/6D0100A5PU.html">http://www.securiteam.com/securitynews/6D0100A5PU.html</a>),
-         in which expanding an external entity causes an unsafe file to be loaded. For example, the document
+         XML 文档解析器会受到一种称为 XXE (XML eXternal Entity) Attack ( <a class="ulink" href="http://www.securiteam.com/securitynews/6D0100A5PU.html">http://www.securiteam.com/securitynews/6D0100A5PU.html</a> )的攻击，在这种攻击中，展开外部实体会导致加载不安全的文件。例如，文件
       </p>
       
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -333,21 +315,17 @@ public class MultipartProvider implements MessageBodyReader {
 </pre>
       
       <p>
-      
-      could cause the passwd file to be loaded.
+      可能导致加载 passwd 文件。
       </p>
       
       <p>
-      
-         By default, RESTEasy's built-in unmarshaller for org.w3c.dom.Document documents will not expand external entities,
-         replacing them by the empty string instead. It can be configured to replace external entities by values defined in the
-         DTD by setting the parameter
+         默认情况下，RESTEasy 的用于 org.w3c.dom.Document  的内置 unmarshaller。文档不会展开外部实体，而是用空字符串替换它们。通过设置参数，可以将其配置为用 DTD 中定义的值替换外部实体
    
       </p>
       
       <div class="blockquote"><blockquote class="blockquote">resteasy.document.expand.entity.references</blockquote></div>
       
-      <p> to "true". If configured in the web.xml file, it would be:</p>
+      <p> 设置为"true"，如果在 web.xml 文件中配置为: </p>
       
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
 &lt;context-param&gt;
@@ -356,24 +334,23 @@ public class MultipartProvider implements MessageBodyReader {
 &lt;/context-param&gt;
 </pre>
       
-      <p>See <a class="xref" href="Installation_Configuration.html#microprofile_config" title="3.4. 配置">第 3.4 节 “配置”</a> for more information about application configuration. </p>
+      <p> 有关应用程序配置的更多信息，请参见<a class="xref" href="Installation_Configuration.html#microprofile_config" title="3.4. 配置">第 3.4 节 “配置”</a>。 
+      </p>
       
       <p>
       
-      Another way of dealing with the problem is by prohibiting DTDs, which RESTEasy does by default. This behavior
-      can be changed by setting the parameter
+      处理这个问题的另一种方法是禁止 DTDs，RESTEasy 默认是这样做的。可以通过设置参数来更改此行为
       
       </p>
       
       <div class="blockquote"><blockquote class="blockquote">resteasy.document.secure.disableDTDs</blockquote></div>
            
-      <p>to "false".</p>
+      <p>设置为 "false".</p>
  
  	  <p>
- 	  
- 	  Documents are also subject to Denial of Service Attacks when buffers are overrun by large entities or too many
- 	  attributes.  For example, if a DTD defined the following entities
- 	  
+  
+     当缓冲区被大型实体或过多的属性占用时，文档也会受到分布式拒绝服务攻击攻击。例如，如果 DTD 定义了以下实体
+   
  	  </p>
  	  
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -387,22 +364,20 @@ public class MultipartProvider implements MessageBodyReader {
 </pre>
  	  
    <p>
-   then the expansion of &amp;foo6; 
-   would result in 1,000,000 foos. By default, RESTEasy will limit the number of expansions and
-   the number of attributes per entity. The exact behavior depends on the underlying parser. The limits
-   can be turned off by setting the parameter
+
+   那么 foo6 的扩张就会产生 1,000,000 个 foo。默认情况下，RESTEasy 将限制每个实体的扩展数目和属性数目。确切的行为取决于底层的解析器。可以通过设置参数来关闭限制
    </p>
    
    <div class="blockquote"><blockquote class="blockquote">resteasy.document.secure.processing.feature</blockquote></div>
    
-   <p>to "false".</p>
+   <p>设置为 "false".</p>
    </div>
    
-   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Text_media_types"/>21.5. Text media types and character sets</h2></div></div></div>
+   <div class="sect1" lang="zh-CN"><div class="titlepage"><div><div><h2 class="title"><a id="Text_media_types"/>21.5. 文本媒体类型和字符集</h2></div></div></div>
       
    
    <p>
-   The JAX-RS specification says
+   JAX-RS 规范说
    </p>
 
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -411,8 +386,14 @@ set metadata and SHOULD use UTF-8 if a character set is not specified by the app
 or if the application specifies a character set that is unsupported.
 </pre>
 
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+在编写响应时，实现应尊重应用程序提供的字符
+设置元数据，如果应用程序未指定字符集，则应使用UTF-8
+或者应用程序指定了不受支持的字符集。
+</pre>
+
    <p>
-   On the other hand, the HTTP specification says
+另一方面，HTTP 规范说
    </p>
    
 <pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
@@ -422,24 +403,26 @@ via HTTP. Data in character sets other than "ISO-8859-1" or its subsets MUST be 
 with an appropriate charset value.
 </pre>
 
+<pre xmlns="" xmlns:d="http://docbook.org/ns/docbook" xmlns:rf="java:org.jboss.highlight.XhtmlRendererFactory" class="">
+如果发件人未提供任何明确的charset参数，则
+接收到的“文本”类型定义为默认字符集值“ ISO-8859-1”
+通过HTTP。 除“ ISO-8859-1”以外的字符集中的数据或其子集必须被标记
+具有适当的字符集值。
+</pre>
+
    <p>
-   It follows that, in the absence of a character set specified by a resource or resource method,
-   RESTEasy SHOULD use UTF-8 as the character set for text media types, and, if it does, it MUST add an explicit 
-   charset parameter to the Content-Type response header. RESTEasy started adding the explicit charset
-   parameter in releases 3.1.2.Final and 3.0.22.Final, and that new behavior could cause some compatibility problems. To
-   specify the previous behavior, in which UTF-8 was used for text media types, but the explicit charset
-   was not appended, the parameter "resteasy.add.charset" may be set to "false". It defaults to "true".
+   因此，在没有由resource或resource方法指定的字符集的情况下，RESTEasy 应该使用 UTF-8作为文本媒体类型的字符集，如果使用了，则必须向 Content-Type 响应头添加一个显式的 charset 参数。RESTEasy 开始在发行版3.1.2.Final 及3.0.22.Final 中添加显式 charset 参数。最后，新的行为可能会导致一些兼容性问题。为了指定以前的行为，其中 UTF-8用于文本媒体类型，但没有附加显式字符集，可以将参数"resteasy.add.charset"设置为"false"。默认为"true"。
    </p>
    
    <p>
-   <span class="bold"><strong>Note.</strong></span> By "text" media types, we mean
+   <span class="bold"><strong>Note.</strong></span> 我们所说的"text"媒体类型是指
    </p>
    
-   <div class="itemizedlist"><ul><li>a media type with type "text" and any subtype;</li><li>a media type with type ""application" and subtype beginning with "xml".</li></ul></div>
+   <div class="itemizedlist"><ul><li>具有"text"类型和任何子类型的媒体类型;</li><li>类型为"application"，子类型以"xml"开头的媒体类型</li></ul></div>
    
    <p>
-   The latter set includes "application/xml-external-parsed-entity" and "application/xml-dtd".
+   后一组包括"application/xml-external-parsed-entity"和"application/xml-dtd"。
    </p>
    </div>
    
-</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="JAX-RS_Content_Negotiation.html"><strong>上一页</strong>第 20 章 JAX-RS Content Negotiation</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="Built_in_JAXB_providers.html"><strong>下一页</strong>第 22 章 JAXB providers</a></li></ul></body></html>
+</div><ul xmlns:d="http://docbook.org/ns/docbook" class="docnav"><li class="previous"><a accesskey="p" href="JAX-RS_Content_Negotiation.html"><strong>上一页</strong>第 20 章 JAX-RS 内容协商</a></li><li class="up"><a accesskey="u" href="#"><strong>上一级</strong></a></li><li class="home"><a accesskey="h" href="index.html"><strong>起始页</strong></a></li><li class="next"><a accesskey="n" href="Built_in_JAXB_providers.html"><strong>下一页</strong>第 22 章 JAXB providers</a></li></ul></body></html>
