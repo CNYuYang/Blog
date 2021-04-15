@@ -88,7 +88,7 @@ env变量，暴露了你操作系统或者shell的环境变量。便 如在Maven
 
 profile其实就相当于定义了一系列的profile变量，在具体构建时可用使用其中的某个profile去变量替换资源文件。
 
-
+### 定义Profile
 
 ```bash
 jdbc.driverClassName=${db.driver}  
@@ -161,15 +161,85 @@ jdbc.password=${db.pwd}
 </project>
 ```
 
+### 手动激活Profile
+
 如果我们需要打本地环境的包，可以激活本地环境的profile：
 
 ![img](./img/03-01.png)
 
 如果我们需要打开发环境的包，可以激活开发环境的profile
 
-
-
 ![img](./img/03-02.png)
+
+### 自动激活Profile
+
+在自动激活Profile中，我们需要为某个Profile预先定义一些前提条件（比如操作系统版本），当这些前提条件满足时，该Profile将被自动激活。比如，对于上文中的A点，我们可以为Mac OS X和Linux(Unix)分别定义一套数据库连接：
+
+```xml
+<profile>
+
+           <id>mac</id>
+
+           <activation>
+
+               <activeByDefault>false</activeByDefault>
+
+               <os>
+
+                   <family>mac</family>
+
+               </os>
+
+           </activation>
+
+           <properties>
+
+               <database.driverClassName>org.postgresql.Driver</database.driverClassName>
+
+               <database.url>jdbc:postgresql://localhost/database</database.url>
+
+               <database.user>username</database.user>
+
+               <database.password>password</database.password>
+
+           </properties>
+
+       </profile>
+
+ 
+
+       <profile>
+
+           <id>unix</id>
+
+           <activation>
+
+               <activeByDefault>false</activeByDefault>
+
+               <os>
+
+                   <family>unix</family>
+
+               </os>
+
+           </activation>
+
+           <properties>
+
+               <database.driverClassName>com.mysql.jdbc.Driver</database.driverClassName>
+
+               <database.url>jdbc:mysql://localhost:3306/database</database.url>
+
+               <database.user>username</database.user>
+
+               <database.password>password</database.password>
+
+           </properties>
+
+       </profile>
+```
+
+请注意，以上两个Profile在默认情况下都没有被激活，Maven在运行时会检查操作系统，如果操作系统为Mac OS X，那么Maven将自动激活id为mac的Profile，此时将使用PostgreSQL的数据库链接，如果操作系统为Linux或Unix，那么将使用MySQL数据库连接。更多的Profile自动激活条件，请参考[此文档](http://docs.codehaus.org/display/MAVENUSER/Profiles)。
 
 ## 资源过滤
 
@@ -183,8 +253,6 @@ log.level=${log.level}
 ```
 
 接下来我们需要在pom.xml中开启资源过滤：目的是为了让maven将文件中的占位符替换成实际值。
-
-
 
 ```xml
 <build>
@@ -216,8 +284,6 @@ log.level=${log.level}
 通过maven的profile和资源过滤，我们只需要在不同的环境激活对应的profile，配置信息就会自动改变，不需要我们取修改项目中的代码或者配置文件，所有变量都是定义在pom.xml中的。
 
 下面具体介绍一下资源过滤的属性：
-
-
 
 ```xml
 <build>    
