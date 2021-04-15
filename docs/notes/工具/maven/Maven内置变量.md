@@ -163,21 +163,19 @@ jdbc.password=${db.pwd}
 
 如果我们需要打本地环境的包，可以激活本地环境的profile：
 
-![img](https:////upload-images.jianshu.io/upload_images/4444657-e64806d439094bb6.png?imageMogr2/auto-orient/strip|imageView2/2/w/571/format/webp)
+![img](./img/03-01.png)
 
 如果我们需要打开发环境的包，可以激活开发环境的profile
 
 
 
-![img](https:////upload-images.jianshu.io/upload_images/4444657-5cd27dea131c1ada.png?imageMogr2/auto-orient/strip|imageView2/2/w/488/format/webp)
+![img](./img/03-02.png)
 
 ## 资源过滤
 
-所谓的资源：也就就是指src/main/resources和src/test/resources文件下的所有文件，默认情况下，这些文件会被复制到classpath下面，即target/classes下面。
+所谓的资源：也就就是指`src/main/resources`和`src/test/resources`文件下的所有文件，默认情况下，这些文件会被复制到`classpath`下面，即`target/classes`下面。
 
-所谓资源过滤，就是过滤这些文件夹下面的文件里面的内容。上面我们为本地环境和开发环境配置了不同的profile，我们代码怎么去读取这些配置的值呢？我们可以定义一个config.properties，放在src/main/resources/下面：
-
-
+所谓资源过滤，就是过滤这些文件夹下面的文件里面的内容。上面我们为本地环境和开发环境配置了不同的profile，我们代码怎么去读取这些配置的值呢？我们可以定义一个`config.properties`，放在`src/main/resources/`下面：
 
 ```bash
 zoo.url=${zoo.url}
@@ -209,11 +207,11 @@ log.level=${log.level}
 
 如果我们激活本地环境的profile，可以看到最终构建出的config.properties内容如下：
 
-![img](https:////upload-images.jianshu.io/upload_images/4444657-4d13c8bd6dfd1337.png?imageMogr2/auto-orient/strip|imageView2/2/w/429/format/webp)
+![img](./img/03-03.png)
 
 如果我们激活开发环境的profile，可以看到最终构建出的config.properties内容如下：
 
-![img](https:////upload-images.jianshu.io/upload_images/4444657-42e77f07a8f51365.png?imageMogr2/auto-orient/strip|imageView2/2/w/453/format/webp)
+![img](./img/03-04.png)
 
 通过maven的profile和资源过滤，我们只需要在不同的环境激活对应的profile，配置信息就会自动改变，不需要我们取修改项目中的代码或者配置文件，所有变量都是定义在pom.xml中的。
 
@@ -253,10 +251,3 @@ log.level=${log.level}
         </resources>    
     </build>  
 ```
-
-
-
-作者：不知名的蛋挞
-链接：https://www.jianshu.com/p/ded7dfa2c3d8
-来源：简书
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
