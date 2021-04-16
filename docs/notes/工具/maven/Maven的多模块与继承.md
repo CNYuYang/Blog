@@ -124,12 +124,6 @@ mvn archetype:generate -DgroupId=me.davenkin -DartifactId=core  -DarchetypeArtif
 </project>
 ```
 
-
-
- 
-
- 
-
 请注意里面的  “<parent>...  </parent>”，它将maven-multi-module模块做为了自己的父模块。这里我们看出，当创建core模块时，Maven将自动识别出已经存在的maven-multi-module父模块，然后分别创建两个方向的指引关系，即在maven-multi-module模块中将core作为自己的子模块，在core模块中将maven-multi-module作为自己的父模块。要使Maven有这样的自动识别功能，我们需要在maven-multi-module目录下创建core模块（请参考前文），不然，core模块将是一个独立的模块，但是我们可以通过手动修改两个模块中的pom.xml文件来创建他们之间的父子关系，从而达到同样的目的。
 
  
