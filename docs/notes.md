@@ -80,6 +80,10 @@
 
 │ │
 
+│ ├─ [Hibernate Validator](/notes/源码阅读/HibernateValidator)
+
+│ │
+
 │ └─ [Halo](/notes/源码阅读/Halo)
 
 │
