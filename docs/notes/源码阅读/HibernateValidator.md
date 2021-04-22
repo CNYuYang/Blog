@@ -16,6 +16,7 @@
 
 [Hibernate Validator 7.0.1 - Jakarta Bean Validation 参考实现: 参考指南](https://yuyang.run/translate/hibernate-validator/7.0.1/index.html)
 
-## 源码阅读
+## 参考阅读
 
 [SecurityManager](/notes/源码阅读/HibernateValidator/SecurityManager)
+
