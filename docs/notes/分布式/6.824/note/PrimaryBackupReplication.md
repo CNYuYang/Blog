@@ -128,3 +128,10 @@ FT 备份的是**计算**，你能用它为任何已有的网络服务器提供�
 
 [Primary/Backup Replication](https://zhenghe.gitbook.io/open-courses/mit-6.824/di-san-ke-zhu-cong-fu-zhi)
 
+# 论文
+
+英文原文：[The Design of a Practical System for Fault-Tolerant Virtual Machines](/notes/分布式/6.824/note/file/vm-ft.pdf ':ignore')
+
+中文翻译：[一个实用的容错虚拟机系统](https://riverferry.site/2021-02-12-The-Design-of-a-Practical-System-for-Fault-Tolerant-Virtual-Machines/)
+
+中文翻译：[一个实用的容错虚拟机系统](https://blog.csdn.net/qq_40832456/article/details/104843098)

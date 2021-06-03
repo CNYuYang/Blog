@@ -142,3 +142,8 @@ GFS —— 取舍的艺术 [https://www.qtmuniao.com/2019/05/26/gfs/](https://ww
 
 a simple GFS: [https://github.com/lishuai87/asgfs](https://github.com/lishuai87/asgfs)
 
+### 论文
+
+英文原文：[The Google File System](/notes/分布式/6.824/note/file/gfs.pdf ':ignore')
+
+中文翻译：[The Google File System](/notes/分布式/6.824/note/TheGoogleFileSystem)
