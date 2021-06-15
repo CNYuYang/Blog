@@ -1,6 +1,6 @@
 # About Me
 
-> 一个终身学习的Coder，不争不抢，努力努力再努力！
+> 做一个优秀的普通人，在热爱中燃烧！
 
 简历传输🚪：[余阳的简历.pdf](余阳.pdf ':ignore')
 
@@ -10,7 +10,7 @@
 
 **2017.9 - 2021.6 武汉理工大学 通信工程**
 
-- 院三好学生，担任电子科技协会会长，GPA3.374
+- 院三好学生，优秀毕业生，校电子科技协会会长，GPA3.374
 
 ## 工作经历
 
@@ -22,20 +22,6 @@
 - 负责 `Harbor` 镜像仓库风险扫描集成。
 - PHP规则平台维护及新功能开发。
 
-## 获奖经历
-
-### 湖北省 Java A 组三等奖  
-
-第十届蓝桥杯全国软件和信息技术专业人才大赛省赛  
-
-### 2019年 国家级创业训练类  
-
-国家级大学生创新创业训练计划
-
-### 湖北省一等奖  
-
-2019年 全国大学生电子设计大赛F题  
-
 ## 项目经历
 
 ### My-19-years-old  
@@ -45,22 +31,3 @@
 🏗项目地址：[My-19-years-old](https://github.com/CNYuYang/My-19-years-old)
 
 ▶视频地址：[STM32系列视频(CubeMX+MDK5+HAL库+库函数一站式学习)](https://www.bilibili.com/video/BV1q4411d7RX)
-
-### BusTub
-
-用Java写的一个关系型数据库，参考CMU15-445课程及H2数据库。目前已完成BufferPool以及Index部分。
-
-🏗项目地址：[BusTub](https://github.com/CNYuYang/Bustub)
-
-### Distributed-Word-Count
-
-本科毕业设计，使用 Java 编写的一个分布式词频统计，将Java程序打包为Docker镜像，借助K8S实现容器编排。
-
-🏗项目地址：[distributed-word-count](https://github.com/CNYuYang/distributed-word-count)
-
-### Trotsky
-
-使用 Quarkus+Graalvm+Vert.x+RESTEasy 编写的一个云原生写作平台。借助 Quarkus+Graalvm 可以将 Java程序编译成可执行的二进制文件。使基础镜像不依赖 JDK，大大减小了镜像的体积，大大缩短了启动速度。
-
-🏗项目地址：[Trotsky](https://github.com/CNYuYang/Trotsky)
-

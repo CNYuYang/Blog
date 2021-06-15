@@ -8,4 +8,4 @@ iBATIS一词来源于“internet”和“abatis”的组合，是一个基于Jav
 
 ## 学习笔记
 
-1、[《Mybatis从入门到精通》学习笔记](/notes/数据库/MyBatis/Mybatis从入门到精通)
+1、[Mybatis从入门到精通](/notes/数据库/MyBatis/Mybatis从入门到精通)

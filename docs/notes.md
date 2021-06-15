@@ -2,25 +2,15 @@
 
 >  好记性不如烂笔头，温故而知新。
 
-
-
-├── 数据结构与算法
-
-│ │
-
-│ ├─ [AcWing蓝桥培训课](/notes/数据结构与算法/AcWing蓝桥培训课.md)
-
-│ │
-
-│ └─ [AcWing算法入门课](/notes/数据结构与算法/AcWing算法入门课.md)
-
-│
-
 ├── 数据库
 
 │ │
 
 │ ├─ [MySQL](/notes/数据库/MySQL.md)
+
+│ │ │
+
+│ │ └─ [一千行MySQL详细学习笔记](/notes/数据库/MySQL/一千行MySQL详细学习笔记)
 
 │ │
 
@@ -29,6 +19,10 @@
 │ │
 
 │ └─ [MyBatis](/notes/数据库/MyBatis)
+
+│&nbsp;&nbsp;&nbsp;│
+
+│&nbsp;&nbsp;&nbsp;└─ [Mybatis从入门到精通](/notes/数据库/MyBatis/Mybatis从入门到精通)
 
 │
 
