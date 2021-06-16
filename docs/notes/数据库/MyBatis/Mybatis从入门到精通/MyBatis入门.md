@@ -108,6 +108,27 @@ public class Test
 
 - 代码中存在硬编码，分别是数据库部分的硬编码和SQL执行部分的硬编码。
 
+## 环境准备
+
+执行下列sql语句，创建对应数据库及插入数据:
+
+```sql
+CREATE TABLE country
+(
+  id          INT          NOT NULL AUTO_INCREMENT,
+  countryname VARCHAR(255) NULL,
+  countrycode VARCHAR(255) NULL,
+  PRIMARY KEY (id)
+);
+
+INSERT country(countryname, countrycode)
+VALUES ('中国', 'CN'),
+       ('美国', 'US'),
+       ('俄罗斯', 'RU'),
+       ('英国', 'GB'),
+       ('法国', 'FR');
+```
+
 ## 利用Meavn创建工程
 
 ### 添加pom依赖如下
@@ -145,7 +166,7 @@ public class Test
 <configuration>
 
     <typeAliases>
-        <package name="cn.reyunn.mybatis.model"/>
+        <package name="run.yuyang.mybatis.model"/>
     </typeAliases>
 
     <environments default="development">
@@ -155,9 +176,9 @@ public class Test
             </transactionManager>
             <dataSource type="UNPOOLED">
                 <property name="driver" value="com.mysql.jdbc.Driver"/>
-                <property name="url" value="jdbc:mysql://cdb-bgss2kq6.bj.tencentcdb.com:10004/mybatis_test"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/mybatis"/>
                 <property name="username" value="root"/>
-                <property name="password" value="whut2017"/>
+                <property name="password" value="2020possible"/>
             </dataSource>
         </environment>
     </environments>
@@ -166,23 +187,22 @@ public class Test
         <mapper resource="mapper/CountryMapper.xml"/>
     </mappers>
 </configuration>
-
 ```
 
 配置简单讲解：
 
-- 元素下面配置了一个包名，通常确定一个类的时候需要使用类的全限定名称，例如cn.reyunn.mybatis.model.Country。在MyBatis中需要频繁用到类的全限定名称，为了方便使用，我们配置了cn.reyunn.mybatis.model.model包，这样配置后，在使用类的时候不需要写包名的部分，只使用Country即可。
-- 环境配置中主要配置了数据库连接，如这里我们使用的是腾讯云的mybatis_test数据库，用户名为root，密码为：whut2017（大家可根据自己的实际情况修改数据库及用户名和密码）。
+- 元素下面配置了一个包名，通常确定一个类的时候需要使用类的全限定名称，例如run.yuyang.mybatis.model.Country。在MyBatis中需要频繁用到类的全限定名称，为了方便使用，我们配置了run.yuyang.mybatis.model包，这样配置后，在使用类的时候不需要写包名的部分，只使用Country即可。
+  - 环境配置中主要配置了数据库连接，如这里我们使用的是本地的mybatis数据库，用户名为root，密码为：2020possible（大家可根据自己的实际情况修改数据库及用户名和密码）。
 - 中配置了一个包含完整类路径的CountryMapper.xml，这是一个MyBatis的Sql语句和映射配置文件。
 
 ### POJO
 
-在src/main/java下新建包：cn.reyunn.mybatis，然后在这个包下再创建包：model。
+在src/main/java下新建包：run.yuyang.mybatis，然后在这个包下再创建包：model。
 
 在model包下创建数据库表country表对应的实体类Country：
 
 ```java
-package cn.reyunn.mybatis.model;
+package run.yuyang.mybatis.model;
 
 
 import lombok.Data;
@@ -215,10 +235,10 @@ public class Country {
 
 ## 使用
 
-对刚才的付出进行检测😁
+进行测试
 
 1. 读取配置文件
-2.  创建 SqlSessionFactory工厂 
+2. 创建 SqlSessionFactory工厂 
 3. 使用工厂生产SqlSession对象
 4. 使用SqlSession创建Dao接口的代理对象
 5. 使用代理对象执行方法
