@@ -10,7 +10,11 @@
 
 │ │ │
 
-│ │ └─ [一千行MySQL详细学习笔记](/notes/数据库/MySQL/一千行MySQL详细学习笔记)
+│ │ ├─ [一千行MySQL详细学习笔记](/notes/数据库/MySQL/一千行MySQL详细学习笔记)
+
+│ │ │
+
+│ │ └─ [MySQL多表查询](/notes/数据库/MySQL/MySQL多表查询)
 
 │ │
 
