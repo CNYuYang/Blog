@@ -17,3 +17,7 @@
 [第三章 XML方式的基本用法之多表查询](/notes/数据库/MyBatis/Mybatis从入门到精通/XML方式的基本用法之多表查询)
 
 [第四章 XML方式的基本用法之增删改](/notes/数据库/MyBatis/Mybatis从入门到精通/XML方式的基本用法之增删改)
+
+[第五章 注解方式的基本用法](/notes/数据库/MyBatis/Mybatis从入门到精通/注解方式的基本用法)
+
+[第六章 动态Sql之if标签的用法](/notes/数据库/MyBatis/Mybatis从入门到精通/动态Sql之if标签的用法)
