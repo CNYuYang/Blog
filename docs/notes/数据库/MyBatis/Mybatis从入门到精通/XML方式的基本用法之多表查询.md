@@ -207,3 +207,83 @@ List<SysRole> selectRolesByUserIdAndRoleEnabled(Long userId,Integer enabled);
     WHERE u.id = #{userId} AND r.enabled = #{enabled}
 </select>
 ```
+
+并添加测试方法:
+
+```java
+List<SysRole> sysRoleList = sysUserMapper.selectRolesByUserIdAndRoleEnabled(1L, 1);
+for (SysRole role : sysRoleList) {
+    System.out.println(role.toString());
+}
+```
+
+发现方法执行错误，并报错:
+
+```java
+Cause: org.apache.ibatis.binding.BindingException: Parameter 'userId' not found. Available parameters are [arg1, arg0, param1, param2]
+```
+
+报错信息中说未找到参数userId,可用的参数是[arg1, arg0,param1,param2]，也就是说我们将代码修改为：
+
+```sql
+WHERE u.id = #{arg0} AND r.enabled = #{arg1}
+```
+
+或者修改为：
+
+```sql
+WHERE u.id = #{param1} AND r.enabled = #{param2}
+```
+
+这么使用是可以测试通过的，不过这样使用，代码阅读起来不够友好，因此并不推荐这么使用。
+
+推荐在接口方法的参数前添加@Param注解，如下所示：
+
+```java
+/**
+ * 根据用户id和角色的enabled状态获取用户的角色
+ *
+ * @param userId
+ * @param enabled
+ * @return
+ */
+List<SysRole> selectRolesByUserIdAndRoleEnabled(@Param("userId") Long userId, @Param("enabled") Integer enabled);
+```
+
+运行刚刚添加的测试方法，测试通过，输出日志如下：
+
+```
+SysRole(id=1, roleName=管理员, enabled=1, createBy=1, createTime=Wed Jun 16 11:40:11 CST 2021)
+SysRole(id=2, roleName=普通用户, enabled=1, createBy=1, createTime=Wed Jun 16 11:40:11 CST 2021)
+```
+
+### 参数类型是对象
+
+为了演示参数类型是对象的使用方法，我们在接口SysUserMapper中添加如下方法：
+
+```java
+/**
+ * 根据用户id和角色的enabled状态获取用户的角色
+ *
+ * @param user
+ * @param role
+ * @return
+ */
+List<SysRole> selectRolesByUserAndRole(@Param("user") SysUser user, @Param("role") SysRole role);
+```
+
+此时对应的xml中的语句为：
+
+```xml
+<select id="selectRolesByUserAndRole" resultType="run.yuyang.mybatis.model.SysRole">
+    SELECT r.id,
+    r.role_name   roleName,
+    r.enabled,
+    r.create_by   createBy,
+    r.create_time createTime
+    FROM sys_user u
+    INNER JOIN sys_user_role ur ON u.id = ur.user_id
+    INNER JOIN sys_role r ON ur.role_id = r.id
+    WHERE u.id = #{user.id} AND r.enabled = #{role.enabled}
+</select>
+```

@@ -15,3 +15,5 @@
 [第二章 XML方式的基本用法之Select](/notes/数据库/MyBatis/Mybatis从入门到精通/XML方式的基本用法之Select)
 
 [第三章 XML方式的基本用法之多表查询](/notes/数据库/MyBatis/Mybatis从入门到精通/XML方式的基本用法之多表查询)
+
+[第四章 XML方式的基本用法之增删改](/notes/数据库/MyBatis/Mybatis从入门到精通/XML方式的基本用法之增删改)
