@@ -21,3 +21,5 @@
 [第五章 注解方式的基本用法](/notes/数据库/MyBatis/Mybatis从入门到精通/注解方式的基本用法)
 
 [第六章 动态Sql之if标签的用法](/notes/数据库/MyBatis/Mybatis从入门到精通/动态Sql之if标签的用法)
+
+[第七章 动态Sql之choose,where,set标签的用法](/notes/数据库/MyBatis/Mybatis从入门到精通/动态Sql之choose,where,set标签的用法)
