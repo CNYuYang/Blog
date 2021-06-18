@@ -23,3 +23,9 @@
 [第六章 动态Sql之if标签的用法](/notes/数据库/MyBatis/Mybatis从入门到精通/动态Sql之if标签的用法)
 
 [第七章 动态Sql之choose,where,set标签的用法](/notes/数据库/MyBatis/Mybatis从入门到精通/动态Sql之choose,where,set标签的用法)
+
+[第八章 动态Sql之foreach标签的用法](/notes/数据库/MyBatis/Mybatis从入门到精通/动态Sql之foreach标签的用法)
+
+[第九章 高级结果映射之一对一映射](/notes/数据库/MyBatis/Mybatis从入门到精通/高级结果映射之一对一映射)
+
+[第十章 使用association标签实现嵌套查询](/notes/数据库/MyBatis/Mybatis从入门到精通/使用association标签实现嵌套查询)
