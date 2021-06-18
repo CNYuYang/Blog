@@ -62,20 +62,6 @@ public void testSelectByIdList() {
 }
 ```
 
-运行测试代码，测试通过，输出日志如下：
-
-> DEBUG [main] - ==>  Preparing: SELECT id, user_name, user_password, user_email, create_time FROM sys_user WHERE id IN ( ? , ? )
->
-> DEBUG [main] - ==> Parameters: 1(Long), 1001(Long)
->
-> TRACE [main] - <==    Columns: id, user_name, user_password, user_email, create_time
->
-> TRACE [main] - <==        Row: 1, admin, 123456, admin@mybatis.tk, 2019-06-27 18:21:07.0
->
-> TRACE [main] - <==        Row: 1001, test, 123456, test@mybatis.tk, 2019-06-27 18:21:07.0
->
-> DEBUG [main] - <==      Total: 2
-
 通过日志会发现，foreach元素中的内容最终生成的Sql语句为(1,1001)。
 
 foreach包含属性讲解：
@@ -226,18 +212,6 @@ public void testInsertList() {
 
 ```
 
-运行测试代码，测试通过，输出日志如下：
-
-> DEBUG [main] - ==>  Preparing: INSERT INTO sys_user(user_name, user_password, user_email, user_info, head_img, create_time) VALUES (?,?,?,?,?,?) , (?,?,?,?,?,?)
->
-> DEBUG [main] - ==> Parameters: test0(String), 123456(String), test@mybatis.tk(String), null, null, null, test1(String), 123456(String), test@mybatis.tk(String), null, null, null
->
-> DEBUG [main] - <==    Updates: 2
->
-> 1035
->
-> 1036
-
 ## foreach 实现动态update
 
 假设有这样1个需求：根据传入的Map参数更新用户信息。
@@ -292,24 +266,6 @@ public void testUpdateByMap() {
     }
 }
 ```
-
-运行测试代码，测试通过，输出日志如下：
-
-> DEBUG [main] - ==>  Preparing: UPDATE sys_user SET user_email = ? , user_password = ? , id = ? WHERE id = ?
->
-> DEBUG [main] - ==> Parameters: test@mybatis.tk(String), 12345678(String), 1(Long), 1(Long)
->
-> DEBUG [main] - <==    Updates: 1
->
-> DEBUG [main] - ==>  Preparing: SELECT id, user_name, user_password, user_email, create_time FROM sys_user WHERE id = ?
->
-> DEBUG [main] - ==> Parameters: 1(Long)
->
-> TRACE [main] - <==    Columns: id, user_name, user_password, user_email, create_time
->
-> TRACE [main] - <==        Row: 1, admin, 12345678, test@mybatis.tk, 2019-06-27 18 : 21:07.0
->
-> DEBUG [main] - <==      Total: 1
 
 上面示例中，collection使用的是默认值_parameter，也可以使用@Param指定参数名字，如下所示：
 

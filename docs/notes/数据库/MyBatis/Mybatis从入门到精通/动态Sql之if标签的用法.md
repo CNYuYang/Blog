@@ -87,36 +87,7 @@ public void testSelectByUser() {
         sqlSession.close();
     }
 }
-
 ```
-
-运行测试代码，测试通过，输出日志如下：
-
-> DEBUG [main] - ==>  Preparing: SELECT id, user_name, user_password, user_email, create_time FROM sys_user WHERE 1 = 1 AND user_name LIKE CONCAT('%',?,'%')
->
-> DEBUG [main] - ==> Parameters: ad(String)
->
-> TRACE [main] - <==    Columns: id, user_name, user_password, user_email, create_time
->
-> TRACE [main] - <==    Row: 1, admin, 123456, admin@mybatis.tk, 2019-06-27 18:21:07.0
->
-> DEBUG [main] - <==   Total: 1
->
-> DEBUG [main] - ==>  Preparing: SELECT id, user_name, user_password, user_email, create_time FROM sys_user WHERE 1 = 1 AND user_email = ?
->
-> DEBUG [main] - ==> Parameters: test@mybatis.tk(String)
->
-> TRACE [main] - <==    Columns: id, user_name, user_password, user_email, create_time
->
-> TRACE [main] - <==     Row: 1001, test, 123456, test@mybatis.tk, 2019-06-27 18:21:07.0
->
-> DEBUG [main] - <==      Total: 1
->
-> DEBUG [main] - ==>  Preparing: SELECT id, user_name, user_password, user_email, create_time FROM sys_user WHERE 1 = 1 AND user_name LIKE CONCAT('%',?,'%') AND user_email = ?
->
-> DEBUG [main] - ==> Parameters: ad(String), test@mybatis.tk(String)
->
-> DEBUG [main] - <==      Total: 0
 
 ## 使用if标签实现动态更新
 
@@ -193,24 +164,6 @@ public void testUpdateByIdSelective() {
 }
 ```
 
-运行测试代码，测试通过，输出日志如下：
-
-> DEBUG [main] - ==>  Preparing: UPDATE sys_user SET user_email = ?, id = ? WHERE id = ?
->
-> DEBUG [main] - ==> Parameters: test@mybatis.tk(String), 1(Long), 1(Long)
->
-> DEBUG [main] - <==    Updates: 1
->
-> DEBUG [main] - ==>  Preparing: SELECT id, user_name, user_password, user_email, create_time FROM sys_user WHERE id = ?
->
-> DEBUG [main] - ==> Parameters: 1(Long)
->
-> TRACE [main] - <==    Columns: id, user_name, user_password, user_email, create_time
->
-> TRACE [main] - <==        Row: 1, admin, 123456, test@mybatis.tk, 2019-06-27 18:21:07.0
->
-> DEBUG [main] - <==      Total: 1
-
 ## 使用if标签实现动态插入
 
 假设有这样1个需求：往数据库表中插入数据的时候，如果某一列的参数值不为空，就使用传入的值，如果传入的参数值为空，就使用数据库中的默认值(通常是空)，而不使用传入的空值。
@@ -281,20 +234,3 @@ public void testInsertSelective() {
 }
 ```
 
-运行测试代码，测试通过，输出日志如下：
-
-> DEBUG [main] - ==>  Preparing: INSERT INTO sys_user(user_name, user_password, user_info, head_img, create_time) VALUES (?,?, ?,?,?)
->
-> DEBUG [main] - ==> Parameters: test-selective(String), 123456(String), test info(String), null, 2019-07-08 11:40:36.927(Timestamp)
->
-> DEBUG [main] - <==    Updates: 1
->
-> DEBUG [main] - ==>  Preparing: SELECT id, user_name, user_password, user_email, create_time FROM sys_user WHERE id = ?
->
-> DEBUG [main] - ==> Parameters: 1021(Long)
->
-> TRACE [main] - <==    Columns: id, user_name, user_password, user_email, create_time
->
-> TRACE [main] - <==        Row: 1021, test-selective, 123456, test@mybatis.tk, 2019-07-08 11:40:37.0
->
-> DEBUG [main] - <==      Total: 1

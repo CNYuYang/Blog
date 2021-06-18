@@ -79,34 +79,6 @@ public void testSelectByIdOrUserName() {
 }
 ```
 
-运行测试代码，测试通过，输出日志如下：
-
-> DEBUG [main] - ==>  Preparing: SELECT id, user_name, user_password, user_email, create_time FROM sys_user WHERE 1 = 1 AND id = ?
->
-> DEBUG [main] - ==> Parameters: 1(Long)
->
-> TRACE [main] - <==    Columns: id, user_name, user_password, user_email, create_time
->
-> TRACE [main] - <==        Row: 1, admin, 123456, admin@mybatis.tk, 2019-06-27 18:21:07.0
->
-> DEBUG [main] - <==      Total: 1
->
-> DEBUG [main] - ==>  Preparing: SELECT id, user_name, user_password, user_email, create_time FROM sys_user WHERE 1 = 1 AND user_name = ?
->
-> DEBUG [main] - ==> Parameters: admin(String)
->
-> TRACE [main] - <==    Columns: id, user_name, user_password, user_email, create_time
->
-> TRACE [main] - <==        Row: 1, admin, 123456, admin@mybatis.tk, 2019-06-27 18:21:07.0
->
-> DEBUG [main] - <==      Total: 1
->
-> DEBUG [main] - ==>  Preparing: SELECT id, user_name, user_password, user_email, create_time FROM sys_user WHERE 1 = 1 AND 1 = 2
->
-> DEBUG [main] - ==> Parameters:
->
-> DEBUG [main] - <==      Total: 0
-
 ## where 用法
 
 where标签的作用：如果该标签包含的元素中有返回值，就插入一个where，如果where后面的字符串是以AND或者OR开头的，就将它们剔除。
@@ -185,34 +157,6 @@ public void testSelectByUserWhere() {
 }
 
 ```
-
-运行测试代码，测试通过，输出日志如下：
-
-> DEBUG [main] - ==>  Preparing: SELECT id, user_name, user_password, user_email, create_time FROM sys_user WHERE user_name LIKE CONCAT('%',?,'%')
->
-> DEBUG [main] - ==> Parameters: ad(String)
->
-> TRACE [main] - <==    Columns: id, user_name, user_password, user_email, create_time
->
-> TRACE [main] - <==        Row: 1, admin, 123456, admin@mybatis.tk, 2019-06-27 18:21:07.0
->
-> DEBUG [main] - <==      Total: 1
->
-> DEBUG [main] - ==>  Preparing: SELECT id, user_name, user_password, user_email, create_time FROM sys_user WHERE user_email = ?
->
-> DEBUG [main] - ==> Parameters: test@mybatis.tk(String)
->
-> TRACE [main] - <==    Columns: id, user_name, user_password, user_email, create_time
->
-> TRACE [main] - <==        Row: 1001, test, 123456, test@mybatis.tk, 2019-06-27 18:21:07.0
->
-> DEBUG [main] - <==      Total: 1
->
-> DEBUG [main] - ==>  Preparing: SELECT id, user_name, user_password, user_email, create_time FROM sys_user WHERE user_name LIKE CONCAT('%',?,'%') AND user_email = ?
->
-> DEBUG [main] - ==> Parameters: ad(String), test@mybatis.tk(String)
->
-> DEBUG [main] - <==      Total: 0
 
 ## set 用法
 
@@ -295,22 +239,3 @@ public void testUpdateByIdSelectiveSet() {
 }
 
 ```
-
-运行测试代码，测试通过，输出日志如下：
-
-> DEBUG [main] - ==>  Preparing: UPDATE sys_user SET user_email = ?, id = ? WHERE id = ?
->
-> DEBUG [main] - ==> Parameters: test@mybatis.tk(String), 1(Long), 1(Long)
->
-> DEBUG [main] - <==    Updates: 1
->
-> DEBUG [main] - ==>  Preparing: SELECT id, user_name, user_password, user_email, create_time FROM sys_user WHERE id = ?
->
-> DEBUG [main] - ==> Parameters: 1(Long)
->
-> TRACE [main] - <==    Columns: id, user_name, user_password, user_email, create_time
->
-> TRACE [main] - <==        Row: 1, admin, 123456, test@mybatis.tk, 2019-06-27 18:21:07.0
->
-> DEBUG [main] - <==      Total: 1
-

@@ -98,28 +98,6 @@ public void testSelectUserAndRoleByIdSelect() {
 }
 ```
 
-运行测试代码，测试通过，输出日志如下：
-
-> DEBUG [main] - ==>  Preparing: SELECT u.id, u.user_name, u.user_password, u.user_email, u.create_time, ur.role_id FROM sys_user u INNER JOIN sys_user_role ur ON u.id = ur.user_id WHERE u.id = ?
->
-> DEBUG [main] - ==> Parameters: 1001(Long)
->
-> TRACE [main] - <==    Columns: id, user_name, user_password, user_email, create_time, role_id
->
-> TRACE [main] - <==        Row: 1001, test, 123456, test@mybatis.tk, 2019-06-27 18:21:07.0, 2
->
-> DEBUG [main] - ====>  Preparing: SELECT * FROM sys_role WHERE id = ?
->
-> DEBUG [main] - ====> Parameters: 2(Long)
->
-> TRACE [main] - <====    Columns: id, role_name, enabled, create_by, create_time
->
-> TRACE [main] - <====        Row: 2, 普通用户, 1, 1, 2019-06-27 18:21:12.0
->
-> DEBUG [main] - <====      Total: 1
->
-> DEBUG [main] - <==      Total: 1
-
 从日志可以看出，分别执行了2次查询，查询了两次数据库。
 
 ## 延迟加载
