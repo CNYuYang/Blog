@@ -29,3 +29,11 @@
 [第九章 高级结果映射之一对一映射](/notes/数据库/MyBatis/Mybatis从入门到精通/高级结果映射之一对一映射)
 
 [第十章 使用association标签实现嵌套查询](/notes/数据库/MyBatis/Mybatis从入门到精通/使用association标签实现嵌套查询)
+
+[第十一章 高级结果映射之一对多映射](/notes/数据库/MyBatis/Mybatis从入门到精通/高级结果映射之一对多映射)
+
+[第十二章 使用collection标签实现嵌套查询](/notes/数据库/MyBatis/Mybatis从入门到精通/使用collection标签实现嵌套查询)
+
+[第十三章 使用discriminator鉴别器映射](/notes/数据库/MyBatis/Mybatis从入门到精通/使用discriminator鉴别器映射)
+
+[第十四章 类型处理器](/notes/数据库/MyBatis/Mybatis从入门到精通/类型处理器)
