@@ -18,7 +18,11 @@
 
 │ │ │
 
-│ │ └─ [MySQL实战45讲](/notes/数据库/MySQL/MySQL实战45讲)
+│ │ ├─ [MySQL实战45讲](/notes/数据库/MySQL/MySQL实战45讲)
+
+│ │ │
+
+│ │ └─ [MySQL必知必会](/notes/数据库/MySQL/MySQL必知必会)
 
 │ │
 
