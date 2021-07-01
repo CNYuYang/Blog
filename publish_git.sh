@@ -21,4 +21,6 @@ git commit -m "[update] update blog"
 
 # git push
 
-git push 
+git push origin master
+
+git push copybuk master
