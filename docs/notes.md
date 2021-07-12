@@ -6,6 +6,14 @@
 
 │ │
 
+│ ├─ [SQL](/notes/数据库/SQL.md)
+
+│ │
+
+│ ├─ [CMU14-445](/notes/数据库/15445.md)
+
+│ │
+
 │ ├─ [MySQL](/notes/数据库/MySQL.md)
 
 │ │ │
@@ -23,10 +31,6 @@
 │ │ │
 
 │ │ └─ [MySQL必知必会](/notes/数据库/MySQL/MySQL必知必会)
-
-│ │
-
-│ ├─ [CMU14-445](/notes/数据库/15445.md)
 
 │ │
 
