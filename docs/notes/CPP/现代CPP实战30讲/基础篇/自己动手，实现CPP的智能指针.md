@@ -144,7 +144,7 @@ class smart_ptr {
 
 如果你学到的赋值函数还有一个类似于 **if (this != &amp;rhs)** 的判断的话，那种用法更啰嗦，而且异常安全性不够好——如果在赋值过程中发生异常的话，this 对象的内容可能已经被部分破坏了，对象不再处于一个完整的状态。
 
-**目前这种惯用法（见参考资料 **<span class="se-c834bf51" data-slate-type="primary" data-slate-object="mark"><span data-slate-string="true">[1]</span></span>**）则保证了强异常安全性：**赋值分为拷贝构造和交换两步，异常只可能在第一步发生；而第一步如果发生异常的话，this 对象完全不受任何影响。无论拷贝构造成功与否，结果只有赋值成功和赋值没有效果两种状态，而不会发生因为赋值破坏了当前对象这种场景。
+**目前这种惯用法（见参考资料**<span class="se-c834bf51" data-slate-type="primary" data-slate-object="mark"><span data-slate-string="true">[1]</span></span>**）则保证了强异常安全性：**赋值分为拷贝构造和交换两步，异常只可能在第一步发生；而第一步如果发生异常的话，this 对象完全不受任何影响。无论拷贝构造成功与否，结果只有赋值成功和赋值没有效果两种状态，而不会发生因为赋值破坏了当前对象这种场景。
 
 如果你觉得这个实现还不错的话，那恭喜你，你达到了 C++ 委员会在 1998 年时的水平：上面给出的语义本质上就是 C++98 的 **auto_ptr** 的定义。如果你觉得这个实现很别扭的话，也恭喜你，因为 C++ 委员会也是这么觉得的：**auto_ptr** 在 C++17 时已经被正式从 C++ 标准里删除了。
 
@@ -332,6 +332,8 @@ private:
 
 不过，上面的代码有个问题：它不能正确编译。编译器会报错，像：
 
+> fatal error: ‘ptr_’ is a private member of ‘smart_ptr\<circle\>’
+
 错误原因是模板的各个实例间并不天然就有 friend 关系，因而不能互访私有成员 **ptr_** 和 **shared_count_**。我们需要在 **smart_ptr** 的定义中显式声明：
 
 ```cpp
@@ -449,6 +451,8 @@ smart_ptr<T> dynamic_pointer_cast(
 ```
 
 编译会正常通过，同时能在输出里看到下面的结果：
+
+> use count of ptr3 is 3
 
 最后，对象仍然能够被正确删除。这说明我们的实现是正确的。
 

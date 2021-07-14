@@ -92,6 +92,24 @@ int main()
 
 在 MSVC 下的某次运行结果如下所示：
 
+> { 13, 6, 4, 11, 29 }
+> 
+> { 4, 6, 11, 13, 29 }
+> 
+> { 29, 13, 11, 6, 4 }
+> 
+> hash(nullptr) = a8c7f832281a39c5
+> 
+> hash(v.data()) = 7a0bdfd7df0923d2
+> 
+> v.data() = 000001EFFB10EAE0
+> 
+> hash("hello") = a430d84680aabd0b
+> 
+> hash("hellp") = a430e54680aad322
+> 
+
+
 可以看到，在这个实现里，空指针的哈希值是一个非零的数值，指针的哈希值也和指针的数值不一样。要注意不同的实现处理的方式会不一样。事实上，我的测试结果是 GCC、Clang 和 MSVC 对常见类型的哈希方式都各有不同。
 
 在上面的例子里，我们同时可以看到，这两个函数对象的值不重要。我们甚至可以认为，每个 **less**（或 **greater** 或 **hash**）对象都是等价的。关键在于其类型。以 **sort** 为例，第三个参数的类型确定了其排序行为。
@@ -134,6 +152,16 @@ int main()
 
 输出为：
 
+> (0, 3)
+> 
+> (1, 1)
+> 
+> (2, 2)
+> 
+> (9, 4)
+> 
+
+
 ## 关联容器 
 
 关联容器有 **set**（集合）、**map**（映射）、**multiset**（多重集）和 **multimap**（多重映射）。跳出 C++ 的语境，**map**（映射）的更常见的名字是关联数组和字典 **[3]**，而在 JSON 里直接被称为对象（object）。在 C++ 外这些容器常常是无序的；在 C++ 里关联容器则被认为是有序的。
@@ -156,6 +184,10 @@ set<int> s{1, 1, 1, 2, 3, 4};
 s
 ```
 
+> { 1, 2, 3, 4 }
+> 
+
+
 ```cpp
 multiset<int, greater<int>> ms{1, 1, 1, 2, 3, 4};
 ```
@@ -163,6 +195,10 @@ multiset<int, greater<int>> ms{1, 1, 1, 2, 3, 4};
 ```null
 ms
 ```
+
+> { 4, 3, 2, 1, 1, 1 }
+> 
+
 
 ```cpp
 map<string, int> mp{
@@ -177,6 +213,10 @@ map<string, int> mp{
 mp
 ```
 
+> { "four" => 4, "one" => 1, "three" => 3, "two" => 2 }
+> 
+
+
 ```javascript
 mp.insert({"four", 4});
 ```
@@ -185,13 +225,25 @@ mp.insert({"four", 4});
 mp
 ```
 
+> { "four" => 4, "one" => 1, "three" => 3, "two" => 2 }
+> 
+
+
 ```javascript
 mp.find("four") == mp.end()
 ```
 
+> false
+> 
+
+
 ```javascript
 mp.find("five") == mp.end()
 ```
+
+> (bool) true
+> 
+
 
 ```javascript
 mp["five"] = 5;
@@ -200,6 +252,10 @@ mp["five"] = 5;
 ```null
 mp
 ```
+
+> { "five" => 5, "four" => 4, "one" => 1, "three" => 3, "two" => 2 }
+> 
+
 
 ```cpp
 multimap<string, int> mmp{
@@ -214,6 +270,10 @@ multimap<string, int> mmp{
 mmp
 ```
 
+> { "four" => 4, "one" => 1, "three" => 3, "two" => 2 }
+> 
+
+
 ```javascript
 mmp.insert({"four", -4});
 ```
@@ -221,6 +281,10 @@ mmp.insert({"four", -4});
 ```null
 mmp
 ```
+
+> { "four" => 4, "four" => -4, "one" => 1, "three" => 3, "two" => 2 }
+> 
+
 
 可以看到，关联容器是一种有序的容器。名字带“multi”的允许键重复，不带的不允许键重复。**set** 和 **multiset** 只能用来存放键，而 **map** 和 **multimap** 则存放一个个键值对。
 
@@ -236,21 +300,41 @@ mmp
 mp.find("four")->second
 ```
 
+> 4
+> 
+
+
 ```javascript
 mp.lower_bound("four")->second
 ```
+
+> 4
+> 
+
 
 ```javascript
 (--mp.upper_bound("four"))->second
 ```
 
+> 4
+> 
+
+
 ```javascript
 mmp.lower_bound("four")->second
 ```
 
+> 4
+> 
+
+
 ```javascript
 (--mmp.upper_bound("four"))->second
 ```
+
+> -4
+> 
+
 
 如果你需要在 **multimap** 里精确查找满足某个键的区间的话，建议使用 **equal_range**，可以一次性取得上下界（半开半闭）。如下所示：
 
@@ -266,13 +350,25 @@ std::tie(lower, upper) =
 (lower != upper)  //  检测区间非空
 ```
 
+> true
+> 
+
+
 ```shell
 lower->second
 ```
 
+> 4
+> 
+
+
 ```sql
 (--upper)->second
 ```
+
+> -4
+> 
+
 
 如果在声明关联容器时没有提供比较类型的参数，缺省使用 **less** 来进行排序。如果键的类型提供了比较算符 **&lt;** 的重载，我们不需要做任何额外的工作。否则，我们就需要对键类型进行 **less** 的特化，或者提供一个其他的函数对象类型。
 
@@ -349,6 +445,12 @@ int main()
 
 输出可能是（顺序不能保证）：
 
+> { 21, 5, 8, 3, 13, 2, 1 }
+> 
+> { (3,4) => 5, (1,1) => 1.4142 }
+> 
+
+
 请注意我们在 **std** 名空间中添加了特化，这是少数用户可以向 **std** 名空间添加内容的情况之一。正常情况下，向 **std** 名空间添加声明或定义是禁止的，属于未定义行为。
 
 从实际的工程角度，无序关联容器的主要优点在于其性能。关联容器和 **priority_queue** 的插入和删除操作，以及关联容器的查找操作，其复杂度都是 O(log(n))，而无序关联容器的实现使用哈希表 **[5]**，可以达到平均 O(1)！但这取决于我们是否使用了一个好的哈希函数：在哈希函数选择不当的情况下，无序关联容器的插入、删除、查找性能可能成为最差情况的 O(n)，那就比关联容器糟糕得多了。
@@ -378,6 +480,12 @@ void test(int a[8])
   cout << ARRAY_LEN(a) << endl;
 }
 ```
+
+> warning: sizeof on array function parameter will return size of ‘int *’ instead of ‘int [8]’ [-Wsizeof-array-argument]
+> 
+>     cout << ARRAY_LEN(a) << endl;
+> 
+
 
 C++17 直接提供了一个 **size** 方法，可以用于提供数组长度，并且在数组退化成指针的情况下会直接失败：
 
@@ -449,6 +557,10 @@ int main()
 
 输出则是意料之中的：
 
+> { hello => 5 }
+> 
+
+
 ## 内容小结 
 
 本讲介绍了 C++ 的两个常用的函数对象，**less** 和 **hash**；然后介绍了用到这两个函数对象的容器适配器、关联容器和无序关联容器；最后，通过例子展示了为什么我们应当避免 C 数组而考虑使用 **array**。通过这两讲，我们已经完整地了解了 C++ 提供的标准容器。
@@ -465,21 +577,21 @@ int main()
 
 ## <span data-slate-string="true">参考资料</span> 
 
-**[1] cppreference.com, “Containers library”. **[<span data-slate-string="true">https://en.cppreference.com/w/cpp/container</span>](<span data-slate-string="true">https://en.cppreference.com/w/cpp/container</span>)** **
+**[1] cppreference.com, “Containers library”.**[https://en.cppreference.com/w/cpp/container](https://en.cppreference.com/w/cpp/container)
 
-**[1a] cppreference.com, “容器库”. **[<span data-slate-string="true">https://zh.cppreference.com/w/cpp/container</span>](<span data-slate-string="true">https://zh.cppreference.com/w/cpp/container</span>)** **
+**[1a] cppreference.com, “容器库”.**[https://zh.cppreference.com/w/cpp/container](https://zh.cppreference.com/w/cpp/container)
 
-**[2] cppreference.com, “Explicit (full) template specialization”. **[<span data-slate-string="true">https://en.cppreference.com/w/cpp/language/template_specialization</span>](<span data-slate-string="true">https://en.cppreference.com/w/cpp/language/template_specialization</span>)** **
+**[2] cppreference.com, “Explicit (full) template specialization”.**[https://en.cppreference.com/w/cpp/language/template_specialization](https://en.cppreference.com/w/cpp/language/template_specialization)
 
-**[2a] cppreference.com, “显式（全）模板特化”. **[<span data-slate-string="true">https://zh.cppreference.com/w/cpp/language/template_specialization</span>](<span data-slate-string="true">https://zh.cppreference.com/w/cpp/language/template_specialization</span>)** **
+**[2a] cppreference.com, “显式（全）模板特化”.**[https://zh.cppreference.com/w/cpp/language/template_specialization](https://zh.cppreference.com/w/cpp/language/template_specialization)
 
-**[3] Wikipedia, “Associative array”. **[<span data-slate-string="true">https://en.wikipedia.org/wiki/Associative_array</span>](<span data-slate-string="true">https://en.wikipedia.org/wiki/Associative_array</span>)** **
+**[3] Wikipedia, “Associative array”.**[https://en.wikipedia.org/wiki/Associative_array](https://en.wikipedia.org/wiki/Associative_array)
 
-**[3a] 维基百科, “关联数组”. **[<span data-slate-string="true">https://zh.wikipedia.org/zh-cn/ 关联数组</span>](<span data-slate-string="true">https://zh.wikipedia.org/zh-cn/ 关联数组</span>)** **
+**[3a] 维基百科, “关联数组”.**[https://zh.wikipedia.org/zh-cn/ 关联数组](https://zh.wikipedia.org/zh-cn/ 关联数组)
 
-**[4] Wikipedia, “Weak ordering”. **[<span data-slate-string="true">https://en.wikipedia.org/wiki/Weak_ordering</span>](<span data-slate-string="true">https://en.wikipedia.org/wiki/Weak_ordering</span>)** **
+**[4] Wikipedia, “Weak ordering”.**[https://en.wikipedia.org/wiki/Weak_ordering](https://en.wikipedia.org/wiki/Weak_ordering)
 
-**[5] Wikipedia, “Hash table”. **[<span data-slate-string="true">https://en.wikipedia.org/wiki/Hash_table</span>](<span data-slate-string="true">https://en.wikipedia.org/wiki/Hash_table</span>)** **
+**[5] Wikipedia, “Hash table”.**[https://en.wikipedia.org/wiki/Hash_table](https://en.wikipedia.org/wiki/Hash_table)
 
-**[5a] 维基百科, “哈希表”. **[<span data-slate-string="true">https://zh.wikipedia.org/zh-cn/ 哈希表</span>](<span data-slate-string="true">https://zh.wikipedia.org/zh-cn/ 哈希表</span>)** **
+**[5a] 维基百科, “哈希表”.**[https://zh.wikipedia.org/zh-cn/ 哈希表](https://zh.wikipedia.org/zh-cn/ 哈希表)
 

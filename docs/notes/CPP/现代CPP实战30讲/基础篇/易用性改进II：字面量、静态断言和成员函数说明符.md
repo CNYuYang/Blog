@@ -21,21 +21,49 @@
 C++11 引入了自定义字面量，可以使用 **operator"" 后缀** 来将用户提供的字面量转换成实际的类型。C++14 则在标准库中加入了不少标准字面量。下面这个程序展示了它们的用法：
 
 ```cpp
+#include <chrono>
+#include <complex>
+#include <iostream>
+#include <string>
+#include <thread>
+
+using namespace std;
+
+int main()
+{
+  cout << "i * i = " << 1i * 1i
+       << endl;
+  cout << "Waiting for 500ms"
+       << endl;
+  this_thread::sleep_for(500ms);
+  cout << "Hello world"s.substr(0, 5)
+       << endl;
+}
 ```
 
 输出是：
 
+> i * i = (-1,0)
+> 
+> Waiting for 500ms
+> 
+> Hello
+> 
+
+
 上面这个例子展示了 C++ 标准里提供的帮助生成虚数、时间和 **basic_string** 字面量的后缀。一个需要注意的地方是，我在上面使用了 **using namespace std**，这会同时引入 **std** 名空间和里面的内联名空间（inline namespace），包括了上面的字面量运算符所在的三个名空间：
 
-- std::literals::complex_literals
+- `std::literals::complex_literals`
 
-- std::literals::chrono_literals
+- `std::literals::chrono_literals`
 
-- std::literals::string_literals
+- `std::literals::string_literals`
 
 在产品项目中，一般不会（也不应该）全局使用 **using namespace std**（不过，为节约篇幅起见，专栏里的很多例子，特别是不完整的例子，还是默认使用了 **using namespace std**）。这种情况下，应当在使用到这些字面量的作用域里导入需要的名空间，以免发生冲突。在类似上面的例子里，就是在函数体的开头写：
 
 ```cpp
+using namespace std::literals::
+  chrono_literals;
 ```
 
 等等。
@@ -43,16 +71,57 @@ C++11 引入了自定义字面量，可以使用 **operator"" 后缀** 来将用
 要在自己的类里支持字面量也相当容易，唯一的限制是非标准的字面量后缀必须以下划线 **_** 打头。比如，假如我们有下面的长度类：
 
 ```cpp
+struct length {
+  double value;
+  enum unit {
+    metre,
+    kilometre,
+    millimetre,
+    centimetre,
+    inch,
+    foot,
+    yard,
+    mile,
+  };
+  static constexpr double factors[] =
+    {1.0,    1000.0,  1e-3,
+     1e-2,   0.0254,  0.3048,
+     0.9144, 1609.344};
+  explicit length(double v,
+                  unit u = metre)
+  {
+    value = v * factors[u];
+  }
+};
+
+length operator+(length lhs,
+                 length rhs)
+{
+  return length(lhs.value +
+                rhs.value);
+}
+
+//  可能有其他运算符
 ```
 
 我们可以手写 **length(1.0, length::metre)** 这样的表达式，但估计大部分开发人员都不愿意这么做吧。反过来，如果我们让开发人员这么写，大家应该还是基本乐意的：
 
 ```null
+1.0_m + 10.0_cm
 ```
 
 要允许上面这个表达式，我们只需要提供下面的运算符即可：
 
 ```python
+length operator"" _m(long double v)
+{
+  return length(v, length::metre);
+}
+
+length operator"" _cm(long double v)
+{
+  return length(v, length::centimetre);
+}
 ```
 
 如果美国国家航空航天局采用了类似的系统的话，火星气候探测者号的事故也许就不会发生了 **[1]**。当然，历史无法重来，而且 C++ 引入这样的语法已经是在事故发生之后十多年了……
@@ -64,6 +133,7 @@ C++11 引入了自定义字面量，可以使用 **operator"" 后缀** 来将用
 你一定知道 C++ 里有 **0x** 前缀，可以让开发人员直接写出像 **0xFF** 这样的十六进制字面量。另外一个目前使用得稍少的前缀就是 **0** 后面直接跟 0–7 的数字，表示八进制的字面量，在跟文件系统打交道的时候还会经常用到：有经验的 Unix 程序员可能会觉得 **chmod(path, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)** 并不比 **chmod(path, 0644)** 更为直观。从 C++14 开始，我们对于二进制也有了直接的字面量：
 
 ```cpp
+unsigned mask = 0b111000000;
 ```
 
 这在需要比特级操作等场合还是非常有用的。
@@ -71,7 +141,13 @@ C++11 引入了自定义字面量，可以使用 **operator"" 后缀** 来将用
 不过，遗憾的是， I/O streams 里只有 **dec**、**hex**、**oct** 三个操纵器（manipulator），而没有 **bin**，因而输出一个二进制数不能像十进制、十六进制、八进制那么直接。一个间接方式是使用 **bitset**，但调用者需要手工指定二进制位数：
 
 ```cpp
+#include <bitset>
+cout << bitset<9>(mask) << endl;
 ```
+
+> 111000000
+> 
+
 
 ## 数字分隔符 
 
@@ -90,26 +166,34 @@ C++11 引入了自定义字面量，可以使用 **operator"" 后缀** 来将用
 一些实际例子如下：
 
 ```java
+unsigned mask = 0b111'000'000;
+long r_earth_equatorial = 6'378'137;
+double pi = 3.14159'26535'89793;
+const unsigned magic = 0x44'42'47'4E;
 ```
 
 ## 静态断言 
 
 C++98 的 **assert** 允许在运行时检查一个函数的前置条件是否成立。没有一种方法允许开发人员在编译的时候检查假设是否成立。比如，如果模板有个参数 **alignment**，表示对齐，那我们最好在编译时就检查 **alignment** 是不是二的整数次幂。之前人们用了一些模板技巧来达到这个目的，但输出的信息并不那么友善。比如，我之前使用的方法，会产生类似下面这样的输出：
 
-![](./images/09-01.jpeg)
+![](./images/09-01.png)
 
 能起作用，但不够直观。C++11 直接从语言层面提供了静态断言机制，不仅能输出更好的信息，而且适用性也更好，可以直接放在类的定义中，而不像之前用的特殊技巧只能放在函数体里。对于类似上面的情况，现在的输出是：
 
-![](./images/09-02.jpeg)
+![](./images/09-02.png)
 
 静态断言语法上非常简单，就是：
 
 ```cpp
+static_assert(编译期条件表达式,
+               可选输出信息);
 ```
 
 产生上面的示例错误信息的代码是：
 
 ```cpp
+static_assert((alignment & (alignment - 1)) == 0,
+  "Alignment must be power of two");
 ```
 
 ## default 和 delete 成员函数 
@@ -163,21 +247,42 @@ C++98 的 **assert** 允许在运行时检查一个函数的前置条件是否�
 还是举例子来说明一下。对于下面这样的类，编译器看到有用户提供的构造函数，就会不默认提供默认构造函数：
 
 ```cpp
+template <typename T>
+class my_array {
+public:
+  my_array(size_t size);
+  …
+private:
+  T*     data_{nullptr};
+  size_t size_{0};
+};
 ```
 
 在没有默认初始化时，我们如果需要默认构造函数，就需要手工写一个，如：
 
 ```cpp
+  my_array()
+    : data_(nullptr)
+    , size_(0) {}
 ```
 
 可有了默认初始化之后，这个构造函数显然就不必要了，所以我们现在可以写：
 
 ```javascript
+  my_array() = default;
 ```
 
 再来一个反向的例子。我们 [[第 1 讲]]([第 1 讲]) 里的 **shape_wrapper**，它的复制行为是不安全的。我们可以像 [[第 2 讲]]([第 2 讲]) 里一样去改进它，但如果正常情况不需要复制行为、只是想防止其他开发人员误操作时，我们可以简单地在类的定义中加入：
 
 ```cpp
+class shape_wrapper {
+  …
+  shape_wrapper(
+    const shape_wrapper&) = delete;
+  shape_wrapper& operator=(
+    const shape_wrapper&) = delete;
+  …
+};
 ```
 
 在 C++11 之前，我们可能会用在 **private** 段里声明这些成员函数的方法，来达到相似的目的。但目前这个语法效果更好，可以产生更明确的错误信息。另外，你可以注意一下，用户声明成删除也是一种声明，因此编译器不会提供默认版本的移动构造和移动赋值函数。
@@ -199,6 +304,32 @@ C++98 的 **assert** 允许在运行时检查一个函数的前置条件是否�
 用法示意如下：
 
 ```cpp
+class A {
+public:
+  virtual void foo();
+  virtual void bar();
+  void foobar();
+};
+
+class B : public A {
+public:
+  void foo() override; // OK
+  void bar() override final; // OK
+  //void foobar() override;
+  //  非虚函数不能  override
+};
+
+class C final : public B {
+public:
+  void foo() override; // OK
+  //void bar() override;
+  // final  函数不可  override
+};
+
+class D : public C {
+  //  错误：final  类不可派生
+  …
+};
 ```
 
 ## 内容小结 
@@ -213,15 +344,15 @@ C++98 的 **assert** 允许在运行时检查一个函数的前置条件是否�
 
 ## <span data-slate-string="true">参考资料</span> 
 
-**[1] Wikipedia, “****Mars Climate Orbiter****”. **[<span data-slate-string="true">https://en.wikipedia.org/wiki/Mars_Climate_Orbiter</span>](<span data-slate-string="true">https://en.wikipedia.org/wiki/Mars_Climate_Orbiter</span>)** **
+**[1] Wikipedia, “Mars Climate Orbiter”.**[https://en.wikipedia.org/wiki/Mars_Climate_Orbiter](https://en.wikipedia.org/wiki/Mars_Climate_Orbiter)
 
-**[1a] 维基百科, “火星气候探测者号”. **[<span data-slate-string="true">https://zh.wikipedia.org/zh-cn/ 火星氣候探測者號</span>](<span data-slate-string="true">https://zh.wikipedia.org/zh-cn/ 火星氣候探測者號</span>)** **
+**[1a] 维基百科, “火星气候探测者号”.**[https://zh.wikipedia.org/zh-cn/ 火星氣候探測者號](https://zh.wikipedia.org/zh-cn/ 火星氣候探測者號)
 
-**[2] cppreference.com, “User-defined literals”. **[<span data-slate-string="true">https://en.cppreference.com/w/cpp/language/user_literal</span>](<span data-slate-string="true">https://en.cppreference.com/w/cpp/language/user_literal</span>)** **
+**[2] cppreference.com, “User-defined literals”.**[https://en.cppreference.com/w/cpp/language/user_literal](https://en.cppreference.com/w/cpp/language/user_literal)
 
-**[2a] cppreference.com, “用户定义字面量”. **[<span data-slate-string="true">https://zh.cppreference.com/w/cpp/language/user_literal</span>](<span data-slate-string="true">https://zh.cppreference.com/w/cpp/language/user_literal</span>)** **
+**[2a] cppreference.com, “用户定义字面量”.**[https://zh.cppreference.com/w/cpp/language/user_literal](https://zh.cppreference.com/w/cpp/language/user_literal)
 
-**[3] cppreference.com, “Non-static member functions”, section “Special member functions”. **[<span data-slate-string="true">https://en.cppreference.com/w/cpp/language/member_functions</span>](<span data-slate-string="true">https://en.cppreference.com/w/cpp/language/member_functions</span>)** **
+**[3] cppreference.com, “Non-static member functions”, section “Special member functions”.**[https://en.cppreference.com/w/cpp/language/member_functions](https://en.cppreference.com/w/cpp/language/member_functions)
 
-**[3a] cppreference.com, “非静态成员函数”, “特殊成员函数”部分. **[<span data-slate-string="true">https://zh.cppreference.com/w/cpp/language/member_functions</span>](<span data-slate-string="true">https://zh.cppreference.com/w/cpp/language/member_functions</span>)** **
+**[3a] cppreference.com, “非静态成员函数”, “特殊成员函数”部分.**[https://zh.cppreference.com/w/cpp/language/member_functions](https://zh.cppreference.com/w/cpp/language/member_functions)
 
