@@ -51,8 +51,6 @@
     <div id="app"></div>
     <script>
         window.$docsify = {
-            name: '',
-            repo: '',
             coverpage: true,
             markdown: {
                 renderer: {
@@ -71,14 +69,7 @@
             plugins: [
                 function(hook, vm) {
                     hook.beforeEach(function(html) {
-                        if (/githubusercontent\.com/.test(vm.route.file)) {
-                            url = vm.route.file
-                                .replace('raw.githubusercontent.com', 'github.com')
-                                .replace(/\/master/, '/blob/master')
-                        } else {
-                            url = 'https://github.com/CNYuYang/Blog/tree/master/docs/' + vm.route.file
-                        }
-                        var editHtml = '[:memo: Edit Document](' + url + ')\n'
+                        var editHtml = ''
                         return editHtml +
                             html +
                             '\n\n----\n\n' +
