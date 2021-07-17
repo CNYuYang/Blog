@@ -24,6 +24,8 @@
 
 **2021.7.4 - 至今 华为技术有限公司武汉研究所 通用软件开发工程师**
 
+[iMaster NCE-T](https://e.huawei.com/en/products/network-management-and-analysis-software/imaster-nce-t) 团队。
+
 ## 项目经历
 
 ### My-19-years-old  
