@@ -32,6 +32,6 @@
 
 这是一篇记录自己 19 岁那年参加全国大学生电子设计大赛的短文，包括自己两年备战电赛的经历、**STM32嵌入式开发的总结**、大学生活议题的讨论。使用 Latex 编写，作为信息学院暑假嵌入式培训的讲义，并在和电子科技协会成员的共同努力下为其录制教学视频。
 
-🏗项目地址：[My-19-years-old](https://github.com/CNYuYang/My-19-years-old)
+🏗 项目地址：[My-19-years-old](https://github.com/CNYuYang/My-19-years-old)
 
-▶视频地址：[STM32系列视频(CubeMX+MDK5+HAL库+库函数一站式学习)](https://www.bilibili.com/video/BV1q4411d7RX)
+▶ 视频地址：[STM32系列视频(CubeMX+MDK5+HAL库+库函数一站式学习)](https://www.bilibili.com/video/BV1q4411d7RX)
