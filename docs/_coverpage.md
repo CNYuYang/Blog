@@ -1,4 +1,4 @@
-<img style="max-width:200px" src="/img/logo.png" data-origin="img/logo.png" alt="Logo.png">
+<img style="max-width:200px" src="/img/Me.png" data-origin="img/Me.png" alt="Me.png">
 
 **Maoist & Coder**
 
