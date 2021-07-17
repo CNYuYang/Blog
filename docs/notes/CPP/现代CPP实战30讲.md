@@ -71,3 +71,51 @@ C++，一门声名在外的老牌编程语言。
 [14丨SFINAE：不是错误的替换失败是怎么回事?](/notes/CPP/现代CPP实战30讲/提高篇/SFINAE：不是错误的替换失败是怎么回事？)
 
 [15丨constexpr：一个常态的世界](/notes/CPP/现代CPP实战30讲/提高篇/constexpr：一个常态的世界)
+
+[16丨函数对象和lambda：进入函数式编程](/notes/CPP/现代CPP实战30讲/提高篇/函数对象和lambda：进入函数式编程)
+
+[17丨函数式编程：一种越来越流行的编程范式](/notes/CPP/现代CPP实战30讲/提高篇/函数式编程：一种越来越流行的编程范式)
+
+[18丨应用可变模板和tuple的编译期技巧](/notes/CPP/现代CPP实战30讲/提高篇/应用可变模板和tuple的编译期技巧)
+
+[19丨thread和future：领略异步中的未来](/notes/CPP/现代CPP实战30讲/提高篇/thread和future：领略异步中的未来)
+
+[20丨内存模型和atomic：理解并发的复杂性](/notes/CPP/现代CPP实战30讲/提高篇/内存模型和atomic：理解并发的复杂性)
+
+### 实战篇
+
+[21丨工具漫谈：编译、格式化、代码检查、排错各显身手](/notes/CPP/现代CPP实战30讲/实战篇/工具漫谈：编译、格式化、代码检查、排错各显身手)
+
+[22丨处理数据类型变化和错误：optional、variant、expected和Herbception](/notes/CPP/现代CPP实战30讲/实战篇/处理数据类型变化和错误：optional、variant、expected和Herbception)
+
+[23丨数字计算：介绍线性代数和数值计算库](/notes/CPP/现代CPP实战30讲/实战篇/数字计算：介绍线性代数和数值计算库)
+
+[24丨Boost：你需要的“瑞士军刀”](/notes/CPP/现代CPP实战30讲/实战篇/Boost：你需要的“瑞士军刀”)
+
+[25丨两个单元测试库：C++里如何进行单元测试？](/notes/CPP/现代CPP实战30讲/实战篇/两个单元测试库：CPP里如何进行单元测试_)
+
+[26丨Easylogging++和spdlog：两个好用的日志库](/notes/CPP/现代CPP实战30讲/实战篇/EasyloggingPP和spdlog：两个好用的日志库)
+
+[27丨C++ REST SDK：使用现代C++开发网络应用](/notes/CPP/现代CPP实战30讲/实战篇/CPPRESTSDK：使用现代CPP开发网络应用)
+
+### 新年特别策划
+
+[新春寄语丨35年码龄程序员：人生漫长，走点弯路在所难免](/notes/CPP/现代CPP实战30讲/新年特别策划/35年码龄程序员：人生漫长，走点弯路在所难免)
+
+[新春福利丨C++好书荐读](/notes/CPP/现代CPP实战30讲/新年特别策划/CPP好书荐读)
+
+### 未来篇
+
+[28丨Concepts：如何对模板进行约束？](/notes/CPP/现代CPP实战30讲/未来篇/Concepts：如何对模板进行约束_)
+
+[29丨Ranges：无迭代器的迭代和更方便的组合](/notes/CPP/现代CPP实战30讲/未来篇/Ranges：无迭代器的迭代和更方便的组合)
+
+[30丨Coroutines：协作式的交叉调度执行](/notes/CPP/现代CPP实战30讲/未来篇/Coroutines：协作式的交叉调度执行)
+
+### 加餐
+
+[加餐丨部分课后思考题答案合集](/notes/CPP/现代CPP实战30讲/加餐/部分课后思考题答案合集)
+
+### 结束语
+
+[结束语丨终点已达，行程还要继续](/notes/CPP/现代CPP实战30讲/结束语/终点已达，行程还要继续)
