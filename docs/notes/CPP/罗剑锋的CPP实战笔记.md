@@ -47,11 +47,11 @@
 
 ### 语言特性
 
-[06｜auto_decltype：为什么要有自动类型推导？](/notes/CPP/罗剑锋的CPP实战笔记/语言特性/auto_decltype：为什么要有自动类型推导？)
+[06｜auto/decltype：为什么要有自动类型推导？](/notes/CPP/罗剑锋的CPP实战笔记/语言特性/auto_decltype：为什么要有自动类型推导？)
 
-[07｜const_volatile_mutable：常量_变量究竟是怎么回事？](/notes/CPP/罗剑锋的CPP实战笔记/语言特性/const_volatile_mutable：常量_变量究竟是怎么回事？)
+[07｜const/volatile/mutable：常量/变量究竟是怎么回事？](/notes/CPP/罗剑锋的CPP实战笔记/语言特性/const_volatile_mutable：常量_变量究竟是怎么回事？)
 
-[08｜smart_ptr：智能指针到底“智能”在哪里？](/notes/CPP/罗剑锋的CPP实战笔记/语言特性/smart_ptr：智能指针到底“智能”在哪里？)
+[08｜smart/ptr：智能指针到底“智能”在哪里？](/notes/CPP/罗剑锋的CPP实战笔记/语言特性/smart_ptr：智能指针到底“智能”在哪里？)
 
 [09｜exception：怎样才能用好异常？](/notes/CPP/罗剑锋的CPP实战笔记/语言特性/exception：怎样才能用好异常？)
 
