@@ -31,15 +31,15 @@ make_unique(Args&&... args)
 
 这样，它就可以把传递给自己的全部参数转发到模板参数类的构造函数上去。注意，在这种情况下，我们通常会使用 **std::forward**，确保参数转发时仍然保持正确的左值或右值引用类型。
 
-稍微解释一下上面三处出现的 **...**：
+稍微解释一下上面三处出现的 **...** ：
 
-- **typename... Args** 声明了一系列的类型——**class...** 或 **typename...** 表示后面的标识符代表了一系列的类型。
+- **typename... Args** 声明了一系列的类型—— **class...** 或 **typename...** 表示后面的标识符代表了一系列的类型。
 
-- **Args&&... args** 声明了一系列的形参 **args**，其类型是 **Args&&**。
+- **Args&&... args** 声明了一系列的形参 **args**，其类型是 **Args&&** 。
 
 - **forward<Args>(args)...** 会在编译时实际逐项展开 **Args** 和 **args** ，参数有多少项，展开后就是多少项。
 
-举一个例子，如果我们需要在堆上传递一个 **vector&lt;int&gt;**，假设我们希望初始构造的大小为 100，每个元素都是 **1**，那我们可以这样写：
+举一个例子，如果我们需要在堆上传递一个 **vector&lt;int&gt;** ，假设我们希望初始构造的大小为 100，每个元素都是 **1** ，那我们可以这样写：
 
 ```cpp
 make_unique<vector<int>>(100, 1)
@@ -100,7 +100,7 @@ sum(6.5 + x)
 
 注意我们都不必使用相同的数据类型：只要这些数据之间可以应用 **+**，它们的类型无关紧要……
 
-再看另一个复杂些的例子，函数的组合 **[2]**。如果我们有函数 <span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span></span></span> 和 函数 <span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span></span></span>，要得到函数的联用 <span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.63889em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∘</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span></span></span>，其满足：
+再看另一个复杂些的例子，函数的组合 **[2]** 。如果我们有函数 <span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span></span></span> 和 函数 <span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span></span></span>，要得到函数的联用 <span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.63889em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∘</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span></span></span>，其满足：
 
 我们能不能用一种非常简单的方式，写不包含变量 <span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">x</span></span></span> 的表达式来表示函数组合呢？答案是肯定的。
 
@@ -117,7 +117,7 @@ auto compose(F f)
 }
 ```
 
-上面我们仅返回一个泛型 lambda 表达式，保证参数可以转发到 **f**。记得我们在 [[第 16 讲]]([第 16 讲]) 讲过泛型 lambda 表达式，本质上就是一个模板，所以我们按转发用法的可变模板来理解上面的 **...** 部分就对了。
+上面我们仅返回一个泛型 lambda 表达式，保证参数可以转发到 **f**。记得我们在 [[第 16 讲]](/notes/CPP/现代CPP实战30讲/提高篇/函数对象和lambda：进入函数式编程) 讲过泛型 lambda 表达式，本质上就是一个模板，所以我们按转发用法的可变模板来理解上面的 **...** 部分就对了。
 
 下面是正常有组合的情况：
 
@@ -149,7 +149,7 @@ auto square_list =
   };
 ```
 
-我们使用了 [[第 13 讲]]([第 13 讲]) 中给出的 **fmap**，而不是标准库里的 **transform**，是因为后者接口非函数式，无法组合——它要求参数给出输出位置的迭代器，会修改迭代器指向的内容，返回结果也只是单个的迭代器；函数式的接口则期望不修改参数的内容，结果完全在返回值中。
+我们使用了 [[第 13 讲]](/notes/CPP/现代CPP实战30讲/提高篇/编译期能做些什么？一个完整的计算世界) 中给出的 **fmap**，而不是标准库里的 **transform**，是因为后者接口非函数式，无法组合——它要求参数给出输出位置的迭代器，会修改迭代器指向的内容，返回结果也只是单个的迭代器；函数式的接口则期望不修改参数的内容，结果完全在返回值中。
 
 我们这儿用了泛型 lambda 表达式，是因为组合的时候不能使用模板，只能是函数对象或函数（指针）——如果我们定义一个 **square_list** 模板的话，组合时还得显式实例化才行（写成 **square_list&lt;const vector&lt;int&gt;&amp;&gt;** 的样子），很不方便。
 
@@ -188,7 +188,7 @@ cout << squared_sum(v) << endl;
 
 上面的写法虽然看起来还不错，但实际上有个缺陷：被 compose 的函数除了第一个（最右边的），其他的函数只能接收一个参数。要想进一步推进类似的技巧，我们得首先解决这个问题。
 
-在 C++ 里，要通用地用一个变量来表达多个值，那就得看多元组——**tuple** 模板了 **[4]**。**tuple** 算是 C++98 里的 **pair** 类型的一般化，可以表达任意多个固定数量、固定类型的值的组合。下面这段代码约略地展示了其基本用法：
+在 C++ 里，要通用地用一个变量来表达多个值，那就得看多元组——**tuple** 模板了 **[4]** 。**tuple** 算是 C++98 里的 **pair** 类型的一般化，可以表达任意多个固定数量、固定类型的值的组合。下面这段代码约略地展示了其基本用法：
 
 ```cpp
 #include <algorithm>
@@ -278,7 +278,7 @@ constexpr decltype(auto) apply(
 
 这似乎已经挺接近我们需要的形式了，但实际调用函数的参数项数会变啊……
 
-我们已经有了参数的项数（使用 **tuple_size_v**），所以我们下面要做的是生成从 0 到项数减一之间的整数序列。标准库里已经定义了相关的工具，我们需要的就是其中的 **make_index_sequence** **[5]**，其简化实现如下所示：
+我们已经有了参数的项数（使用 **tuple_size_v**），所以我们下面要做的是生成从 0 到项数减一之间的整数序列。标准库里已经定义了相关的工具，我们需要的就是其中的 **make_index_sequence** **[5]** ，其简化实现如下所示：
 
 ```cpp
 template <class T, T... Ints>
@@ -309,7 +309,7 @@ using make_index_sequence =
     N>::type;
 ```
 
-正如一般的模板代码，它看起来还是有点绕的。其要点是，如果我们给出 **make_index_sequence&lt;N&gt;**，则结果是 **integer_sequence&lt;size_t, 0, 1, 2, …, N - 1&gt;**（一下子想不清楚的话，可以拿纸笔来模拟一下模板的展开过程）。而有了这样一个模板的帮助之后，我们就可以写出下面这样的函数（同样，这是标准库里的 **apply** 函数模板 **[6]** 的简化版本）：
+正如一般的模板代码，它看起来还是有点绕的。其要点是，如果我们给出 **make_index_sequence&lt;N&gt;** ，则结果是  **integer_sequence&lt;size_t, 0, 1, 2, …, N - 1&gt;** （一下子想不清楚的话，可以拿纸笔来模拟一下模板的展开过程）。而有了这样一个模板的帮助之后，我们就可以写出下面这样的函数（同样，这是标准库里的 **apply** 函数模板 **[6]** 的简化版本）：
 
 ```cpp
 template <class F, class Tuple,
@@ -336,7 +336,7 @@ apply(F&& f, Tuple&& t)
 }
 ```
 
-我们如果有一个三元组 **t**，类型为 **tuple&lt;int, string, string&gt;**，去 **apply** 到一个函数 **f**，展开后我们得到 **apply_impl(f, t, index_sequence&lt;0, 1, 2&gt;{})**，再展开后我们就得到了上面那个有 **get&lt;0&gt;**、**get&lt;1&gt;**、**get&lt;2&gt;** 的函数调用形式。换句话说，我们利用一个计数序列的类型，可以在编译时展开 **tuple** 里的各个成员，并用来调用函数。
+我们如果有一个三元组 **t**，类型为 **tuple&lt;int, string, string&gt;** ，去 **apply** 到一个函数 **f**，展开后我们得到 **apply_impl(f, t, index_sequence&lt;0, 1, 2&gt;{})** ，再展开后我们就得到了上面那个有 **get&lt;0&gt;** 、 **get&lt;1&gt;** 、 **get&lt;2&gt;** 的函数调用形式。换句话说，我们利用一个计数序列的类型，可以在编译时展开 **tuple** 里的各个成员，并用来调用函数。
 
 ## 数值预算 
 
