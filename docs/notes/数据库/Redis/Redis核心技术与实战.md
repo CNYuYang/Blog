@@ -93,3 +93,23 @@ Redis 作为具备高性能、高可靠和高可扩展性的典型键值数据�
 [29丨无锁的原子操作：Redis如何应对并发访问？](/notes/数据库/Redis/Redis核心技术与实战/实战篇/无锁的原子操作：Redis如何应对并发访问？)
 
 [30丨如何使用Redis实现分布式锁？](/notes/数据库/Redis/Redis核心技术与实战/实战篇/如何使用Redis实现分布式锁？)
+
+[31丨事务机制：Redis能实现ACID属性吗？](/notes/数据库/Redis/Redis核心技术与实战/实战篇/事务机制：Redis能实现ACID属性吗？)
+
+[32丨Redis主从同步与故障切换，有哪些坑？](/notes/数据库/Redis/Redis核心技术与实战/实战篇/Redis主从同步与故障切换，有哪些坑？)
+
+[33丨脑裂：一次奇怪的数据丢失](/notes/数据库/Redis/Redis核心技术与实战/实战篇/脑裂：一次奇怪的数据丢失)
+
+[34丨第23_33讲课后思考题答案及常见问题答疑](/notes/数据库/Redis/Redis核心技术与实战/实战篇/第23_33讲课后思考题答案及常见问题答疑)
+
+[35丨Codis VS Redis Cluster：我该选择哪一个集群方案？](/notes/数据库/Redis/Redis核心技术与实战/实战篇/CodisVSRedisCluster：我该选择哪一个集群方案？)
+
+[36丨Redis支撑秒杀场景的关键技术和实践都有哪些？](/notes/数据库/Redis/Redis核心技术与实战/实战篇/Redis支撑秒杀场景的关键技术和实践都有哪些？)
+
+[37丨数据分布优化：如何应对数据倾斜？](/notes/数据库/Redis/Redis核心技术与实战/实战篇/数据分布优化：如何应对数据倾斜？)
+
+[38丨通信开销：限制Redis Cluster规模的关键因素](/notes/数据库/Redis/Redis核心技术与实战/实战篇/通信开销：限制RedisCluster规模的关键因素)
+
+### 未来篇
+
+[39丨通信开销：限制Redis Cluster规模的关键因素](/notes/数据库/Redis/Redis核心技术与实战/未来篇/通信开销：限制RedisCluster规模的关键因素)
