@@ -112,4 +112,24 @@ Redis 作为具备高性能、高可靠和高可扩展性的典型键值数据�
 
 ### 未来篇
 
-[39丨通信开销：限制Redis Cluster规模的关键因素](/notes/数据库/Redis/Redis核心技术与实战/未来篇/通信开销：限制RedisCluster规模的关键因素)
+[39丨Redis 6.0的新特性：多线程、客户端缓存与安全](/notes/数据库/Redis/Redis核心技术与实战/未来篇/Redis6.0的新特性：多线程、客户端缓存与安全)
+
+[40丨Redis的下一步：基于NVM内存的实践](/notes/数据库/Redis/Redis核心技术与实战/未来篇/Redis的下一步：基于NVM内存的实践)
+
+[41丨第35～40讲课后思考题答案及常见问题答疑](/notes/数据库/Redis/Redis核心技术与实战/未来篇/第35～40讲课后思考题答案及常见问题答疑)
+
+### 加餐篇
+
+[42丨经典的Redis学习资料有哪些？](/notes/数据库/Redis/Redis核心技术与实战/加餐篇/经典的Redis学习资料有哪些？)
+
+[43丨Kaito：我是如何学习Redis的？](/notes/数据库/Redis/Redis核心技术与实战/加餐篇/Kaito：我是如何学习Redis的？)
+
+[44丨Kaito：我希望成为在压力中成长的人](/notes/数据库/Redis/Redis核心技术与实战/加餐篇/Kaito：我希望成为在压力中成长的人)
+
+[45丨Redis客户端如何与服务器端交换命令和数据？](/notes/数据库/Redis/Redis核心技术与实战/加餐篇/Redis客户端如何与服务器端交换命令和数据？)
+
+[46丨Redis有哪些好用的运维工具？](/notes/数据库/Redis/Redis核心技术与实战/加餐篇/Redis有哪些好用的运维工具？)
+
+[47丨Redis的使用规范小建议](/notes/数据库/Redis/Redis核心技术与实战/加餐篇/Redis的使用规范小建议)
+
+[48丨从微博的Redis实践中，我们可以学到哪些经验？](/notes/数据库/Redis/Redis核心技术与实战/加餐篇/从微博的Redis实践中，我们可以学到哪些经验？)
