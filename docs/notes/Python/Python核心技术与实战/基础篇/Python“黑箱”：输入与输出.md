@@ -12,7 +12,7 @@ Python 程序也是一个黑箱：通过输入流将数据送达，通过输出�
 
 最简单直接的输入来自键盘操作，比如下面这个例子。
 
-```
+```python
 name = input('your name:')
 gender = input('you are a boy?(y/n)')
  
@@ -39,7 +39,7 @@ input() 函数暂停程序运行，同时等待键盘输入；直到回车被按
 
 我们再来看下面这个例子。
 
-```
+```python
 a = input()
 1
 b = input()
@@ -50,7 +50,7 @@ print('a + b = {}'.format(a + b))
 a + b = 12
 print('type of a is {}, type of b is {}'.format(type(a), type(b)))
 ########## 输出 ##############
-type of a is &lt;class 'str'&gt;, type of b is &lt;class 'str'&gt;
+type of a is <class 'str'>, type of b is <class 'str'>
 print('a + b = {}'.format(int(a) + int(b)))
 ########## 输出 ##############
 a + b = 3
@@ -95,7 +95,7 @@ And when this happens, and when we allow freedom ring, when we let it ring from 
 
 你可以自己先思考一下，用 Python 如何解决这个问题。这里，我也给出了我的代码，并附有详细的注释。我们一起来看下这段代码。
 
-```
+```python
 import re
  
 # 你不用太关心这个函数
@@ -193,7 +193,7 @@ JSON（JavaScript Object Notation）是一种轻量级的数据交换格式，�
 
 具体代码如下：
 
-```
+```python
 import json
  
 params = {
@@ -216,9 +216,9 @@ print('type of original_params = {}, original_params = {}'.format(type(original_
 ########## 输出 ##########
  
 after json serialization
-type of params_str = &lt;class 'str'&gt;, params_str = {'symbol': '123456', 'type': 'limit', 'price': 123.4, 'amount': 23}
+type of params_str = <class 'str'>, params_str = {'symbol': '123456', 'type': 'limit', 'price': 123.4, 'amount': 23}
 after json deserialization
-type of original_params = &lt;class 'dict'&gt;, original_params = {'symbol': '123456', 'type': 'limit', 'price': 123.4, 'amount': 23}
+type of original_params = <class 'dict'>, original_params = {'symbol': '123456', 'type': 'limit', 'price': 123.4, 'amount': 23}
 
 ```
 
@@ -235,7 +235,7 @@ type of original_params = &lt;class 'dict'&gt;, original_params = {'symbol': '12
 
 是的，你仍然可以使用上面提到的 open() 和 read()/write() ，先将字符串读取 / 输出到内存，再进行 JSON 编码 / 解码，当然这有点麻烦。
 
-```
+```python
 import json
  
 params = {
@@ -257,7 +257,7 @@ print('type of original_params = {}, original_params = {}'.format(type(original_
 ########## 输出 ##########
  
 after json deserialization
-type of original_params = &lt;class 'dict'&gt;, original_params = {'symbol': '123456', 'type': 'limit', 'price': 123.4, 'amount': 23}
+type of original_params = <class 'dict'>, original_params = {'symbol': '123456', 'type': 'limit', 'price': 123.4, 'amount': 23}
 
 ```
 
