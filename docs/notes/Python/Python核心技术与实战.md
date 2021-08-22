@@ -102,3 +102,49 @@
 
 ### 规范篇
 
+[26丨[名师分享] 活都来不及干了，还有空注意代码风格？！](/notes/Python/Python核心技术与实战/规范篇/活都来不及干了还有空注意代码风格)
+
+[27丨学会合理分解代码，提高代码可读性](/notes/Python/Python核心技术与实战/规范篇/学会合理分解代码，提高代码可读性)
+
+[28丨如何合理利用assert？](/notes/Python/Python核心技术与实战/规范篇/如何合理利用assert？)
+
+[29丨巧用上下文管理器和With语句精简代码](/notes/Python/Python核心技术与实战/规范篇/巧用上下文管理器和With语句精简代码)
+
+[30丨真的有必要写单元测试吗？](/notes/Python/Python核心技术与实战/规范篇/真的有必要写单元测试吗？)
+
+[31丨pdb&cProfile：调试和性能分析的法宝](/notes/Python/Python核心技术与实战/规范篇/pdb-cProfile：调试和性能分析的法宝)
+
+[32丨答疑（三）：如何选择合适的异常处理方式？](/notes/Python/Python核心技术与实战/规范篇/答疑（三）：如何选择合适的异常处理方式？)
+
+### 量化交易实战篇
+
+[33丨带你初探量化世界](/notes/Python/Python核心技术与实战/量化交易实战篇/带你初探量化世界)
+
+[34丨RESTful&Socket搭建交易执行层核心](/notes/Python/Python核心技术与实战/量化交易实战篇/RESTful-Socket_搭建交易执行层核心)
+
+[35丨RESTful&Socket行情数据对接和抓取](/notes/Python/Python核心技术与实战/量化交易实战篇/RESTful-Socket_行情数据对接和抓取)
+
+[36丨Pandas & Numpy 策略与回测系统](/notes/Python/Python核心技术与实战/量化交易实战篇/Pandas-Numpy策略与回测系统)
+
+[37丨Kafka & ZMQ：自动化交易流水线](/notes/Python/Python核心技术与实战/量化交易实战篇/Kafka-ZMQ_自动化交易流水线)
+
+[38丨MySQL：日志和数据存储系统](/notes/Python/Python核心技术与实战/量化交易实战篇/MySQL：日志和数据存储系统)
+
+[39丨Django：搭建监控平台](/notes/Python/Python核心技术与实战/量化交易实战篇/Django：搭建监控平台)
+
+[40丨总结：Python中的数据结构与算法全景](/notes/Python/Python核心技术与实战/量化交易实战篇/总结：Python中的数据结构与算法全景)
+
+### 技术见闻与分享
+
+[41丨硅谷一线互联网公司的工作体验](/notes/Python/Python核心技术与实战/技术见闻与分享/硅谷一线互联网公司的工作体验)
+
+[42丨细数技术研发的注意事项](/notes/Python/Python核心技术与实战/技术见闻与分享/细数技术研发的注意事项)
+
+[43丨Q&A：聊一聊职业发展和选择](/notes/Python/Python核心技术与实战/技术见闻与分享/Q-A：聊一聊职业发展和选择)
+
+[加餐丨带你上手SWIG：一份清晰好用的SWIG编程实践指南](/notes/Python/Python核心技术与实战/技术见闻与分享/带你上手SWIG：一份清晰好用的SWIG编程实践指南)
+
+### 结束语
+
+[结束语丨技术之外的几点成长建议](/notes/Python/Python核心技术与实战/结束语/技术之外的几点成长建议)
+
