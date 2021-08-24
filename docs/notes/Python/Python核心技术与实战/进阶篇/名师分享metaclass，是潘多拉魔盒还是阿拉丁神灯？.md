@@ -22,7 +22,7 @@ metaclass，一如其名，实际上同时包含了“超越类”和“变形�
 
 <a href="https://pyyaml.org/wiki/PyYAMLDocumentation">YAML</a>是一个家喻户晓的 Python 工具，可以方便地序列化 / 逆序列化结构数据。YAMLObject 的一个<strong>超越变形能力</strong>，就是它的任意子类支持序列化和反序列化（serialization &amp; deserialization）。比如说下面这段代码：
 
-```
+```python
 class Monster(yaml.YAMLObject):
   yaml_tag = u'!Monster'
   def __init__(self, name, hp, ac, attacks):
@@ -77,7 +77,7 @@ name: Cave lizard
 
 一个很自然的想法就是，那我们建立一个全局变量叫 registry，把所有需要逆序列化的 YAMLObject，都注册进去。比如下面这样：
 
-```
+```python
 registry = {}
  
 def add_constructor(target_class):
@@ -87,7 +87,7 @@ def add_constructor(target_class):
 
 然后，在 Monster 类定义后面加上下面这行代码：
 
-```
+```python
 add_constructor(Monster)
 
 ```
@@ -96,7 +96,7 @@ add_constructor(Monster)
 
 那么，更优的实现方式是什么样呢？如果你看过 YAML 的源码，就会发现，正是 metaclass 解决了这个问题。
 
-```
+```python
 # Python 2/3 相同部分
 class YAMLObjectMetaclass(type):
   def __init__(cls, name, bases, kwds):
@@ -120,14 +120,14 @@ class YAMLObject(object):
 
 你可以发现，YAMLObject 把 metaclass 都声明成了 YAMLObjectMetaclass，尽管声明方式在 Python 2 和 3 中略有不同。在 YAMLObjectMetaclass 中， 下面这行代码就是魔法发生的地方：
 
-```
+```python
 cls.yaml_loader.add_constructor(cls.yaml_tag, cls.from_yaml) 
 
 ```
 
 YAML 应用 metaclass，拦截了所有 YAMLObject 子类的定义。也就说说，在你定义任何 YAMLObject 子类时，Python 会强行插入运行下面这段代码，把我们之前想要的<code>add_constructor(Foo)</code>给自动加上。
 
-```
+```python
 cls.yaml_loader.add_constructor(cls.yaml_tag, cls.from_yaml)
 
 ```
@@ -144,7 +144,7 @@ cls.yaml_loader.add_constructor(cls.yaml_tag, cls.from_yaml)
 
 可能会让你惊讶，事实上，类本身不过是一个名为 type 类的实例。在 Python 的类型世界里，type 这个类就是造物的上帝。这可以在代码中验证：
 
-```
+```python
 # Python 3 和 Python 2 类似
 class MyClass:
   pass
@@ -153,11 +153,11 @@ instance = MyClass()
  
 type(instance)
 # 输出
-&lt;class '__main__.C'&gt;
+<class '__main__.C'>
  
 type(MyClass)
 # 输出
-&lt;class 'type'&gt;
+<class 'type'>
 
 ```
 
@@ -165,7 +165,7 @@ type(MyClass)
 
 当我们定义一个类的语句结束时，真正发生的情况，是 Python 调用 type 的<code>__call__</code>运算符。简单来说，当你定义一个类时，写成下面这样时：
 
-```
+```python
 class MyClass:
   data = 1
 
@@ -173,14 +173,14 @@ class MyClass:
 
 Python 真正执行的是下面这段代码：
 
-```
+```python
 class = type(classname, superclasses, attributedict)
 
 ```
 
 这里等号右边的<code>type(classname, superclasses, attributedict)</code>，就是 type 的<code>__call__</code>运算符重载，它会进一步调用：
 
-```
+```python
 type.__new__(typeclass, classname, superclasses, attributedict)
 type.__init__(class, classname, superclasses, attributedict)
 
@@ -188,14 +188,14 @@ type.__init__(class, classname, superclasses, attributedict)
 
 当然，这一切都可以通过代码验证，比如下面这段代码示例：
 
-```
+```python
 class MyClass:
   data = 1
   
 instance = MyClass()
 MyClass, instance
 # 输出
-(__main__.MyClass, &lt;__main__.MyClass instance at 0x7fe4f0b00ab8&gt;)
+(__main__.MyClass, <__main__.MyClass instance at 0x7fe4f0b00ab8>)
 instance.data
 # 输出
 1
@@ -204,7 +204,7 @@ MyClass = type('MyClass', (), {'data': 1})
 instance = MyClass()
 MyClass, instance
 # 输出
-(__main__.MyClass, &lt;__main__.MyClass at 0x7fe4f0aea5d0&gt;)
+(__main__.MyClass, <__main__.MyClass at 0x7fe4f0aea5d0>)
  
 instance.data
 # 输出
@@ -216,16 +216,16 @@ instance.data
 
 其实，理解了以上几点，我们就会明白，正是 Python 的类创建机制，给了 metaclass 大展身手的机会。
 
-一旦你把一个类型 MyClass 的 metaclass 设置成 MyMeta，MyClass 就不再由原生的 type 创建，而是会调用 MyMeta 的<code>__call__</code>运算符重载。
+一旦你把一个类型 MyClass 的 metaclass 设置成 MyMeta，MyClass 就不再由原生的 type 创建，而是会调用 MyMeta 的<code>\_\_call\_\_</code>运算符重载。
 
-```
+```python
 class = type(classname, superclasses, attributedict) 
 # 变为了
 class = MyMeta(classname, superclasses, attributedict)
 
 ```
 
-所以，我们才能在上面 YAML 的例子中，利用 YAMLObjectMetaclass 的<code>__init__</code>方法，为所有 YAMLObject 子类偷偷执行<code>add_constructor()</code>。
+所以，我们才能在上面 YAML 的例子中，利用 YAMLObjectMetaclass 的<code>\_\_init\_\_</code>方法，为所有 YAMLObject 子类偷偷执行<code>add_constructor()</code>。
 
 ## <strong>使用 metaclass 的风险</strong>
 
@@ -248,6 +248,3 @@ class = MyMeta(classname, superclasses, attributedict)
 ## 思考题
 
 学完了上节课的 Python 装饰器和这节课的 metaclass，你知道了，它们都能干预正常的 Python 类型机制。那么，你觉得装饰器和 metaclass 有什么区别呢？欢迎留言和我讨论。
-
-![](./images/18-01.png)
-
