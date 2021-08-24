@@ -16,8 +16,8 @@
 
 比如，我们来看下面的一段 C++ 代码：
 
-```
-#include &lt;iostream&gt;
+```cpp
+#include <iostream>
 using namespace std;
  
 // 交换 2 个变量的值
@@ -31,11 +31,11 @@ temp = x; // 交换 x 和 y 的值
 int main () {
  int a = 1;
  int b = 2;
- cout &lt;&lt; "Before swap, value of a :" &lt;&lt; a &lt;&lt; endl;
- cout &lt;&lt; "Before swap, value of b :" &lt;&lt; b &lt;&lt; endl;
+ cout << "Before swap, value of a :" << a << endl;
+ cout << "Before swap, value of b :" << b << endl;
  swap(a, b); 
- cout &lt;&lt; "After swap, value of a :" &lt;&lt; a &lt;&lt; endl;
- cout &lt;&lt; "After swap, value of b :" &lt;&lt; b &lt;&lt; endl;
+ cout << "After swap, value of a :" << a << endl;
+ cout << "After swap, value of b :" << b << endl;
  return 0;
 }
 Before swap, value of a :1
@@ -51,8 +51,8 @@ After swap, value of b :2
 
 还是拿我们刚刚讲到的 C++ 代码为例，上述例子中的 swap() 函数，如果改成下面的形式，声明引用类型的参数变量：
 
-```
-void swap(int&amp; x, int&amp; y) {
+```cpp
+void swap(int& x, int& y) {
    int temp;
    temp = x; // 交换 x 和 y 的值
    x = y;
@@ -82,7 +82,7 @@ After swap, value of b :1
 
 我们首先来看，下面的 Python 代码示例：
 
-```
+```python
 a = 1
 b = a
 a = a + 1
@@ -109,7 +109,7 @@ a = a + 1
 
 明白了这个基本的变量赋值例子，我们再来看一个列表的例子：
 
-```
+```python
 l1 = [1, 2, 3]
 l2 = l1
 l1.append(4)
@@ -130,7 +130,7 @@ l2
 
 另外，需要注意的是，Python 里的变量可以被删除，但是对象无法被删除。比如下面的代码：
 
-```
+```python
 l = [1, 2, 3]
 del l
 
@@ -157,7 +157,7 @@ del l 删除了 l 这个变量，从此以后你无法访问 l，但是对象 [1
 
 比如，我们来看下面这个例子：
 
-```
+```python
 def my_func1(b):
 	b = 2
  
@@ -174,7 +174,7 @@ a
 
 答案当然是否定的，我们只需稍作改变，让函数返回新变量，赋给 a。这样，a 就指向了一个新的值为 2 的对象，a 的值也因此变为 2。
 
-```
+```python
 def my_func2(b):
 	b = 2
 	return b
@@ -188,7 +188,7 @@ a
 
 不过，当可变对象当作参数传入函数里的时候，改变可变对象的值，就会影响所有指向它的变量。比如下面的例子：
 
-```
+```python
 def my_func3(l2):
 	l2.append(4)
  
@@ -203,7 +203,7 @@ l1
 
 但是，下面这个例子，看似都是给列表增加了一个新元素，却得到了明显不同的结果。
 
-```
+```python
 def my_func4(l2):
 	l2 = l2 + [4]
  
@@ -218,7 +218,7 @@ l1
 
 要注意，这里 l2 = l2 + [4]，表示创建了一个“末尾加入元素 4“的新列表，并让 l2 指向这个新的对象。这个过程与 l1 无关，因此 l1 的值不变。当然，同样的，如果要改变 l1 的值，我们就得让上述函数返回一个新列表，再赋予 l1 即可：
 
-```
+```python
 def my_func5(l2):
 	l2 = l2 + [4]
 	return l2
@@ -254,7 +254,7 @@ l1
 
 第一个问题，下面的代码中, l1、l2 和 l3 都指向同一个对象吗？
 
-```
+```python
 l1 = [1, 2, 3]
 l2 = [1, 2, 3]
 l3 = l2
@@ -263,7 +263,7 @@ l3 = l2
 
 第二个问题，下面的代码中，打印 d 最后的输出是什么呢？
 
-```
+```python
 def func(d):
     d['a'] = 10
 	d['b'] = 20
