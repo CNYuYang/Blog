@@ -12,7 +12,7 @@
 
 说到最简单的模块化方式，你可以把函数、类、常量拆分到不同的文件，把它们放在同一个文件夹，然后使用  <code>from your_file import function_name, class_name</code> 的方式调用。之后，这些函数和类就可以在文件内直接使用了。
 
-```
+```python
 # utils.py
  
 def get_sum(a, b):
@@ -20,7 +20,7 @@ def get_sum(a, b):
 
 ```
 
-```
+```python
 # class_utils.py
  
 class Encoder(object):
@@ -33,7 +33,7 @@ class Decoder(object):
 
 ```
 
-```
+```python
 # main.py
  
 from utils import get_sum
@@ -63,7 +63,7 @@ abcde
 
 于是，我们试着建一些子文件夹：
 
-```
+```python
 # utils/utils.py
  
 def get_sum(a, b):
@@ -71,7 +71,7 @@ def get_sum(a, b):
 
 ```
 
-```
+```python
 # utils/class_utils.py
  
 class Encoder(object):
@@ -84,7 +84,7 @@ class Decoder(object):
 
 ```
 
-```
+```python
 # main.py
  
 from utils.utils import get_sum
@@ -97,7 +97,7 @@ print(get_sum(1, 2))
 
 ```
 
-```
+```python
 # src/sub_main.py
  
 import sys
@@ -137,7 +137,7 @@ abcde
 
 同时要注意一点，import 同一个模块只会被执行一次，这样就可以防止重复导入模块出现问题。当然，良好的编程习惯应该杜绝代码多次导入的情况。<strong>在 Facebook 的编程规范中，除了一些极其特殊的情况，import 必须位于程序的最前端</strong>。
 
-最后我想再提一下版本区别。你可能在许多教程中看到过这样的要求：我们还需要在模块所在的文件夹新建一个 <code>__init__.py</code>，内容可以为空，也可以用来表述包对外暴露的模块接口。不过，事实上，这是 Python 2 的规范。在 Python 3 规范中，<code>__init__.py</code> 并不是必须的，很多教程里没提过这一点，或者没讲明白，我希望你还是能注意到这个地方。
+最后我想再提一下版本区别。你可能在许多教程中看到过这样的要求：我们还需要在模块所在的文件夹新建一个 <code>\_\_init\_\_.py</code>，内容可以为空，也可以用来表述包对外暴露的模块接口。不过，事实上，这是 Python 2 的规范。在 Python 3 规范中，<code>\_\_init\_\_.py</code> 并不是必须的，很多教程里没提过这一点，或者没讲明白，我希望你还是能注意到这个地方。
 
 整体而言，这就是最简单的模块调用方式了。在我初用 Python 时，这种方式已经足够我完成大学期间的项目了，毕竟，很多学校项目的文件数只有个位数，每个文件代码也只有几百行，这种组织方式能帮我顺利完成任务。
 
@@ -189,7 +189,7 @@ abcde
 
 ```
 
-```
+```python
 # proto/mat.py
  
 class Matrix(object):
@@ -200,7 +200,7 @@ class Matrix(object):
 
 ```
 
-```
+```python
 # utils/mat_mul.py
  
 from proto.mat import Matrix
@@ -218,7 +218,7 @@ def mat_mul(matrix_1: Matrix, matrix_2: Matrix):
 
 ```
 
-```
+```python
 # src/main.py
  
 from proto.mat import Matrix
@@ -246,7 +246,7 @@ Pycharm 用了什么黑魔法呢？
 
 实际上，Python 解释器在遇到 import 的时候，它会在一个特定的列表中寻找模块。这个特定的列表，可以用下面的方式拿到：
 
-```
+```python
 import sys  
  
 print(sys.path)
@@ -261,7 +261,7 @@ print(sys.path)
 
 你说，你想修改下，使得普通的 Python 运行环境也能做到？这里有两种方法可以做到：
 
-```
+```python
 import sys
  
 sys.path[0] = '/home/ubuntu/workspace/your_projects'
@@ -276,20 +276,20 @@ sys.path[0] = '/home/ubuntu/workspace/your_projects'
 
 回到第二种修改方法上。在一个 Virtual Environment 里，你能找到一个文件叫 activate，在这个文件的末尾，填上下面的内容：
 
-```
+```python
 export PYTHONPATH="/home/ubuntu/workspace/your_projects"
 
 ```
 
 这样，每次你通过 activate 激活这个运行时环境的时候，它就会自动将项目的根目录添加到搜索路径中去。
 
-## 神奇的 <code>if __name__ == '__main__'</code>
+## 神奇的 <code>if \_\_name\_\_ == '\_\_main\_\_'</code>
 
-最后一部分，我们再来讲讲  <code>if __name__ == '__main__'</code>  ，这个我们经常看到的写法。
+最后一部分，我们再来讲讲  <code>if \_\_name\_\_ == '\_\_main\_\_'</code>  ，这个我们经常看到的写法。
 
 Python 是脚本语言，和 C++、Java 最大的不同在于，不需要显式提供 main() 函数入口。如果你有 C++、Java 等语言经验，应该对 main() {} 这样的结构很熟悉吧？
 
-不过，既然 Python 可以直接写代码，<code>if __name__ == '__main__'</code>  这样的写法，除了能让 Python 代码更好看（更像 C++ ）外，还有什么好处吗？
+不过，既然 Python 可以直接写代码，<code>if \_\_name\_\_ == '\_\_main\_\_'</code>  这样的写法，除了能让 Python 代码更好看（更像 C++ ）外，还有什么好处吗？
 
 项目结构如下：
 
@@ -302,7 +302,7 @@ Python 是脚本语言，和 C++、Java 最大的不同在于，不需要显式�
 
 ```
 
-```
+```python
 # utils.py
  
 def get_sum(a, b):
@@ -313,7 +313,7 @@ print('{} + {} = {}'.format(1, 2, get_sum(1, 2)))
 
 ```
 
-```
+```python
 # utils_with_main.py
  
 def get_sum(a, b):
@@ -325,7 +325,7 @@ if __name__ == '__main__':
 
 ```
 
-```
+```python
 # main.py
  
 from utils import get_sum
@@ -340,7 +340,7 @@ get_sum: 3
 
 ```
 
-```
+```python
 # main_2.py
  
 from utils_with_main import get_sum
@@ -355,9 +355,9 @@ get_sum_2: 3
 
 看到这个项目结构，你就很清晰了吧。
 
-import 在导入文件的时候，会自动把所有暴露在外面的代码全都执行一遍。因此，如果你要把一个东西封装成模块，又想让它可以执行的话，你必须将要执行的代码放在 <code>if __name__ == '__main__'</code>下面。
+import 在导入文件的时候，会自动把所有暴露在外面的代码全都执行一遍。因此，如果你要把一个东西封装成模块，又想让它可以执行的话，你必须将要执行的代码放在 <code>if \_\_name\_\_ == '\_\_main\_\_'</code>下面。
 
-为什么呢？其实，<code>__name__</code> 作为 Python 的魔术内置参数，本质上是模块对象的一个属性。我们使用 import 语句时，<code>__name__</code> 就会被赋值为该模块的名字，自然就不等于 <code>__main__</code>了。更深的原理我就不做过多介绍了，你只需要明白这个知识点即可。
+为什么呢？其实，<code>\_\_name\_\_</code> 作为 Python 的魔术内置参数，本质上是模块对象的一个属性。我们使用 import 语句时，<code>\_\_name\_\_</code> 就会被赋值为该模块的名字，自然就不等于 <code>\_\_main\_\_</code>了。更深的原理我就不做过多介绍了，你只需要明白这个知识点即可。
 
 ## 总结
 
@@ -365,7 +365,7 @@ import 在导入文件的时候，会自动把所有暴露在外面的代码全�
 
 1. 通过绝对路径和相对路径，我们可以 import 模块；
 2. 在大型工程中模块化非常重要，模块的索引要通过绝对路径来做，而绝对路径从程序的根目录开始；
-3. 记着巧用if __name__ == '__main__'来避开 import 时执行。
+3. 记着巧用if \_\_name\_\_ == '\_\_main\_\_'来避开 import 时执行。
 
 ## 思考题
 
