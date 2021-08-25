@@ -12,7 +12,7 @@
 
 先来回答第一个问题，两个同学都问到了，下面这段代码中的 x，为什么是无限嵌套的列表？
 
-```
+```python
 x = [1]
 x.append(x)
 x
@@ -36,7 +36,7 @@ x
 
 再来看第二个问题，胡峣同学对装饰器的疑问。事实上，装饰器的作用与意义，在于其可以通过自定义的函数或类，在不改变原函数的基础上，改变原函数的一些功能。
 
-```
+```python
 Decorators is to modify the behavior of the function through a wrapper so we don't have to actually modify the function.
 
 ```
@@ -47,7 +47,7 @@ Decorators is to modify the behavior of the function through a wrapper so we don
 
 如果你不知道装饰器，用常规的方法来编程，写出来的代码大概是下面这样的：
 
-```
+```python
 # 发表评论
 def post_comment(request, ...):
     if not authenticate(request):
@@ -64,7 +64,7 @@ def post_moment(request, ...):
 
 显然，这样重复调用认证函数 authenticate() 的步骤，就显得非常冗余了。更好的解决办法，就是将认证函数 authenticate() 单独分离出来，写成一个装饰器，就像我们下面这样的写法。这样一来，代码便得到了高度的优化：
 
-```
+```python
 # 发表评论
 @authenticate
 def post_comment(request, ...):
@@ -112,6 +112,4 @@ def post_moment(request, ...):
 不过，如果 I/O 操作非常多、非常 heavy，需要建立的连接也比较多时，我们一般会选择 Asyncio。因为 Asyncio 的任务切换更加轻量化，并且它能启动的任务数也远比多线程启动的线程数要多。当然，如果 I/O 的操作不是那么的 heavy，那么使用多线程也就足够了。
 
 今天主要回答这几个问题，同时也欢迎你继续在留言区写下疑问和感想，我会持续不断地解答。希望每一次的留言和答疑，都能给你带来新的收获和价值。
-
-![](./images/25-07.png)
 
