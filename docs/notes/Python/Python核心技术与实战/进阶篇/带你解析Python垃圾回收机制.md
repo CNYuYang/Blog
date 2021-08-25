@@ -25,7 +25,7 @@
 
 我们来看一个例子：
 
-```
+```python
 import os
 import psutil
  
@@ -40,7 +40,7 @@ def show_memory_info(hint):
 
 ```
 
-```
+```python
 def func():
     show_memory_info('initial')
     a = [i for i in range(10000000)]
@@ -63,7 +63,7 @@ finished memory used: 48.109375 MB
 
 明白了这个原理后，我们稍微修改一下代码：
 
-```
+```python
 def func():
     show_memory_info('initial')
     global a
@@ -85,7 +85,7 @@ finished memory used: 433.94921875 MB
 
 同样，如果我们把生成的列表返回，然后在主程序中接收，那么引用依然存在，垃圾回收就不会被触发，大量内存仍然被占用着：
 
-```
+```python
 def func():
     show_memory_info('initial')
     a = [i for i in derange(10000000)]
@@ -105,7 +105,7 @@ finished memory used: 434.515625 MB
 
 这是最常见的几种情况。由表及里，下面，我们深入看一下 Python 内部的引用计数机制。老规矩，先来看代码：
 
-```
+```python
 import sys
  
 a = []
@@ -134,7 +134,7 @@ print(sys.getrefcount(a))
 
 另一个要注意的是，在函数调用发生的时候，会产生额外的两次引用，一次来自函数栈，另一个是函数参数。
 
-```
+```python
 import sys
  
 a = []
@@ -169,7 +169,7 @@ print(sys.getrefcount(a)) # 八次
 
 方法同样很简单。你只需要先调用 del a 来删除一个对象；然后强制调用 gc.collect()，即可手动启动垃圾回收。
 
-```
+```python
 import gc
  
 show_memory_info('initial')
@@ -213,7 +213,7 @@ NameError: name 'a' is not defined
 
 请仔细观察下面这段代码：
 
-```
+```python
 def func():
     show_memory_info('initial')
     a = [i for i in range(10000000)]
@@ -243,7 +243,7 @@ finished memory used: 821.73046875 MB
 
 事实上，Python 本身能够处理这种情况，我们刚刚讲过的，可以显式调用 gc.collect() ，来启动垃圾回收。
 
-```
+```python
 import gc
  
 def func():
@@ -292,7 +292,7 @@ Python 将所有对象分为三代。刚刚创立的对象是第 0 代；经过�
 
 通过下面这段代码和生成的引用调用图，你能非常直观地发现，有两个 list 互相引用，说明这里极有可能引起内存泄露。这样一来，再去代码层排查就容易多了。
 
-```
+```python
 import objgraph
  
 a = [1, 2, 3]
@@ -309,7 +309,7 @@ objgraph.show_refs([a])
 
 而另一个非常有用的函数，是 show_backrefs()。下面同样为示例代码和生成图，你可以自己先阅读一下：
 
-```
+```python
 import objgraph
  
 a = [1, 2, 3]
@@ -340,6 +340,3 @@ objgraph.show_backrefs([a])
 最后给你留一道思考题。你能否自己实现一个垃圾回收判定算法呢？我的要求很简单，输入是一个有向图，给定起点，表示程序入口点；给定有向边，输出不可达节点。
 
 希望你可以认真思考这个问题，并且在留言区写下你的答案与我讨论。也欢迎你把这篇文章分享出去，我们一起交流，一起进步。
-
-![](./images/24-03.png)
-
