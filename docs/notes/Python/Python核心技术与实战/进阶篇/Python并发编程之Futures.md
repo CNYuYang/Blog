@@ -35,7 +35,7 @@
 
 假设我们有一个任务，是下载一些网站的内容并打印。如果用单线程的方式，它的代码实现如下所示（为了简化代码，突出主题，此处我忽略了异常处理）：
 
-```
+```python
 import requests
 import time
  
@@ -103,7 +103,7 @@ Download 15 sites in 2.464231112999869 seconds
 
 接着我们再来看，多线程版本的代码实现：
 
-```
+```python
 import concurrent.futures
 import requests
 import threading
@@ -168,7 +168,7 @@ Download 15 sites in 0.19936635800002023 seconds
 
 我们具体来看这段代码，它是多线程版本和单线程版的主要区别所在：
 
-```
+```python
    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
         executor.map(download_one, sites)
 
@@ -182,9 +182,9 @@ Download 15 sites in 0.19936635800002023 seconds
 
 当然，我们也可以用并行的方式去提高程序运行效率。你只需要在 download_all() 函数中，做出下面的变化即可：
 
-```
+```python
 with futures.ThreadPoolExecutor(workers) as executor
-=&gt;
+=>
 with futures.ProcessPoolExecutor() as executor: 
 
 ```
@@ -205,7 +205,7 @@ Futures 中还有一个重要的函数 result()，它表示当 future 完成后�
 
 所以，上述例子也可以写成下面的形式：
 
-```
+```python
 import concurrent.futures
 import requests
 import time
@@ -297,6 +297,4 @@ Download 15 sites in 0.21698231499976828 seconds
 ## 思考题
 
 最后给你留一道思考题。你能否通过查阅相关文档，为今天所讲的这个下载网站内容的例子，加上合理的异常处理，让程序更加稳定健壮呢？欢迎在留言区写下你的思考和答案，也欢迎你把今天的内容分享给你的同事朋友，我们一起交流、一起进步。
-
-![](./images/21-03.png)
 
