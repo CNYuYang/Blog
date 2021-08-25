@@ -163,7 +163,7 @@ type(MyClass)
 
 你可以看到，instance 是 MyClass 的实例，而 MyClass 不过是“上帝”type 的实例。
 
-当我们定义一个类的语句结束时，真正发生的情况，是 Python 调用 type 的<code>__call__</code>运算符。简单来说，当你定义一个类时，写成下面这样时：
+当我们定义一个类的语句结束时，真正发生的情况，是 Python 调用 type 的<code>\_\_call\_\_</code>运算符。简单来说，当你定义一个类时，写成下面这样时：
 
 ```python
 class MyClass:
@@ -178,7 +178,7 @@ class = type(classname, superclasses, attributedict)
 
 ```
 
-这里等号右边的<code>type(classname, superclasses, attributedict)</code>，就是 type 的<code>__call__</code>运算符重载，它会进一步调用：
+这里等号右边的<code>type(classname, superclasses, attributedict)</code>，就是 type 的<code>\_\_call\_\_</code>运算符重载，它会进一步调用：
 
 ```python
 type.__new__(typeclass, classname, superclasses, attributedict)
