@@ -14,21 +14,21 @@ Python 的 assert 语句，可以说是一个 debug 的好工具，主要用于�
 
 它的具体语法是下面这样的：
 
-```
+```python
 assert_stmt ::=  "assert" expression ["," expression]
 
 ```
 
 我们先来看一个简单形式的<code>assert expression</code>，比如下面这个例子：
 
-```
+```python
 assert 1 == 2
 
 ```
 
 它就相当于下面这两行代码：
 
-```
+```python
 if __debug__:
     if not expression: raise AssertionError
 
@@ -36,29 +36,29 @@ if __debug__:
 
 再来看<code>assert expression1, expression2</code>的形式，比如下面这个例子：
 
-```
+```python
 assert 1 == 2,  'assertion is wrong'
 
 ```
 
 它就相当于下面这两行代码：
 
-```
+```python
 if __debug__:
     if not expression1: raise AssertionError(expression2)
 
 ```
 
-这里的<code>__debug__</code>是一个常数。如果 Python 程序执行时附带了<code>-O</code>这个选项，比如<code>Python test.py -O</code>，那么程序中所有的 assert 语句都会失效，常数<code>__debug__</code>便为 False；反之<code>__debug__</code>则为 True。
+这里的<code>\_\_debug\_\_</code>是一个常数。如果 Python 程序执行时附带了<code>-O</code>这个选项，比如<code>Python test.py -O</code>，那么程序中所有的 assert 语句都会失效，常数<code>\_\_debug\_\_</code>便为 False；反之<code>\_\_debug\_\_</code>则为 True。
 
-不过，需要注意的是，直接对常数<code>__debug__</code>赋值是非法的，因为它的值在解释器开始运行时就已经决定了，中途无法改变。
+不过，需要注意的是，直接对常数<code>\_\_debug\_\_</code>赋值是非法的，因为它的值在解释器开始运行时就已经决定了，中途无法改变。
 
 此外，一定记住，不要在使用 assert 时加入括号，比如下面这个例子：
 
-```
+```python
 assert(1 == 2, 'This should fail')
 # 输出
-&lt;ipython-input-8-2c057bd7fe24&gt;:1: SyntaxWarning: assertion is always true, perhaps remove parentheses?
+<ipython-input-8-2c057bd7fe24>:1: SyntaxWarning: assertion is always true, perhaps remove parentheses?
   assert(1 == 2, 'This should fail')
 
 ```
@@ -67,7 +67,7 @@ assert(1 == 2, 'This should fail')
 
 正确的写法，应该是下面这种不带括号的写法：
 
-```
+```python
 assert 1 == 2， 'This should fail'
 # 输出
 AssertionError: This should fail
@@ -84,10 +84,10 @@ AssertionError: This should fail
 
 第一个例子，假设你现在使用的极客时间正在做专栏促销活动，准备对一些专栏进行打折，所以后台需要写一个 apply_discount() 函数，要求输入为原来的价格和折扣，输出是折后的价格。那么，我们可以大致写成下面这样：
 
-```
+```python
 def apply_discount(price, discount):
     updated_price = price * (1 - discount)
-    assert 0 &lt;= updated_price &lt;= price, 'price should be greater or equal to 0 and less or equal to original price'
+    assert 0 <= updated_price <= price, 'price should be greater or equal to 0 and less or equal to original price'
     return updated_price
 
 ```
@@ -96,7 +96,7 @@ def apply_discount(price, discount):
 
 我们可以试着输入几组数，来验证一下这个功能：
 
-```
+```python
 apply_discount(100, 0.2)
 80.0
  
@@ -107,7 +107,7 @@ AssertionError: price should be greater or equal to 0 and less or equal to origi
 
 显然，当 discount 是 0.2 时，输出 80，没有问题。但是当 discount 为 2 时，程序便抛出下面这个异常：
 
-```
+```python
 AssertionError：price should be greater or equal to 0 and less or equal to original price
 
 ```
@@ -116,9 +116,9 @@ AssertionError：price should be greater or equal to 0 and less or equal to orig
 
 再来看一个例子，最常见的除法操作，这在任何领域的计算中都经常会遇到。同样还是以极客时间为例，假如极客时间后台想知道每个专栏的平均销售价格，那么就需要给定销售总额和销售数目，这样平均销售价格便很容易计算出来：
 
-```
+```python
 def calculate_average_price(total_sales, num_sales):
-    assert num_sales &gt; 0, 'number of sales should be greater than 0'
+    assert num_sales > 0, 'number of sales should be greater than 0'
     return total_sales / num_sales
 
 ```
@@ -127,7 +127,7 @@ def calculate_average_price(total_sales, num_sales):
 
 除了这两个例子，在实际工作中，assert 还有一些很常见的用法，比如下面的场景：
 
-```
+```python
 def func(input):
     assert isinstance(input, list), 'input must be type of list'
     # 下面的操作都是基于前提：input 必须是 list
@@ -146,7 +146,7 @@ def func(input):
 
 如果你的程序中，允许 input 是其他数据类型，并且对不同的数据类型都有不同的处理方式，那你就应该写成 if else 的条件语句了：
 
-```
+```python
 def func(input):
     if isinstance(input, list):
         ...
@@ -161,7 +161,7 @@ def func(input):
 
 还是以极客时间为例，我们假设下面这样的场景：后台有时候需要删除一些上线时间较长的专栏，于是，相关的开发人员便设计出了下面这个专栏删除函数。
 
-```
+```python
 def delete_course(user, course_id):
     assert user_is_admin(user), 'user must be admin'
     assert course_exist(course_id), 'course id must exist'
@@ -180,7 +180,7 @@ def delete_course(user, course_id):
 
 这显然会给程序带来巨大的安全漏洞。所以，正确的做法，是使用条件语句进行相应的检查，并合理抛出异常：
 
-```
+```python
 def delete_course(user, course_id):
     if not user_is_admin(user):
         raise Exception('user must be admin')
@@ -192,7 +192,7 @@ def delete_course(user, course_id):
 
 再来看一个例子，如果你想打开一个文件，进行数据读取、处理等一系列操作，那么下面这样的写法，显然也是不正确的：
 
-```
+```python
 def read_and_process(path):
     assert file_exist(path), 'file must exist'
     with open(path) as f:
@@ -202,7 +202,7 @@ def read_and_process(path):
 
 因为 assert 的使用，表明你强行指定了文件必须存在，但事实上在很多情况下，这个假设并不成立。另外，打开文件操作，也有可能触发其他的异常。所以，正确的做法是进行异常处理，用 try 和 except 来解决：
 
-```
+```python
 def read_and_process(path):
     try:
         with open(path) as f:
@@ -227,6 +227,3 @@ def read_and_process(path):
 最后，给你留一个思考题。在平时的工作学习中，你用过 assert 吗？如果用过的话，是在什么情况下使用的？有遇到过什么问题吗？
 
 欢迎在留言区写下你的经历，还有今天学习的心得和疑惑，与我一起分享。也欢迎你把这篇文章分享给你的同事、朋友，我们一起交流，一起进步。
-
-![](./images/28-01.png)
-
