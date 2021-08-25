@@ -10,9 +10,9 @@
 
 比如下面这段很简单的 cpu-bound 代码：
 
-```
+```python
 def CountDown(n):
-    while n &gt; 0:
+    while n > 0:
         n -= 1
 
 ```
@@ -21,7 +21,7 @@ def CountDown(n):
 
 这时，我们想要用多线程来加速，比如下面这几行操作：
 
-```
+```python
 from threading import Thread
  
 n = 100000000
@@ -67,11 +67,11 @@ CPython 使用引用计数来管理内存，所有 Python 脚本中创建的实�
 
 什么意思呢？我们来看下面这个例子：
 
-```
-&gt;&gt;&gt; import sys
-&gt;&gt;&gt; a = []
-&gt;&gt;&gt; b = a
-&gt;&gt;&gt; sys.getrefcount(a)
+```python
+>>> import sys
+>>> a = []
+>>> b = a
+>>> sys.getrefcount(a)
 3
 
 ```
@@ -101,9 +101,9 @@ CPython 使用引用计数来管理内存，所有 Python 脚本中创建的实�
 
 整体来说，每一个 Python 线程都是类似这样循环的封装，我们来看下面这段代码：
 
-```
+```python
 for (;;) {
-    if (--ticker &lt; 0) {
+    if (--ticker < 0) {
         ticker = check_interval;
     
         /* Give another thread a chance */
@@ -128,7 +128,7 @@ for (;;) {
 
 不过，有了 GIL，并不意味着我们 Python 编程者就不用去考虑线程安全了。即使我们知道，GIL 仅允许一个 Python 线程执行，但前面我也讲到了，Python 还有 check interval 这样的抢占机制。我们来考虑这样一段代码：
 
-```
+```python
 import threading
  
 n = 0
@@ -156,9 +156,9 @@ print(n)
 
 这其实就是因为，<code>n+=1</code>这一句代码让线程并不安全。如果你去翻译 foo 这个函数的 bytecode，就会发现，它实际上由下面四行 bytecode 组成：
 
-```
-&gt;&gt;&gt; import dis
-&gt;&gt;&gt; dis.dis(foo)
+```python
+>>> import dis
+>>> dis.dis(foo)
 LOAD_GLOBAL              0 (n)
 LOAD_CONST               1 (1)
 INPLACE_ADD
@@ -170,7 +170,7 @@ STORE_GLOBAL             0 (n)
 
 所以，千万别想着，有了 GIL 你的程序就可以高枕无忧了，我们仍然需要去注意线程安全。正如我开头所说，<strong>GIL 的设计，主要是为了方便 CPython 解释器层面的编写者，而不是 Python 应用层面的程序员</strong>。作为 Python 的使用者，我们还是需要 lock 等工具，来确保线程安全。比如我下面的这个例子：
 
-```
+```python
 n = 0
 lock = threading.Lock()
  
@@ -213,6 +213,3 @@ def foo():
 第二问，你觉得 GIL 是一个好的设计吗？事实上，在 Python 3 之后，确实有很多关于 GIL 改进甚至是取消的讨论，你的看法是什么呢？你在平常工作中有被 GIL 困扰过的场景吗？
 
 欢迎在留言区写下你的想法，也欢迎你把今天的内容分享给你的同事朋友，我们一起交流、一起进步。
-
-![](./images/23-03.png)
-
