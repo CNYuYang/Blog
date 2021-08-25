@@ -3,16 +3,6 @@
  * Do NOT use SRI with dynamically generated files! More information: https://www.jsdelivr.com/using-sri-with-dynamic-files
  */
 
-@import url("https://fonts.googleapis.com/css?family=Roboto+Mono|Source+Sans+Pro:300,400,600");
-* {
-    -webkit-font-smoothing: antialiased;
-    -webkit-overflow-scrolling: touch;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    -webkit-text-size-adjust: none;
-    -webkit-touch-callout: none;
-    box-sizing: border-box;
-}
-
 body:not(.ready) {
     overflow: hidden;
 }
