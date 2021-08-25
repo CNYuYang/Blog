@@ -24,7 +24,7 @@
 
 话不多说，我们先看一个简单的爬虫例子：
 
-```
+```python
 import time
  
 def crawl_page(url):
@@ -61,7 +61,7 @@ Wall time: 10 s
 
 于是，一个很简单的思路出现了——我们这种爬取操作，完全可以并发化。我们就来看看使用协程怎么写。
 
-```
+```python
 import asyncio
  
 async def crawl_page(url):
@@ -114,7 +114,7 @@ async 修饰词声明异步函数，于是，这里的 crawl_page 和 main 都�
 
 其实很简单，也正是我接下来要讲的协程中的一个重要概念，任务（Task）。老规矩，先看代码。
 
-```
+```python
 import asyncio
  
 async def crawl_page(url):
@@ -152,7 +152,7 @@ Wall time: 3.99 s
 
 其实，对于执行 tasks，还有另一种做法：
 
-```
+```python
 import asyncio
  
 async def crawl_page(url):
@@ -189,7 +189,7 @@ Wall time: 4.01 s
 
 说了这么多，现在，我们不妨来深入代码底层看看。有了前面的知识做基础，你应该很容易理解这两段代码。
 
-```
+```python
 import asyncio
  
 async def worker_1():
@@ -224,7 +224,7 @@ Wall time: 3 s
 
 ```
 
-```
+```python
 import asyncio
  
 async def worker_1():
@@ -276,7 +276,7 @@ Wall time: 2.01 s
 
 接下来，我们进阶一下。如果我们想给某些协程任务限定运行时间，一旦超时就取消，又该怎么做呢？再进一步，如果某些协程运行时出现错误，又该怎么处理呢？同样的，来看代码。
 
-```
+```python
 import asyncio
  
 async def worker_1():
@@ -317,7 +317,7 @@ Wall time: 2 s
 
 到这里，发现了没，线程能实现的，协程都能做到。那就让我们温习一下这些知识点，用协程来实现一个经典的生产者消费者模型吧。
 
-```
+```python
 import asyncio
 import random
  
@@ -387,7 +387,7 @@ Wall time: 10 s
 
 不过，在参考我给出的代码之前，你是不是可以自己先动手写一下、跑一下呢？
 
-```
+```python
 import requests
 from bs4 import BeautifulSoup
  
@@ -424,7 +424,7 @@ Wall time: 56.6 s
 
 ```
 
-```
+```python
 import asyncio
 import aiohttp
  
@@ -488,6 +488,3 @@ Wall time: 4.98 s
 ## 思考题
 
 最后给你留一个思考题。协程怎么实现回调函数呢？欢迎留言和我讨论，也欢迎你把这篇文章分享给你的同事朋友，我们一起交流，一起进步。
-
-![](./images/20-01.png)
-
