@@ -50,7 +50,7 @@
 
 在本文的开头我们提到过：行情数据很讲究时效性。所以，行情从交易所产生到传播给我们的程序之间的延迟，应该越低越好。通常，交易所也提供了 REST 的行情数据抓取接口。比如下面这段代码：
 
-```
+```python
 import requests
 import timeit
  
@@ -75,7 +75,7 @@ Latency is 196.67642089999663 ms
 
 举个例子来验证这一点，在同一个城市我们试验一下。我从纽约附近的服务器和 Gemini 在纽约的服务器进行连接，TCP/SSL 握手花了多少时间呢？
 
-```
+```bash
 curl -w "TCP handshake: %{time_connect}s, SSL handshake: %{time_appconnect}s\n" -so /dev/null https://www.gemini.com
  
 TCP handshake: 0.072758s, SSL handshake: 0.119409s
@@ -90,7 +90,7 @@ TCP handshake: 0.072758s, SSL handshake: 0.119409s
 
 概念听着很痛快，不过还是有些抽象。为了让你快速理解刚刚的这段话，我们还是来看两个简单的例子。二话不说，先看一段代码：
 
-```
+```python
 import websocket
 import thread
  
@@ -151,7 +151,7 @@ Websocket closed
 
 再来看第二段代码。为了解释”双向“，我们来看看获取 Gemini 的委托账单的例子。
 
-```
+```python
 import ssl
 import websocket
 import json
@@ -198,7 +198,7 @@ Public 接口，即公开接口，提供 orderbook 服务，即每个人都能�
 
 我们以 orderbook 爬虫为例，先来看下如何抓取 orderbook 信息。下面的代码详细写了一个典型的爬虫，同时使用了类进行封装，希望你不要忘记我们这们课的目的，了解  Python 是如何应用于工程实践中的：
 
-```
+```python
 import copy
 import json
 import ssl
@@ -326,6 +326,3 @@ if __name__ == '__main__':
 ## 思考题
 
 最后给你留一道思考题。WebSocket 会丢包吗？如果丢包的话， Orderbook 爬虫又会发生什么？这一点应该如何避免呢？欢迎留言和我讨论，也欢迎你把这篇文章分享出去。
-
-![](./images/35-06.png)
-
