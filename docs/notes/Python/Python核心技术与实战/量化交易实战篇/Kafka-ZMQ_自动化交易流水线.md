@@ -69,7 +69,7 @@ ZMQ 是一个简单好用的传输层，它有三种使用模式：
 
 我们需要详细来看的是第二种，即“PubSub”模式。下面是它的具体实现，代码很清晰，你应该很容易理解：
 
-```
+```python
 # 订阅者 1
 import zmq
  
@@ -100,7 +100,7 @@ msg: b'server cnt 5'
 
 ```
 
-```
+```python
 # 订阅者 2
 import zmq
  
@@ -131,7 +131,7 @@ msg: b'server cnt 5'
 
 ```
 
-```
+```python
 # 发布者
 import time
 import zmq
@@ -170,9 +170,8 @@ send 5
 
 对于订阅者，我们要做的是创建一个 zmq Context，连接 socket 到指定端口。其中，setsockopt_string() 函数用来过滤特定的消息，而下面这行代码：
 
-```
+```python
 socket.setsockopt_string(zmq.SUBSCRIBE, '') 
-
 ```
 
 则表示不过滤任何消息。最后，我们调用 socket.recv() 来接受消息就行了，这条语句会阻塞在这里，直到有新消息来临。
@@ -227,6 +226,3 @@ Kafka 的代码实现，和 ZMQ 大同小异，这里我就不专门讲解了。
 - 如果有多个发布者，ZMQ 应该怎么做呢？
 
 欢迎留言写下你的思考和疑惑，也欢迎你把这篇文章分享给更多的人一起学习。
-
-![](./images/37-05.png)
-
