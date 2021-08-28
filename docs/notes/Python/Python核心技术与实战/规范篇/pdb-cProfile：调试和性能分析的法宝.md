@@ -43,7 +43,7 @@
 
 首先，要启动 pdb 调试，我们只需要在程序中，加入<code>“import pdb”</code>和<code>“pdb.set_trace()”</code>这两行代码就行了，比如下面这个简单的例子：
 
-```
+```python
 a = 1
 b = 2
 import pdb
@@ -55,15 +55,15 @@ print(a + b + c)
 
 当我们运行这个程序时时，它的输出界面是下面这样的，表示程序已经运行到了<code>“pdb.set_trace()”</code>这行，并且暂停了下来，等待用户输入。
 
-```
-&gt; /Users/jingxiao/test.py(5)&lt;module&gt;()
--&gt; c = 3
+```python
+> /Users/jingxiao/test.py(5)<module>()
+-> c = 3
 
 ```
 
-这时，我们就可以执行，在 IDE 断点调试器中可以执行的一切操作，比如打印，语法是<code>"p &lt;expression&gt;"</code>：
+这时，我们就可以执行，在 IDE 断点调试器中可以执行的一切操作，比如打印，语法是<code>"p <expression>"</code>：
 
-```
+```python
 (pdb) p a
 1
 (pdb) p b
@@ -73,7 +73,7 @@ print(a + b + c)
 
 你可以看到，我打印的是 a 和 b 的值，分别为 1 和 2，与预期相符。为什么不打印 c 呢？显然，打印 c 会抛出异常，因为程序目前只运行了前面几行，此时的变量 c 还没有被定义：
 
-```
+```python
 (pdb) p c
 *** NameError: name 'c' is not defined
 
@@ -81,21 +81,21 @@ print(a + b + c)
 
 除了打印，常见的操作还有<code>“n”</code>，表示继续执行代码到下一行，用法如下：
 
-```
+```python
 (pdb) n
--&gt; print(a + b + c)
+-> print(a + b + c)
 
 ```
 
 而命令<code>”l“</code>，则表示列举出当前代码行上下的 11 行源代码，方便开发者熟悉当前断点周围的代码状态：
 
-```
+```python
 (pdb) l
   1  	a = 1
   2  	b = 2
   3  	import pdb
   4  	pdb.set_trace()
-  5  -&gt;	c = 3
+  5  ->	c = 3
   6  	print(a + b + c)
 
 ```
@@ -104,7 +104,7 @@ print(a + b + c)
 
 我们来看下面这个例子：
 
-```
+```python
 def func():
     print('enter func()')
  
@@ -117,14 +117,14 @@ c = 3
 print(a + b + c)
  
 # pdb
-&gt; /Users/jingxiao/test.py(9)&lt;module&gt;()
--&gt; func()
+> /Users/jingxiao/test.py(9)<module>()
+-> func()
 (pdb) s
 --Call--
-&gt; /Users/jingxiao/test.py(1)func()
--&gt; def func():
+> /Users/jingxiao/test.py(1)func()
+-> def func():
 (Pdb) l
-  1  -&gt;	def func():
+  1  ->	def func():
   2  		print('enter func()')
   3
   4
@@ -137,17 +137,17 @@ print(a + b + c)
  11  	print(a + b + c)
  
 (Pdb) n
-&gt; /Users/jingxiao/test.py(2)func()
--&gt; print('enter func()')
+> /Users/jingxiao/test.py(2)func()
+-> print('enter func()')
 (Pdb) n
 enter func()
 --Return--
-&gt; /Users/jingxiao/test.py(2)func()-&gt;None
--&gt; print('enter func()')
+> /Users/jingxiao/test.py(2)func()->None
+-> print('enter func()')
  
 (Pdb) n
-&gt; /Users/jingxiao/test.py(10)&lt;module&gt;()
--&gt; c = 3
+> /Users/jingxiao/test.py(10)<module>()
+-> c = 3
 
 ```
 
@@ -173,7 +173,7 @@ enter func()
 
 举个例子，比如我想计算<a href="https://en.wikipedia.org/wiki/Fibonacci_number">斐波拉契数列</a>，运用递归思想，我们很容易就能写出下面这样的代码：
 
-```
+```python
 def fib(n):
     if n == 0:
         return 0
@@ -184,7 +184,7 @@ def fib(n):
  
 def fib_seq(n):
     res = []
-    if n &gt; 0:
+    if n > 0:
         res.extend(fib_seq(n-1))
     res.append(fib(n))
     return res
@@ -195,7 +195,7 @@ fib_seq(30)
 
 接下来，我想要测试一下这段代码总的效率以及各个部分的效率。那么，我就只需在开头导入 cProfile 这个模块，并且在最后运行 cProfile.run() 就可以了：
 
-```
+```python
 import cProfile
 # def fib(n)
 # def fib_seq(n):
@@ -205,7 +205,7 @@ cProfile.run('fib_seq(30)')
 
 或者更简单一些，直接在运行脚本的命令中，加入选项<code>“-m cProfile”</code>也很方便：
 
-```
+```python
 python3 -m cProfile xxx.py
 
 ```
@@ -226,7 +226,7 @@ python3 -m cProfile xxx.py
 
 有没有什么办法可以提高改进呢？答案是肯定的。通过观察，我们发现，程序中有很多对 fib() 的调用，其实是重复的，那我们就可以用字典来保存计算过的结果，防止重复。改进后的代码如下所示：
 
-```
+```python
 def memoize(f):
     memo = {}
     def helper(x):
@@ -247,7 +247,7 @@ def fib(n):
  
 def fib_seq(n):
     res = []
-    if n &gt; 0:
+    if n > 0:
         res.extend(fib_seq(n-1))
     res.append(fib(n))
     return res
@@ -273,6 +273,3 @@ fib_seq(30)
 最后，留一个开放性的交流问题。你在平时的工作中，常用的调试和性能分析工具是什么呢？有发现什么独到的使用技巧吗？你曾用到过 pdb、cProfile 或是其他相似的工具吗？
 
 欢迎在下方留言与我讨论，也欢迎你把这篇文章分享出去。我们一起交流，一起进步。
-
-![](./images/31-03.png)
-
