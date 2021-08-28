@@ -46,15 +46,14 @@ mysqlclient  完全兼容 MySQLdb，同时支持 Python3.x，是 Django ORM 的�
 
 它的安装方式很简单：
 
-```
+```bash
 sudo apt-get install python3-dev
 pip install mysqlclient
-
 ```
 
 我们来看一个样例代码：
 
-```
+```python
 import MySQLdb
  
  
@@ -87,7 +86,6 @@ def test_pymysql():
  
  
 test_pymy
-
 ```
 
 代码的思路很清晰明了，首先是通过 connect 命令连接数据库，来创建一个连接；之后，通过 conn.cursor() 函数创建一个游标。这里你可能会问，为什么要使用游标呢？
@@ -108,14 +106,13 @@ ORM 框架的优点，是提高了写代码的速度，同时兼容多种数据�
 
 它的安装方式也很简单：
 
-```
+```bash
 pip install peewee
-
 ```
 
 我们来看一个样例代码：
 
-```
+```python
 import peewee
 from peewee import *
  
@@ -154,7 +151,7 @@ test_p
 
 我们来看下面这段代码：
 
-```
+```python
 import MySQLdb
 import numpy as np
  
@@ -175,7 +172,7 @@ def test_pymysql():
             FROM
               price
             WHERE
-              timestamp &gt; now() - interval 60 minute
+              timestamp > now() - interval 60 minute
     ''')
  
     BTCUSD = np.array(cur.fetchall())
@@ -233,6 +230,3 @@ test_pym
 ## 思考题
 
 最后给你留一道思考题。量化交易需要的数据量不是很大，但是有可能出现调用频率极高的情况，例如回测系统。那么，你能想到哪些优化手段，来降低调用代价吗？欢迎留言和我讨论，也欢迎你把这篇文章分享出去。
-
-![](./images/38-02.png)
-
