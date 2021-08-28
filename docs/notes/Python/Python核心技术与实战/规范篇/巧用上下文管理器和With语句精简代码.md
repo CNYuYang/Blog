@@ -12,7 +12,7 @@
 
 光说这些概念，你可能体会不到这一点，我们可以看看下面的例子：
 
-```
+```python
 for x in range(10000000): 
     f = open('test.txt', 'w')
     f.write('hello') 
@@ -21,7 +21,7 @@ for x in range(10000000):
 
 这里我们一共打开了 10000000 个文件，但是用完以后都没有关闭它们，如果你运行该段代码，便会报错：
 
-```
+```python
 OSError: [Errno 23] Too many open files in system: 'test.txt'
 
 ```
@@ -30,7 +30,7 @@ OSError: [Errno 23] Too many open files in system: 'test.txt'
 
 为了解决这个问题，不同的编程语言都引入了不同的机制。而在 Python 中，对应的解决方式便是上下文管理器（context manager）。上下文管理器，能够帮助你自动分配并且释放资源，其中最典型的应用便是 with 语句。所以，上面代码的正确写法应该如下所示：
 
-```
+```python
 for x in range(10000000):
     with open('test.txt', 'w') as f:
         f.write('hello')
@@ -39,7 +39,7 @@ for x in range(10000000):
 
 这样，我们每次打开文件<code>“test.txt”</code>，并写入<code>‘hello’</code>之后，这个文件便会自动关闭，相应的资源也可以得到释放，防止资源泄露。当然，with 语句的代码，也可以用下面的形式表示：
 
-```
+```python
 f = open('test.txt', 'w')
 try:
     f.write('hello')
@@ -52,7 +52,7 @@ finally:
 
 另外一个典型的例子，是 Python 中的 threading.lock 类。举个例子，比如我想要获取一个锁，执行相应的操作，完成后再释放，那么代码就可以写成下面这样：
 
-```
+```python
 some_lock = threading.Lock()
 some_lock.acquire()
 try:
@@ -64,7 +64,7 @@ finally:
 
 而对应的 with 语句，同样非常简洁：
 
-```
+```python
 some_lock = threading.Lock()
 with somelock:
     ...
@@ -77,7 +77,7 @@ with somelock:
 
 了解了上下文管理的概念和优点后，下面我们就通过具体的例子，一起来看看上下文管理器的原理，搞清楚它的内部实现。这里，我自定义了一个上下文管理类 FileManager，模拟 Python 的打开、关闭文件操作：
 
-```
+```python
 class FileManager:
     def __init__(self, name, mode):
         print('calling __init__ method')
@@ -108,11 +108,11 @@ calling __exit__ method
 
 ```
 
-需要注意的是，当我们用类来创建上下文管理器时，必须保证这个类包括方法<code>”__enter__()”</code>和方法<code>“__exit__()”</code>。其中，方法<code>“__enter__()”</code>返回需要被管理的资源，方法<code>“__exit__()”</code>里通常会存在一些释放、清理资源的操作，比如这个例子中的关闭文件等等。
+需要注意的是，当我们用类来创建上下文管理器时，必须保证这个类包括方法<code>”\_\_enter\_\_()”</code>和方法<code>“\_\_exit\_\_()”</code>。其中，方法<code>“\_\_enter\_\_()”</code>返回需要被管理的资源，方法<code>“\_\_exit\_\_()”</code>里通常会存在一些释放、清理资源的操作，比如这个例子中的关闭文件等等。
 
 而当我们用 with 语句，执行这个上下文管理器时：
 
-```
+```python
 with FileManager('test.txt', 'w') as f:
     f.write('hello world')
 
@@ -120,14 +120,14 @@ with FileManager('test.txt', 'w') as f:
 
 下面这四步操作会依次发生：
 
-1. 方法“__init__()”被调用，程序初始化对象 FileManager，使得文件名（name）是"test.txt"，文件模式 (mode) 是'w'；
-2. 方法“__enter__()”被调用，文件“test.txt”以写入的模式被打开，并且返回 FileManager 对象赋予变量 f；
+1. 方法“\_\_init\_\_()”被调用，程序初始化对象 FileManager，使得文件名（name）是"test.txt"，文件模式 (mode) 是'w'；
+2. 方法“\_\_enter\_\_()”被调用，文件“test.txt”以写入的模式被打开，并且返回 FileManager 对象赋予变量 f；
 3. 字符串“hello world”被写入文件“test.txt”；
-4. 方法“__exit__()”被调用，负责关闭之前打开的文件流。
+4. 方法“\_\_exit\_\_()”被调用，负责关闭之前打开的文件流。
 
 因此，这个程序的输出是：
 
-```
+```python
 calling __init__ method
 calling __enter__ method
 ready to write to file
@@ -135,11 +135,11 @@ calling __exit__ meth
 
 ```
 
-另外，值得一提的是，方法<code>“__exit__()”</code>中的参数<code>“exc_type, exc_val, exc_tb”</code>，分别表示 exception_type、exception_value 和 traceback。当我们执行含有上下文管理器的 with 语句时，如果有异常抛出，异常的信息就会包含在这三个变量中，传入方法<code>“__exit__()”</code>。
+另外，值得一提的是，方法<code>“\_\_exit\_\_()”</code>中的参数<code>“exc_type, exc_val, exc_tb”</code>，分别表示 exception_type、exception_value 和 traceback。当我们执行含有上下文管理器的 with 语句时，如果有异常抛出，异常的信息就会包含在这三个变量中，传入方法<code>“\_\_exit\_\_()”</code>。
 
-因此，如果你需要处理可能发生的异常，可以在<code>“__exit__()”</code>添加相应的代码，比如下面这样来写：
+因此，如果你需要处理可能发生的异常，可以在<code>“\_\_exit\_\_()”</code>添加相应的代码，比如下面这样来写：
 
-```
+```python
 class Foo:
     def __init__(self):
         print('__init__ called')        
@@ -164,18 +164,18 @@ with Foo() as obj:
 __init__ called
 __enter__ called
 __exit__ called
-exc_type: &lt;class 'Exception'&gt;
+exc_type: <class 'Exception'>
 exc_value: exception raised
-exc_traceback: &lt;traceback object at 0x1046036c8&gt;
+exc_traceback: <traceback object at 0x1046036c8>
 exception handled
 
 ```
 
-这里，我们在 with 语句中手动抛出了异常“exception raised”，你可以看到，<code>“__exit__()”</code>方法中异常，被顺利捕捉并进行了处理。不过需要注意的是，如果方法<code>“__exit__()”</code>没有返回 True，异常仍然会被抛出。因此，如果你确定异常已经被处理了，请在<code>“__exit__()”</code>的最后，加上<code>“return True”</code>这条语句。
+这里，我们在 with 语句中手动抛出了异常“exception raised”，你可以看到，<code>“\_\_exit\_\_()”</code>方法中异常，被顺利捕捉并进行了处理。不过需要注意的是，如果方法<code>“\_\_exit\_\_()”</code>没有返回 True，异常仍然会被抛出。因此，如果你确定异常已经被处理了，请在<code>“\_\_exit\_\_()”</code>的最后，加上<code>“return True”</code>这条语句。
 
 同样的，数据库的连接操作，也常常用上下文管理器来表示，这里我给出了比较简化的代码：
 
-```
+```python
 class DBConnectionManager: 
     def __init__(self, hostname, port): 
         self.hostname = hostname 
@@ -195,9 +195,9 @@ with DBConnectionManager('localhost', '8080') as db_client:
 
 与前面 FileManager 的例子类似：
 
-- 方法“__init__()”负责对数据库进行初始化，也就是将主机名、接口（这里是 localhost 和 8080）分别赋予变量 hostname 和 port；
-- 方法“__enter__()”连接数据库，并且返回对象 DBConnectionManager；
-- 方法“__exit__()”则负责关闭数据库的连接。
+- 方法“\_\_init\_\_()”负责对数据库进行初始化，也就是将主机名、接口（这里是 localhost 和 8080）分别赋予变量 hostname 和 port；
+- 方法“\_\_enter\_\_()”连接数据库，并且返回对象 DBConnectionManager；
+- 方法“\_\_exit\_\_()”则负责关闭数据库的连接。
 
 这样一来，只要你写完了 DBconnectionManager 这个类，那么在程序每次连接数据库时，我们都只需要简单地调用 with 语句即可，并不需要关心数据库的关闭、异常等等，显然大大提高了开发的效率。
 
@@ -205,7 +205,7 @@ with DBConnectionManager('localhost', '8080') as db_client:
 
 比如，你可以使用装饰器 contextlib.contextmanager，来定义自己所需的基于生成器的上下文管理器，用以支持 with 语句。还是拿前面的类上下文管理器 FileManager 来说，我们也可以用下面形式来表示：
 
-```
+```python
 from contextlib import contextmanager
  
 @contextmanager
@@ -223,14 +223,14 @@ with file_manager('test.txt', 'w') as f:
 
 这段代码中，函数 file_manager() 是一个生成器，当我们执行 with 语句时，便会打开文件，并返回文件对象 f；当 with 语句执行完后，finally block 中的关闭文件操作便会执行。
 
-你可以看到，使用基于生成器的上下文管理器时，我们不再用定义<code>“__enter__()”</code>和<code>“__exit__()”</code>方法，但请务必加上装饰器 @contextmanager，这一点新手很容易疏忽。
+你可以看到，使用基于生成器的上下文管理器时，我们不再用定义<code>“\_\_enter\_\_()”</code>和<code>“\_\_exit\_\_()”</code>方法，但请务必加上装饰器 @contextmanager，这一点新手很容易疏忽。
 
 讲完这两种不同原理的上下文管理器后，还需要强调的是，基于类的上下文管理器和基于生成器的上下文管理器，这两者在功能上是一致的。只不过，
 
 - 基于类的上下文管理器更加 flexible，适用于大型的系统开发；
 - 而基于生成器的上下文管理器更加方便、简洁，适用于中小型程序。
 
-无论你使用哪一种，请不用忘记在方法<code>“__exit__()”</code>或者是 finally block 中释放资源，这一点尤其重要。
+无论你使用哪一种，请不用忘记在方法<code>“\_\_exit\_\_()”</code>或者是 finally block 中释放资源，这一点尤其重要。
 
 ## 总结
 
@@ -238,11 +238,8 @@ with file_manager('test.txt', 'w') as f:
 
 接着，我们通过自定义上下文管理的实例，了解了上下文管理工作的原理，并一起学习了基于类的上下文管理器和基于生成器的上下文管理器，这两者的功能相同，具体用哪个，取决于你的具体使用场景。
 
-另外，上下文管理器通常和 with 语句一起使用，大大提高了程序的简洁度。需要注意的是，当我们用 with 语句执行上下文管理器的操作时，一旦有异常抛出，异常的类型、值等具体信息，都会通过参数传入<code>“__exit__()”</code>函数中。你可以自行定义相关的操作对异常进行处理，而处理完异常后，也别忘了加上<code>“return True”</code>这条语句，否则仍然会抛出异常。
+另外，上下文管理器通常和 with 语句一起使用，大大提高了程序的简洁度。需要注意的是，当我们用 with 语句执行上下文管理器的操作时，一旦有异常抛出，异常的类型、值等具体信息，都会通过参数传入<code>“\_\_exit\_\_()”</code>函数中。你可以自行定义相关的操作对异常进行处理，而处理完异常后，也别忘了加上<code>“return True”</code>这条语句，否则仍然会抛出异常。
 
 ## 思考题
 
 那么，在你日常的学习工作中，哪些场景使用过上下文管理器？使用过程中又遇到了哪些问题，或是有什么新的发现呢？欢迎在下方留言与我讨论，也欢迎你把这篇文章分享出去，我们一起交流，一起进步。
-
-![](./images/29-01.png)
-
