@@ -40,7 +40,7 @@ SWIG，是一款能够连接 C/C++ 与多种高级编程语言（我们在这里
 
 代码清单 1，基于 Python 编写的 PCA 算法  <code>testPCAPurePython.py</code> ：
 
-```
+```python
 import numpy as np
  
 def compute_pca(data):
@@ -76,9 +76,8 @@ def compute_pca(data):
 
 现在，我们保存这段编写好的代码，并通过下面的命令来执行：
 
-```
+```bash
 python3 testPCAPurePython.py 
-
 ```
 
 ## 准备 SWIG
@@ -87,7 +86,7 @@ python3 testPCAPurePython.py
 
 首先，我们从 SWIG 的网站（<a href="http://swig.org/download.html">http://swig.org/download.html</a>）下载源代码包，并开始构建：
 
-```
+```bash
 $ wget https://newcontinuum.dl.sourceforge.net/project/swig/swig/swig-4.0.0/swig-4.0.0.tar.gz # 下载路径可能会有所变化
 $ tar -xvf swig-4.0.0.tar.gz
 $ cd swig-4.0.0
@@ -103,12 +102,12 @@ $ sudo make install
 
 代码清单 2，<code>example.c</code>：
 
-```
-#include &lt;time.h&gt;
+```cpp
+#include <time.h>
 double My_variable = 3.0;
  
 int fact(int n) {
-    if (n &lt;= 1) return 1;
+    if (n <= 1) return 1;
     else return n*fact(n-1);
 }
  
@@ -129,7 +128,7 @@ char *get_time()
 
 代码清单 3，<code>example.i</code>：
 
-```
+```cpp
 %module example
 %{
 /* Put header files here or function declarations like below */
@@ -150,7 +149,7 @@ extern char *get_time();
 
 代码清单 4，<code>testExample.py</code>：
 
-```
+```python
 import example
 print(example.fact(5))
 print(example.my_mod(7,3))
@@ -160,7 +159,7 @@ print(example.get_time())
 
 好了， 到现在为止，我们已经准备就绪了。现在，我们来执行下面的代码，创建目标文件和最后链接的文件吧：
 
-```
+```python
 swig -python example.i
 gcc -c -fPIC example.c example_wrap.c -I/usr/include/python3.6
 gcc -shared example.o example_wrap.o -o _example.so
@@ -180,12 +179,12 @@ python3 testExample.py # 测试调用
 
 代码清单 5，<code>pca.h</code>：
 
-```
+```cpp
 #pragma once
  
-#include &lt;vector&gt;
-#include &lt;string&gt;
-#include &lt;armadillo&gt;
+#include <vector>
+#include <string>
+#include <armadillo>
  
 class pca {
 public:
@@ -197,8 +196,8 @@ public:
  
     void set_num_variables(long num_vars);
     long get_num_variables() const;
-    void add_record(const std::vector&lt;double&gt;&amp; record);
-    std::vector&lt;double&gt; get_record(long record_index) const;
+    void add_record(const std::vector<double>&amp; record);
+    std::vector<double> get_record(long record_index) const;
     long get_num_records() const;
     void set_do_normalize(bool do_normalize);
     bool get_do_normalize() const;
@@ -215,15 +214,15 @@ public:
  
     void set_num_retained(long num_retained);
     long get_num_retained() const;
-    std::vector&lt;double&gt; to_principal_space(const std::vector&lt;double&gt;&amp; record) const;
-    std::vector&lt;double&gt; to_variable_space(const std::vector&lt;double&gt;&amp; data) const;
+    std::vector<double> to_principal_space(const std::vector<double>&amp; record) const;
+    std::vector<double> to_variable_space(const std::vector<double>&amp; data) const;
     double get_energy() const;
     double get_eigenvalue(long eigen_index) const;
-    std::vector&lt;double&gt; get_eigenvalues() const;
-    std::vector&lt;double&gt; get_eigenvector(long eigen_index) const;
-    std::vector&lt;double&gt; get_principal(long eigen_index) const;
-    std::vector&lt;double&gt; get_mean_values() const;
-    std::vector&lt;double&gt; get_sigma_values() const;
+    std::vector<double> get_eigenvalues() const;
+    std::vector<double> get_eigenvector(long eigen_index) const;
+    std::vector<double> get_principal(long eigen_index) const;
+    std::vector<double> get_mean_values() const;
+    std::vector<double> get_sigma_values() const;
  
 protected:
     long num_vars_;
@@ -232,14 +231,14 @@ protected:
     std::string solver_;
     bool do_normalize_;
     long num_retained_;
-    arma::Mat&lt;double&gt; data_;
-    arma::Col&lt;double&gt; energy_;
-    arma::Col&lt;double&gt; eigval_;
-    arma::Mat&lt;double&gt; eigvec_;
-    arma::Mat&lt;double&gt; proj_eigvec_;
-    arma::Mat&lt;double&gt; princomp_;
-    arma::Col&lt;double&gt; mean_;
-    arma::Col&lt;double&gt; sigma_;
+    arma::Mat<double> data_;
+    arma::Col<double> energy_;
+    arma::Col<double> eigval_;
+    arma::Mat<double> eigvec_;
+    arma::Mat<double> proj_eigvec_;
+    arma::Mat<double> princomp_;
+    arma::Col<double> mean_;
+    arma::Col<double> sigma_;
     void initialize_();
     void assert_num_vars_();
     void resize_data_if_needed_();
@@ -251,11 +250,11 @@ protected:
 
 代码清单 6，<code>pca.cpp</code>：
 
-```
+```cpp
 #include "pca.h"
 #include "utils.h"
-#include &lt;stdexcept&gt;
-#include &lt;random&gt;
+#include <stdexcept>
+#include <random>
  
 pca::pca()
     : num_vars_(0),
@@ -318,7 +317,7 @@ void pca::resize_data_if_needed_() {
 }
  
 void pca::assert_num_vars_() {
-    if (num_vars_ &lt; 2)
+    if (num_vars_ < 2)
         throw std::invalid_argument("Number of variables smaller than two.");
 }
  
@@ -344,19 +343,19 @@ void pca::set_num_variables(long num_vars) {
     initialize_();
 }
  
-void pca::add_record(const std::vector&lt;double&gt;&amp; record) {
+void pca::add_record(const std::vector<double>&amp; record) {
     assert_num_vars_();
  
     if (num_vars_ != long(record.size()))
         throw std::domain_error(utils::join("Record has the wrong size: ", record.size()));
  
     resize_data_if_needed_();
-    arma::Row&lt;double&gt; row(&amp;record.front(), record.size());
+    arma::Row<double> row(&amp;record.front(), record.size());
     data_.row(num_records_) = std::move(row);
     ++num_records_;
 }
  
-std::vector&lt;double&gt; pca::get_record(long record_index) const {
+std::vector<double> pca::get_record(long record_index) const {
     return std::move(utils::extract_row_vector(data_, record_index));
 }
  
@@ -373,7 +372,7 @@ void pca::set_solver(const std::string&amp; solver) {
 void pca::solve() {
     assert_num_vars_();
  
-    if (num_records_ &lt; 2)
+    if (num_records_ < 2)
         throw std::logic_error("Number of records smaller than two.");
  
     data_.resize(num_records_, num_vars_);
@@ -384,14 +383,14 @@ void pca::solve() {
     sigma_ = utils::compute_column_rms(data_);
     if (do_normalize_) utils::normalize_by_column(data_, sigma_);
  
-    arma::Col&lt;double&gt; eigval(num_vars_);
-    arma::Mat&lt;double&gt; eigvec(num_vars_, num_vars_);
+    arma::Col<double> eigval(num_vars_);
+    arma::Mat<double> eigvec(num_vars_, num_vars_);
  
-    arma::Mat&lt;double&gt; cov_mat = utils::make_covariance_matrix(data_);
+    arma::Mat<double> cov_mat = utils::make_covariance_matrix(data_);
     arma::eig_sym(eigval, eigvec, cov_mat, solver_.c_str());
     arma::uvec indices = arma::sort_index(eigval, 1);
  
-    for (long i=0; i&lt;num_vars_; ++i) {
+    for (long i=0; i<num_vars_; ++i) {
         eigval_(i) = eigval(indices(i));
         eigvec_.col(i) = eigvec.col(indices(i));
     }
@@ -406,24 +405,24 @@ void pca::solve() {
 }
  
 void pca::set_num_retained(long num_retained) {
-    if (num_retained&lt;=0 || num_retained&gt;num_vars_)
+    if (num_retained<=0 || num_retained>num_vars_)
         throw std::range_error(utils::join("Value out of range: ", num_retained));
  
     num_retained_ = num_retained;
     proj_eigvec_ = eigvec_.submat(0, 0, eigvec_.n_rows-1, num_retained_-1);
 }
  
-std::vector&lt;double&gt; pca::to_principal_space(const std::vector&lt;double&gt;&amp; data) const {
-    arma::Col&lt;double&gt; column(&amp;data.front(), data.size());
+std::vector<double> pca::to_principal_space(const std::vector<double>&amp; data) const {
+    arma::Col<double> column(&amp;data.front(), data.size());
     column -= mean_;
     if (do_normalize_) column /= sigma_;
-    const arma::Row&lt;double&gt; row(column.t() * proj_eigvec_);
+    const arma::Row<double> row(column.t() * proj_eigvec_);
     return std::move(utils::extract_row_vector(row, 0));
 }
  
-std::vector&lt;double&gt; pca::to_variable_space(const std::vector&lt;double&gt;&amp; data) const {
-    const arma::Row&lt;double&gt; row(&amp;data.front(), data.size());
-    arma::Col&lt;double&gt; column(arma::trans(row * proj_eigvec_.t()));
+std::vector<double> pca::to_variable_space(const std::vector<double>&amp; data) const {
+    const arma::Row<double> row(&amp;data.front(), data.size());
+    arma::Col<double> column(arma::trans(row * proj_eigvec_.t()));
     if (do_normalize_) column %= sigma_;
     column += mean_;
     return std::move(utils::extract_column_vector(column, 0));
@@ -434,20 +433,20 @@ double pca::get_energy() const {
 }
  
 double pca::get_eigenvalue(long eigen_index) const {
-    if (eigen_index &gt;= num_vars_)
+    if (eigen_index >= num_vars_)
         throw std::range_error(utils::join("Index out of range: ", eigen_index));
     return eigval_(eigen_index);
 }
  
-std::vector&lt;double&gt; pca::get_eigenvalues() const {
+std::vector<double> pca::get_eigenvalues() const {
     return std::move(utils::extract_column_vector(eigval_, 0));
 }
  
-std::vector&lt;double&gt; pca::get_eigenvector(long eigen_index) const {
+std::vector<double> pca::get_eigenvector(long eigen_index) const {
     return std::move(utils::extract_column_vector(eigvec_, eigen_index));
 }
  
-std::vector&lt;double&gt; pca::get_principal(long eigen_index) const {
+std::vector<double> pca::get_principal(long eigen_index) const {
     return std::move(utils::extract_column_vector(princomp_, eigen_index));
 }
  
@@ -458,7 +457,7 @@ double pca::check_eigenvectors_orthogonal() const {
 double pca::check_projection_accurate() const {
     if (data_.n_cols!=eigvec_.n_cols || data_.n_rows!=princomp_.n_rows)
         throw std::runtime_error("No proper data matrix present that the projection could be compared with.");
-    const arma::Mat&lt;double&gt; diff = (princomp_ * arma::trans(eigvec_)) - data_;
+    const arma::Mat<double> diff = (princomp_ * arma::trans(eigvec_)) - data_;
     return 1 - arma::sum(arma::sum( arma::abs(diff) )) / diff.n_elem;
 }
  
@@ -470,11 +469,11 @@ std::string pca::get_solver() const {
     return solver_;
 }
  
-std::vector&lt;double&gt; pca::get_mean_values() const {
+std::vector<double> pca::get_mean_values() const {
     return std::move(utils::extract_column_vector(mean_, 0));
 }
  
-std::vector&lt;double&gt; pca::get_sigma_values() const {
+std::vector<double> pca::get_sigma_values() const {
     return std::move(utils::extract_column_vector(sigma_, 0));
 }
  
@@ -536,41 +535,41 @@ void pca::load(const std::string&amp; basename) {
 
 代码清单 7，<code>utils.h</code>：
 
-```
+```cpp
 #pragma once
  
-#include &lt;armadillo&gt;
-#include &lt;sstream&gt;
+#include <armadillo>
+#include <sstream>
  
 namespace utils {
-arma::Mat&lt;double&gt; make_covariance_matrix(const arma::Mat&lt;double&gt;&amp; data);
-arma::Mat&lt;double&gt; make_shuffled_matrix(const arma::Mat&lt;double&gt;&amp; data);
-arma::Col&lt;double&gt; compute_column_means(const arma::Mat&lt;double&gt;&amp; data);
-void remove_column_means(arma::Mat&lt;double&gt;&amp; data, const arma::Col&lt;double&gt;&amp; means);
-arma::Col&lt;double&gt; compute_column_rms(const arma::Mat&lt;double&gt;&amp; data);
-void normalize_by_column(arma::Mat&lt;double&gt;&amp; data, const arma::Col&lt;double&gt;&amp; rms);
-void enforce_positive_sign_by_column(arma::Mat&lt;double&gt;&amp; data);
-std::vector&lt;double&gt; extract_column_vector(const arma::Mat&lt;double&gt;&amp; data, long index);
-std::vector&lt;double&gt; extract_row_vector(const arma::Mat&lt;double&gt;&amp; data, long index);
+arma::Mat<double> make_covariance_matrix(const arma::Mat<double>&amp; data);
+arma::Mat<double> make_shuffled_matrix(const arma::Mat<double>&amp; data);
+arma::Col<double> compute_column_means(const arma::Mat<double>&amp; data);
+void remove_column_means(arma::Mat<double>&amp; data, const arma::Col<double>&amp; means);
+arma::Col<double> compute_column_rms(const arma::Mat<double>&amp; data);
+void normalize_by_column(arma::Mat<double>&amp; data, const arma::Col<double>&amp; rms);
+void enforce_positive_sign_by_column(arma::Mat<double>&amp; data);
+std::vector<double> extract_column_vector(const arma::Mat<double>&amp; data, long index);
+std::vector<double> extract_row_vector(const arma::Mat<double>&amp; data, long index);
 void assert_file_good(const bool&amp; is_file_good, const std::string&amp; filename);
-template&lt;typename T&gt;
+template<typename T>
 void write_matrix_object(const std::string&amp; filename, const T&amp; matrix) {
     assert_file_good(matrix.quiet_save(filename, arma::arma_ascii), filename);
 }
  
-template&lt;typename T&gt;
+template<typename T>
 void read_matrix_object(const std::string&amp; filename, T&amp; matrix) {
     assert_file_good(matrix.quiet_load(filename), filename);
 }
-template&lt;typename T, typename U, typename V&gt;
+template<typename T, typename U, typename V>
 bool is_approx_equal(const T&amp; value1, const U&amp; value2, const V&amp; eps) {
-    return std::abs(value1-value2)&lt;eps ? true : false;
+    return std::abs(value1-value2)<eps ? true : false;
 }
-template&lt;typename T, typename U, typename V&gt;
+template<typename T, typename U, typename V>
 bool is_approx_equal_container(const T&amp; container1, const U&amp; container2, const V&amp; eps) {
     if (container1.size()==container2.size()) {
         bool equal = true;
-        for (size_t i=0; i&lt;container1.size(); ++i) {
+        for (size_t i=0; i<container1.size(); ++i) {
             equal = is_approx_equal(container1[i], container2[i], eps);
             if (!equal) break;
         }
@@ -579,40 +578,40 @@ bool is_approx_equal_container(const T&amp; container1, const U&amp; container2,
         return false;
     }
 }
-double get_mean(const std::vector&lt;double&gt;&amp; iter);
-double get_sigma(const std::vector&lt;double&gt;&amp; iter);
+double get_mean(const std::vector<double>&amp; iter);
+double get_sigma(const std::vector<double>&amp; iter);
  
 struct join_helper {
     static void add_to_stream(std::ostream&amp; stream) {}
  
-    template&lt;typename T, typename... Args&gt;
+    template<typename T, typename... Args>
     static void add_to_stream(std::ostream&amp; stream, const T&amp; arg, const Args&amp;... args) {
-        stream &lt;&lt; arg;
+        stream << arg;
         add_to_stream(stream, args...);
     }
 };
  
-template&lt;typename T, typename... Args&gt;
+template<typename T, typename... Args>
 std::string join(const T&amp; arg, const Args&amp;... args) {
     std::ostringstream stream;
-    stream &lt;&lt; arg;
+    stream << arg;
     join_helper::add_to_stream(stream, args...);
     return stream.str();
 }
  
-template&lt;typename T&gt;
+template<typename T>
 void write_property(std::ostream&amp; file, const std::string&amp; key, const T&amp; value) {
-    file &lt;&lt; key &lt;&lt; "\t" &lt;&lt; value &lt;&lt; std::endl;
+    file << key << "\t" << value << std::endl;
 }
  
-template&lt;typename T&gt;
+template<typename T>
 void read_property(std::istream&amp; file, const std::string&amp; key, T&amp; value) {
     std::string tmp;
     bool found = false;
     while (file.good()) {
-        file &gt;&gt; tmp;
+        file >> tmp;
         if (tmp==key) {
-            file &gt;&gt; value;
+            file >> value;
             found = true;
             break;
         }
@@ -630,94 +629,94 @@ void read_property(std::istream&amp; file, const std::string&amp; key, T&amp; va
 
 代码清单 8，<code>utils.cpp</code>：
 
-```
+```cpp
 #include "utils.h"
-#include &lt;stdexcept&gt;
-#include &lt;sstream&gt;
-#include &lt;numeric&gt;
+#include <stdexcept>
+#include <sstream>
+#include <numeric>
  
 namespace utils {
  
-arma::Mat&lt;double&gt; make_covariance_matrix(const arma::Mat&lt;double&gt;&amp; data) {
+arma::Mat<double> make_covariance_matrix(const arma::Mat<double>&amp; data) {
     return std::move( (data.t()*data) * (1./(data.n_rows-1)) );
 }
  
-arma::Mat&lt;double&gt; make_shuffled_matrix(const arma::Mat&lt;double&gt;&amp; data) {
+arma::Mat<double> make_shuffled_matrix(const arma::Mat<double>&amp; data) {
     const long n_rows = data.n_rows;
     const long n_cols = data.n_cols;
-    arma::Mat&lt;double&gt; shuffle(n_rows, n_cols);
-    for (long j=0; j&lt;n_cols; ++j) {
-        for (long i=0; i&lt;n_rows; ++i) {
+    arma::Mat<double> shuffle(n_rows, n_cols);
+    for (long j=0; j<n_cols; ++j) {
+        for (long i=0; i<n_rows; ++i) {
             shuffle(i, j) = data(std::rand()%n_rows, j);
         }
     }
     return std::move(shuffle);
 }
  
-arma::Col&lt;double&gt; compute_column_means(const arma::Mat&lt;double&gt;&amp; data) {
+arma::Col<double> compute_column_means(const arma::Mat<double>&amp; data) {
     const long n_cols = data.n_cols;
-    arma::Col&lt;double&gt; means(n_cols);
-    for (long i=0; i&lt;n_cols; ++i)
+    arma::Col<double> means(n_cols);
+    for (long i=0; i<n_cols; ++i)
         means(i) = arma::mean(data.col(i));
     return std::move(means);
 }
  
-void remove_column_means(arma::Mat&lt;double&gt;&amp; data, const arma::Col&lt;double&gt;&amp; means) {
+void remove_column_means(arma::Mat<double>&amp; data, const arma::Col<double>&amp; means) {
     if (data.n_cols != means.n_elem)
         throw std::range_error("Number of elements of means is not equal to the number of columns of data");
-    for (long i=0; i&lt;long(data.n_cols); ++i)
+    for (long i=0; i<long(data.n_cols); ++i)
         data.col(i) -= means(i);
 }
  
-arma::Col&lt;double&gt; compute_column_rms(const arma::Mat&lt;double&gt;&amp; data) {
+arma::Col<double> compute_column_rms(const arma::Mat<double>&amp; data) {
     const long n_cols = data.n_cols;
-    arma::Col&lt;double&gt; rms(n_cols);
-    for (long i=0; i&lt;n_cols; ++i) {
+    arma::Col<double> rms(n_cols);
+    for (long i=0; i<n_cols; ++i) {
         const double dot = arma::dot(data.col(i), data.col(i));
         rms(i) = std::sqrt(dot / (data.col(i).n_rows-1));
     }
     return std::move(rms);
 }
  
-void normalize_by_column(arma::Mat&lt;double&gt;&amp; data, const arma::Col&lt;double&gt;&amp; rms) {
+void normalize_by_column(arma::Mat<double>&amp; data, const arma::Col<double>&amp; rms) {
     if (data.n_cols != rms.n_elem)
         throw std::range_error("Number of elements of rms is not equal to the number of columns of data");
-    for (long i=0; i&lt;long(data.n_cols); ++i) {
+    for (long i=0; i<long(data.n_cols); ++i) {
         if (rms(i)==0)
             throw std::runtime_error("At least one of the entries of rms equals to zero");
         data.col(i) *= 1./rms(i);
     }
 }
  
-void enforce_positive_sign_by_column(arma::Mat&lt;double&gt;&amp; data) {
-    for (long i=0; i&lt;long(data.n_cols); ++i) {
+void enforce_positive_sign_by_column(arma::Mat<double>&amp; data) {
+    for (long i=0; i<long(data.n_cols); ++i) {
         const double max = arma::max(data.col(i));
         const double min = arma::min(data.col(i));
         bool change_sign = false;
-        if (std::abs(max)&gt;=std::abs(min)) {
-            if (max&lt;0) change_sign = true;
+        if (std::abs(max)>=std::abs(min)) {
+            if (max<0) change_sign = true;
         } else {
-            if (min&lt;0) change_sign = true;
+            if (min<0) change_sign = true;
         }
         if (change_sign) data.col(i) *= -1;
     }
 }
  
-std::vector&lt;double&gt; extract_column_vector(const arma::Mat&lt;double&gt;&amp; data, long index) {
-    if (index&lt;0 || index &gt;= long(data.n_cols))
+std::vector<double> extract_column_vector(const arma::Mat<double>&amp; data, long index) {
+    if (index<0 || index >= long(data.n_cols))
         throw std::range_error(join("Index out of range: ", index));
     const long n_rows = data.n_rows;
     const double* memptr = data.colptr(index);
-    std::vector&lt;double&gt; result(memptr, memptr + n_rows);
+    std::vector<double> result(memptr, memptr + n_rows);
     return std::move(result);
 }
  
-std::vector&lt;double&gt; extract_row_vector(const arma::Mat&lt;double&gt;&amp; data, long index) {
-    if (index&lt;0 || index &gt;= long(data.n_rows))
+std::vector<double> extract_row_vector(const arma::Mat<double>&amp; data, long index) {
+    if (index<0 || index >= long(data.n_rows))
         throw std::range_error(join("Index out of range: ", index));
-    const arma::Row&lt;double&gt; row(data.row(index));
+    const arma::Row<double> row(data.row(index));
     const double* memptr = row.memptr();
-    std::vector&lt;double&gt; result(memptr, memptr + row.n_elem);
+    std::vector<double> result(memptr, memptr + row.n_elem);
     return std::move(result);
 }
  
@@ -726,12 +725,12 @@ void assert_file_good(const bool&amp; is_file_good, const std::string&amp; filen
         throw std::ios_base::failure(join("Cannot open file: ", filename));
 }
  
-double get_mean(const std::vector&lt;double&gt;&amp; iter) {
+double get_mean(const std::vector<double>&amp; iter) {
     const double init = 0;
     return std::accumulate(iter.begin(), iter.end(), init) / iter.size();
 }
  
-double get_sigma(const std::vector&lt;double&gt;&amp; iter) {
+double get_sigma(const std::vector<double>&amp; iter) {
     const double mean = get_mean(iter);
     double sum = 0;
     for (auto v=iter.begin(); v!=iter.end(); ++v)
@@ -747,14 +746,14 @@ double get_sigma(const std::vector&lt;double&gt;&amp; iter) {
 
 代码清单 9，<code>pca.i</code>：
 
-```
+```cpp
 %module pca
  
 %include "std_string.i"
 %include "std_vector.i"
  
 namespace std {
-  %template(DoubleVector) vector&lt;double&gt;;
+  %template(DoubleVector) vector<double>;
 }
  
 %{
@@ -771,7 +770,7 @@ namespace std {
 
 一切就绪后，我们执行下面的命令行，生成<code>_pca.so</code>库供 Python 使用：
 
-```
+```bash
 $ swig -c++ -python pca.i # 解释接口定义生成包 SWIG 装器代码
 $ g++ -fPIC -c pca.h pca.cpp utils.h utils.cpp pca_wrap.cxx -I/usr/include/python3.7 # 编译源代码
 $ g++ -shared pca.o pca_wrap.o utils.o -o _pca.so -O2 -Wall -std=c++11 -pthread -shared -fPIC -larmadillo # 链接
@@ -782,7 +781,7 @@ $ g++ -shared pca.o pca_wrap.o utils.o -o _pca.so -O2 -Wall -std=c++11 -pthread 
 
 代码清单 10，<code>testPCA.py</code>：
 
-```
+```python
 import pca
  
 pca_inst = pca.pca(2)
@@ -816,15 +815,15 @@ print(eigenvalues)
 
 代码清单 11，<code>sample.h</code>：
 
-```
-#include &lt;cstdint&gt;
+```cpp
+#include <cstdint>
 int32_t score = 100;
 
 ```
 
 代码清单 12，<code>sample.i</code>：
 
-```
+```cpp
 %module sample
 %{
 #include "sample.h"
@@ -838,7 +837,7 @@ int32_t score = 100;
 
 代码清单 13，<code>sample.py</code>：
 
-```
+```python
 import sample
 print sample.cvar.score
 
@@ -848,7 +847,7 @@ print sample.cvar.score
 
 代码清单 14，<code>sample.i</code>：
 
-```
+```cpp
 %constant int foo = 100;
 %constant const char* bar = "foobar2000";
 
@@ -862,11 +861,11 @@ SWIG 对指针有着较为不错的支持，对智能指针也有一定的支持
 
 代码清单 15，<code>sample.h</code>：
 
-```
-#include &lt;cstdint&gt;
+```cpp
+#include <cstdint>
  
 void passPointer(ClassA* ptr) {
-   printf("result= %d", ptr-&gt;result);
+   printf("result= %d", ptr->result);
 }
  
 void passReference(const ClassA&amp; ref) {
@@ -881,7 +880,7 @@ void passValue(ClassA obj) {
 
 代码清单 16，<code>sample.py</code>：
 
-```
+```python
 import sample
  
 a = ClassA() # 创建 ClassA 实例
@@ -895,7 +894,7 @@ passValue(a)
 
 代码清单 17，<code>sample.i</code>：
 
-```
+```cpp
 %module sample
  
 %include "std_string.i"
@@ -907,14 +906,14 @@ passValue(a)
 
 代码清单 18，<code>sample.i</code>：
 
-```
+```cpp
 %module sample
  
 %include "std_string.i"
 %include "std_vector.i"
  
 namespace std {
- %template(DoubleVector) vector&lt;double&gt;;
+ %template(DoubleVector) vector<double>;
 }
  
 
@@ -924,15 +923,15 @@ namespace std {
 
 代码清单 19，<code>sample.i</code>：
 
-```
+```cpp
 %module sample
  
 %include "std_string.i"
 %include "std_map.i"
  
 namespace std {
- %template(Int2strMap) map&lt;int, string&gt;;
- %template(Str2intMap) map&lt;string, int&gt;;
+ %template(Int2strMap) map<int, string>;
+ %template(Str2intMap) map<string, int>;
 }
  
 
@@ -959,6 +958,3 @@ namespace std {
 第三则是《高级 C/C++ 编译技术》这本书。这本书的内容更为进阶，你可以把它作为学习 C++ 的提高和了解。
 
 好了，今天的内容就到此结束了。关于 SWIG，你有哪些收获，或者还有哪些问题，都欢迎你留言和我分享讨论。也欢迎你把这篇文章分享给你的同事、朋友，我们一起学习和进步。
-
-![](./images/44-02.png)
-
